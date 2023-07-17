@@ -1,8 +1,14 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 function App() {
   return (
-    <h1 className="text-3xl font-bold underline text-blue-500">
-      Hello world!(tailwind css)
-    </h1>
+    <div className="App">
+      <BrowserRouter>
+        <Routes>
+          <Route></Route>
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
