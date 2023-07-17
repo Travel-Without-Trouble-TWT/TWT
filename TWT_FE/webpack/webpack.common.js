@@ -1,5 +1,4 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ProgressPlugin = require('progress-webpack-plugin');
 const path = require('path');
 
@@ -9,7 +8,7 @@ module.exports = {
     publicPath: '/',
     path: path.join(__dirname, '../dist'),
     filename: '[name].[chunkhash].js',
-    clean: true,
+    clean: true, // 내보내기 전에 output 디렉터리를 정리
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
@@ -52,9 +51,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
-    // new CopyWebpackPlugin({
-    //   patterns: [],
-    // }),
     new ProgressPlugin(true),
   ],
   devServer: {
