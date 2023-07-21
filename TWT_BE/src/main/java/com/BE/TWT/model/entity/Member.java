@@ -30,4 +30,8 @@ public class Member {
 //    private List<Review> reviewList;
 //    @JsonIgnore
 //    private List<Like> likeList;
+
+    public void update(String nickname) {
+        this.nickname = nickname;
+    }
 }

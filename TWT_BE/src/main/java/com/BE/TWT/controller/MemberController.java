@@ -2,17 +2,15 @@ package com.BE.TWT.controller;
 
 import com.BE.TWT.model.dto.SignInDto;
 import com.BE.TWT.model.dto.SignUpDto;
+import com.BE.TWT.model.dto.UpdateDto;
 import com.BE.TWT.model.entity.Member;
-import com.BE.TWT.service.MemberService;
+import com.BE.TWT.service.member.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -35,5 +33,12 @@ public class MemberController {
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody @Valid SignInDto signInDto) {
         return ResponseEntity.ok(memberService.signIn(signInDto));
+    }
+
+    @ApiOperation(value = "닉네임 변경")
+    @Operation(description = "닉네임 중복 시 에러 떠요!!")
+    @PutMapping("/change")
+    public void updateNickname (@RequestBody @Valid UpdateDto updateDto) {
+        memberService.updateNickname(updateDto);
     }
 }
