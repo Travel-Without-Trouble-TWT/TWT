@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 
 import Header from '../components/Header';
+import logo from '../assets/img/logo.png';
 
 interface JoinProps {
   nickName: string;
@@ -24,11 +25,7 @@ function Join() {
       <div className="flex items-center justify-center h-screen">
         <div className="grid grid-cols-2 gap-4w-4/5 absolute rounded-xl bg-skyblue">
           <div className="flex justify-center align-middle">
-            <img
-              className="h-[200px] w-[200px]"
-              src="./assets/img/logo.png"
-              alt="로고 이미지"
-            />
+            <img className="h-[200px] w-[250px]" src={logo} alt="로고 이미지" />
           </div>
 
           <div className="flex justify-center align-middle p-12">
