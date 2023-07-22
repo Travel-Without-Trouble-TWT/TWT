@@ -23,8 +23,8 @@ function Join() {
     <>
       <Header />
       <div className="flex items-center justify-center h-screen">
-        <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 w-4/5 absolute rounded-xl bg-skyblue">
-          <div className="hidden tablet:flex tablet:flex-col tablet:justify-end">
+        <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 w-4/5 absolute rounded-xl bg-skyblue shadow-lg">
+          <div className="hidden tablet:flex tablet:flex-col tablet:justify-end border-white border-r">
             <div className="self-center mb-10">
               <p className="text-lg font-extrabold text-white">TWT</p>
               <p className="text-lg font-semibold text-white">TWT</p>
