@@ -2,6 +2,9 @@ import { useForm } from 'react-hook-form';
 
 import Header from '../components/Header';
 
+import logo from '../assets/img/logo.png';
+//import googleLoginIcon from '../assets/img/googleIcon.png';
+
 interface LoginProps {
   email: string;
   password: string;
@@ -19,21 +22,25 @@ function Login() {
     <>
       <Header />
       <div className="flex items-center justify-center h-screen">
-        <div className="grid grid-cols-2 gap-4w-4/5 absolute rounded-xl bg-skyblue">
-          <div className="flex justify-center align-middle">
+        <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 w-4/5 absolute rounded-xl bg-skyblue shadow-lg">
+          <div className="hidden tablet:flex tablet:flex-col tablet:justify-end border-white border-r">
+            <div className="self-center mb-10">
+              <p className="text-lg font-extrabold text-white">TWT</p>
+              <p className="text-lg font-semibold text-white">TWT</p>
+              <p className="text-white text-lg">TWT</p>
+            </div>
             <img
-              className="h-[200px] w-[200px]"
-              src="./assets/img/logo.png"
+              className="h-[200px] w-[250px] self-center mb-20"
+              src={logo}
               alt="로고 이미지"
             />
           </div>
-
-          <div className="flex justify-center align-middle p-12">
+          <div className="tablet:flex justify-center align-middle p-12">
             <form className="flex justify-center align-middle flex-col space-y-3">
               <p className="self-center text-3xl font-bold text-left mb-9">
                 로그인
               </p>
-              <label className="text-md font-semibold" htmlFor="email">
+              <label className="text-md font-medium" htmlFor="email">
                 이메일
               </label>
               <input
@@ -54,7 +61,7 @@ function Login() {
                   {errors.email.message}
                 </small>
               )}
-              <label className="text-md font-semibold" htmlFor="password">
+              <label className="text-md font-medium" htmlFor="password">
                 비밀번호
               </label>
               <input
@@ -84,12 +91,15 @@ function Login() {
                   로그인
                 </button>
               )}
-              <button>
-                <img src="./assets/img/google_Login_Btn.png" alt="구글로그인" />
-              </button>
 
-              <a href="/join">
-                <p className="flex text-white self-center">회원가입하기</p>
+              {/* <img
+                className="w-full h-[60px]"
+                src={googleLoginIcon}
+                alt="구글 로그인"
+              /> */}
+
+              <a className="flex self-center" href="/join">
+                <p className="text-white">회원가입하기</p>
               </a>
             </form>
           </div>
