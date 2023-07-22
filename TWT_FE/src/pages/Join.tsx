@@ -23,19 +23,26 @@ function Join() {
     <>
       <Header />
       <div className="flex items-center justify-center h-screen">
-        <div className="grid grid-cols-2 gap-4w-4/5 absolute rounded-xl bg-skyblue">
-          <div className="flex justify-center align-middle">
-            <img className="h-[200px] w-[250px]" src={logo} alt="로고 이미지" />
+        <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 w-4/5 absolute rounded-xl bg-skyblue">
+          <div className="hidden tablet:flex tablet:flex-col tablet:justify-end">
+            <div className="self-center mb-10">
+              <p className="text-lg font-extrabold text-white">TWT</p>
+              <p className="text-lg font-semibold text-white">TWT</p>
+              <p className="text-white text-lg">TWT</p>
+            </div>
+            <img
+              className="h-[200px] w-[250px] self-center mb-20"
+              src={logo}
+              alt="로고 이미지"
+            />
           </div>
 
-          <div className="flex justify-center align-middle p-12">
+          <div className="tablet:flex justify-center align-middle p-12">
             <form className="flex justify-center align-middle flex-col space-y-3">
               <p className="self-center text-3xl font-bold text-left mb-9">
                 회원가입
               </p>
-              <label className="text-base font-medium" htmlFor="email">
-                닉네임
-              </label>
+              <label className="text-base font-medium">닉네임</label>
               <input
                 className="placeholder:text-sm text-lightgray appearance-none bg-skyblue py-2 px-2 leading-tight focus:outline-none"
                 type="text"
