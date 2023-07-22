@@ -6,6 +6,7 @@ interface JoinProps {
   nickName: string;
   email: string;
   password: string;
+  confirmPw?: string;
 }
 function Join() {
   const {
@@ -13,7 +14,10 @@ function Join() {
     handleSubmit,
     formState: { errors, isValid },
     setError,
+    watch,
   } = useForm<JoinProps>({ mode: 'onBlur' });
+
+  const password = watch('password');
   return (
     <>
       <Header />
@@ -32,7 +36,7 @@ function Join() {
               <p className="self-center text-3xl font-bold text-left mb-9">
                 회원가입
               </p>
-              <label className="text-md font-semibold" htmlFor="email">
+              <label className="text-base font-medium" htmlFor="email">
                 닉네임
               </label>
               <input
@@ -56,7 +60,7 @@ function Join() {
                   {errors.nickName.message}
                 </small>
               )}
-              <label className="text-md font-semibold" htmlFor="email">
+              <label className="text-md font-medium" htmlFor="email">
                 이메일
               </label>
               <input
@@ -77,7 +81,7 @@ function Join() {
                   {errors.email.message}
                 </small>
               )}
-              <label className="text-md font-semibold" htmlFor="password">
+              <label className="text-md font-medium" htmlFor="password">
                 비밀번호
               </label>
               <input
@@ -98,25 +102,22 @@ function Join() {
                   {errors.password.message}
                 </small>
               )}
-              <label className="text-md font-semibold" htmlFor="password">
+              <label className="text-md font-medium" htmlFor="password">
                 비밀번호 확인
               </label>
               <input
                 className="placeholder:text-sm text-lightgray appearance-none bg-skyblue py-2 px-2 leading-tight focus:outline-none"
                 type="password"
                 placeholder="비밀번호 확인"
-                {...register('password', {
-                  required: '비밀번호는 필수 입력입니다.',
-                  pattern: {
-                    value:
-                      /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/,
-                    message: '영문, 숫자, 특수문자 조합 8자리 이상 입력',
-                  },
+                {...register('confirmPw', {
+                  required: '비밀번호를 다시 입력해주세요.',
+                  validate: (value) =>
+                    value === password || '비밀번호가 일치하지 않습니다.',
                 })}
               />
-              {errors.password && (
+              {errors.confirmPw && (
                 <small className="text-red italic" role="alert">
-                  {errors.password.message}
+                  {errors.confirmPw.message}
                 </small>
               )}
               {isValid ? (
