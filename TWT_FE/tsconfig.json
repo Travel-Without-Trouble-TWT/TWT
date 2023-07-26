@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true, // 선언파일의 형식 검사를 스킵. -> 정확성은 떨어지지만 그만큼 시간을 절약.
+    "esModuleInterop": true, // export default가 없는 라이브러리도 * as없이 import 가능.
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node", // import가 무엇을 참조하는지 확인
+    "resolveJsonModule": true, // 정적으로 json가져오기
+    "isolatedModules": true,
+    "noEmit": true,
+    "noEmitOnError": true, //타입체킹에 실패하면 빌드가 되지 않도록 함
+    "jsx": "react-jsx"
+  },
+  "include": ["src"]
+}
