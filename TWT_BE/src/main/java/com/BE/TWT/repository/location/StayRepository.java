@@ -1,6 +1,6 @@
-package com.BE.TWT.repository;
+package com.BE.TWT.repository.location;
 
-import com.BE.TWT.model.entity.Stay;
+import com.BE.TWT.model.entity.location.Stay;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

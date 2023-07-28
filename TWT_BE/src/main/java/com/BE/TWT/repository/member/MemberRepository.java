@@ -1,6 +1,6 @@
-package com.BE.TWT.repository;
+package com.BE.TWT.repository.member;
 
-import com.BE.TWT.model.entity.Member;
+import com.BE.TWT.model.entity.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
