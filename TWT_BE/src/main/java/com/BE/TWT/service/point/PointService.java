@@ -1,7 +1,6 @@
-package com.BE.TWT.service.map;
+package com.BE.TWT.service.point;
 
 import com.BE.TWT.exception.error.MapException;
-import com.BE.TWT.exception.message.MapErrorMessage;
 import com.BE.TWT.model.dto.Point;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
