@@ -2,11 +2,11 @@ package com.BE.TWT.service.member;
 
 import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
-import com.BE.TWT.model.dto.SignInDto;
-import com.BE.TWT.model.dto.SignUpDto;
-import com.BE.TWT.model.dto.UpdateDto;
-import com.BE.TWT.model.entity.Member;
-import com.BE.TWT.repository.MemberRepository;
+import com.BE.TWT.model.dto.member.SignInDto;
+import com.BE.TWT.model.dto.member.SignUpDto;
+import com.BE.TWT.model.dto.member.UpdateDto;
+import com.BE.TWT.model.entity.member.Member;
+import com.BE.TWT.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static com.BE.TWT.exception.message.MemberErrorMessage.*;
 
@@ -56,8 +58,11 @@ public class MemberService {
         return jwtTokenProvider.generateAccessToken(authentication);
     }
 
-    public void updateNickname(UpdateDto updateDto) {
-        Member member = memberRepository.findById(updateDto.getId())
+    public void updateNickname(HttpServletRequest request, UpdateDto updateDto) {
+        String token = request.getHeader("Authorization");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
         if (memberRepository.findByNickname(updateDto.getNickname()).isPresent()) {

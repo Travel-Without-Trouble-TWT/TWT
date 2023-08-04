@@ -30,11 +30,9 @@ public class Member {
 //    private List<Schedule> scheduleList;
 //    @JsonIgnore
 //    private List<Review> reviewList;
-    @JsonIgnore
-    @OneToMany(mappedBy = "member")
-    private List<Heart> heartList;
 
     public void update(String nickname) {
         this.nickname = nickname;
     }
+
 }

@@ -1,13 +1,9 @@
-package com.BE.TWT.model.dto;
+package com.BE.TWT.model.dto.function;
 
-import com.BE.TWT.model.type.BuildType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 @Getter
 @NoArgsConstructor
@@ -18,6 +14,4 @@ public class AddressResponse {
     private double longitude; // x
     private double latitude; // y
     private String phone;
-    @Enumerated(EnumType.STRING)
-    private BuildType buildType;
 }

@@ -1,4 +1,4 @@
-package com.BE.TWT.model.dto;
+package com.BE.TWT.model.dto.function;
 
 import com.BE.TWT.model.type.PlaceType;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class HeartDto {
-    private Long memberId;
     private PlaceType placeType;
     private String placeName;
 }
