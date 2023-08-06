@@ -23,6 +23,9 @@ module.exports = {
       xl: '1260px', // @media (min-width: 1260px)
       '2xl': '1460px', // @media (min-width: 1460px)
     },
+    variants: {
+      fill: ['hover', 'focus'],
+    },
   },
   plugins: [],
 };
