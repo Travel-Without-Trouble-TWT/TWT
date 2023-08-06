@@ -5,6 +5,7 @@ const { merge } = require('webpack-merge');
 const common = require('./webpack.common');
 const path = require('path');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const smp = new SpeedMeasurePlugin();
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
@@ -42,10 +43,13 @@ module.exports = smp.wrap(
     },
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.BASE_URL': JSON.stringify(process.env.DEV_BASE_URL),
-        'process.env.CLIENT_ID': JSON.stringify(process.env.CLIENT_ID),
-        'process.env.PUBLIC_KEY': JSON.stringify(process.env.PUBLIC_KEY),
-        'process.env.IS_LOCAL': JSON.stringify(isLocal),
+        BASE_URL: JSON.stringify(process.env.DEV_BASE_URL),
+        CLIENT_ID: JSON.stringify(process.env.CLIENT_ID),
+        PUBLIC_KEY: JSON.stringify(process.env.PUBLIC_KEY),
+        IS_LOCAL: JSON.stringify(isLocal),
+        REACT_APP_KAKAO_MAP_KEY: JSON.stringify(
+          process.env.REACT_APP_KAKAO_MAP_KEY
+        ),
       }),
     ],
   })
