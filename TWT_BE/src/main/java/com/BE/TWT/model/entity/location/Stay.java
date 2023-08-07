@@ -1,4 +1,4 @@
-package com.BE.TWT.model.entity;
+package com.BE.TWT.model.entity.location;
 
 import com.BE.TWT.model.type.PlaceType;
 import lombok.AllArgsConstructor;
@@ -31,7 +31,7 @@ public class Stay {
     @Column(nullable = false)
     private String stayDescription;
 
-    private int stayLove; // 좋아요
+    private int stayHeart; // 좋아요
 
     private double star; // 별점
 
@@ -41,4 +41,12 @@ public class Stay {
     private PlaceType placeType;
 
 //    private List<Review> reviewList;
+
+    public void plusHeart() {
+        stayHeart++;
+    }
+
+    public void minusHeart() {
+        stayHeart--;
+    }
 }

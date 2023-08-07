@@ -18,6 +18,7 @@ public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String restaurantName;
     @Column(nullable = false)
     private String restaurantLocation; // 필터용 지역
@@ -33,10 +34,18 @@ public class Restaurant {
     @Enumerated(EnumType.STRING)
     private BuildType buildType;
 
-    private int restaurantLove; // 좋아요
+    private int restaurantHeart; // 좋아요
 
     private double star; // 별점
 
     @Enumerated(EnumType.STRING)
     private PlaceType placeType;
+
+    public void plusHeart() {
+        restaurantHeart++;
+    }
+
+    public void minusHeart() {
+        restaurantHeart--;
+    }
 }
