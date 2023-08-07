@@ -2,8 +2,7 @@ package com.BE.TWT.crawling;
 
 import com.BE.TWT.exception.error.MapException;
 import com.BE.TWT.exception.message.MapErrorMessage;
-import com.BE.TWT.model.dto.AddressResponse;
-import com.BE.TWT.model.type.BuildType;
+import com.BE.TWT.model.dto.function.AddressResponse;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,21 +24,11 @@ public class KakaoLocationSearch {
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
     private String[] code = {"AD5", "FD6", "CE7", "AT4"}; // 숙박, 식당, 카페, 관광명소 request category_group_code= +
+    String buildType = code[1];
 
     public AddressResponse searchLocation(String building) throws MapException {
 
         String reqURL = "https://dapi.kakao.com/v2/local/search/keyword.json";
-        String buildType = code[1];
-        BuildType type = null;
-        if (buildType.equals(code[1])) {
-            type = BuildType.RESTAURANT;
-        }
-        if (buildType.equals(code[2])) {
-            type = BuildType.CAFE;
-        }
-        if (buildType.equals(code[3])) {
-            type = BuildType.PLACE;
-        }
 
         try {
             String encodedQuery = URLEncoder.encode(building, "UTF-8");
@@ -82,7 +71,6 @@ public class KakaoLocationSearch {
                     .latitude(latitude)
                     .longitude(longitude)
                     .phone(phone)
-                    .buildType(type)
                     .build();
 
             return addressResponse;

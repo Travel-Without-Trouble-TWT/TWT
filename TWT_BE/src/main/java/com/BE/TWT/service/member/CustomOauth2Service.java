@@ -1,8 +1,8 @@
 package com.BE.TWT.service.member;
 
-import com.BE.TWT.model.dto.SignInDto;
-import com.BE.TWT.model.entity.Member;
-import com.BE.TWT.repository.MemberRepository;
+import com.BE.TWT.model.dto.member.SignInDto;
+import com.BE.TWT.model.entity.member.Member;
+import com.BE.TWT.repository.member.MemberRepository;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonElement;
 import lombok.RequiredArgsConstructor;

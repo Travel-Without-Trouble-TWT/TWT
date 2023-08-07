@@ -1,7 +1,7 @@
 package com.BE.TWT.service.point;
 
 import com.BE.TWT.exception.error.MapException;
-import com.BE.TWT.model.dto.Point;
+import com.BE.TWT.model.dto.function.Point;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Value;

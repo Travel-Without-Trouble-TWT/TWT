@@ -1,6 +1,5 @@
 package com.BE.TWT.service.function;
 
-import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.model.entity.function.ReviewImage;
 import com.BE.TWT.repository.function.ReviewImageRepository;
 import com.amazonaws.services.s3.AmazonS3Client;

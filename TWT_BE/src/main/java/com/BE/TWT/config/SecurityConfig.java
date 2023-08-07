@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
                 .antMatchers("/member/**", "/login/**").permitAll()
+                .antMatchers("/scrap/**", "/image/**", "/review/**", "/heart/**").permitAll() // 임시로 오픈
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -1,4 +1,4 @@
-package com.BE.TWT.model.dto;
+package com.BE.TWT.model.dto.function;
 
 import lombok.Getter;
 

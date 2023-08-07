@@ -1,4 +1,4 @@
-package com.BE.TWT.model.dto;
+package com.BE.TWT.model.dto.member;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
