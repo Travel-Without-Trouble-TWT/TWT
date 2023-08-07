@@ -50,6 +50,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
+      templateParameters: {
+        REACT_APP_KAKAO_MAP_KEY: process.env.REACT_APP_KAKAO_MAP_KEY,
+      },
     }),
     new ProgressPlugin(true),
   ],
