@@ -1,3 +1,4 @@
+import { text } from 'node:stream/consumers';
 import { useState } from 'react';
 import {
   AiOutlineCheckCircle,
@@ -8,16 +9,18 @@ import {
 function Alerts({ type = 'success', title = '', message = '' }) {
   const [dismiss, setDismiss] = useState(false);
 
-  const bgColor = type === 'success' ? 'bg-green-100' : 'bg-red-100';
+  const bgColor = type === 'success' ? 'bg-green-100' : 'bg-rose-50';
   const borderColor =
-    type === 'success' ? 'border-green-400' : 'border-red-400';
-  const textColor = type === 'success' ? 'text-green-500' : 'text-rose-600';
+    type === 'success' ? 'border-green-300' : 'border-rose-300';
+  const textColor = type === 'success' ? 'text-teal-600' : 'text-rose-500';
   const icon =
     type === 'success' ? (
       <AiOutlineCheckCircle className="h-5 w-5 shrink-0" />
     ) : (
       <AiOutlineWarning className="h-5 w-5 shrink-0" />
     );
+  const buttonColor = type === 'success' ? 'bg-teal-400' : 'bg-rose-400';
+  const buttonHoverColor = type === 'success' ? 'bg-teal-500' : 'bg-rose-500';
   return (
     <>
       <div
@@ -36,11 +39,15 @@ function Alerts({ type = 'success', title = '', message = '' }) {
         <div className="px-9">
           <p>{message}</p>
         </div>
-        <div>
-          <button className="inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded bg-teal-400 px-4 text-xs font-medium tracking-wide text-white transition duration-300 hover:bg-teal-500">
+        <div className="flex justify-end gap-2">
+          <button
+            className={`inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded ${buttonColor} px-4 text-xs font-medium tracking-wide text-white transition duration-300 hover:${buttonHoverColor}`}
+          >
             <span className="relatvie">확인</span>
           </button>
-          <button className="inline-flex h-8 items-center justify-center gap-2 justify-self-center whitespace-nowrap rounded px-4 text-xs font-medium tracking-wide text-teal-500 transition duration-300 hover:bg-green-200 hover:text-bold">
+          <button
+            className={`inline-flex h-8 items-center justify-center gap-2 justify-self-center whitespace-nowrap rounded px-4 text-xs font-medium tracking-wide ${textColor} transition duration-300 hover:${buttonColor} hover:font-bold`}
+          >
             <span className="relative">취소</span>
           </button>
         </div>
