@@ -31,6 +31,7 @@ public class Schedule {
     private String travelPlace;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
+    private int days;
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<DaySchedule> dayScheduleList;
@@ -39,5 +40,17 @@ public class Schedule {
     public void updateDate(LocalDateTime start, LocalDateTime end) {
         this.startAt = start;
         this.endAt = end;
+    }
+
+    public void uploadPhoto(String url) {
+        this.scheduleImageUrl = url;
+    }
+
+    public void changeDayScheduleList(List<DaySchedule> list) {
+        this.dayScheduleList = list;
+    }
+
+    public void insertDays(int day) {
+        this.days = day;
     }
 }
