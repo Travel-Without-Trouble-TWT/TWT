@@ -77,15 +77,15 @@ function ReviewModal({
 
             {img.map((image, id) => (
               <div key={id} className="w-1/5 p-1">
-                <div>
-                  <TiDelete
-                    className="absolute top-0 right-0 cursor-pointer z-10"
-                    onClick={() => handleDeleteImg(id)}
-                  />
+                <div className="relative">
                   <img
-                    className="relative w-full h-24 object-cover"
+                    className="w-full h-24 object-cover"
                     src={image}
                     alt={`${image}-${id}`}
+                  />
+                  <TiDelete
+                    className="text-gray w-5 h-5 absolute top-[-5px] right-[-5px] cursor-pointer z-10"
+                    onClick={() => handleDeleteImg(id)}
                   />
                 </div>
               </div>
@@ -98,7 +98,7 @@ function ReviewModal({
           )}
           <div className="relative">
             <textarea
-              className="peer relative w-full rounded border border-lightgray px-4 py-2 text-sm placeholder-transparent outline-none transition-all autofill:bg-white invalid:border-red/90 invalid:text-red/90 focus:outline-none invalid:focus:border-red/90"
+              className="peer relative w-full rounded border border-lightgray px-4 py-2 text-sm outline-none transition-all autofill:bg-white invalid:border-red/90 invalid:text-red/90 focus:outline-none invalid:focus:border-red/90"
               rows={3}
               placeholder="리뷰를 작성해주세요."
               value={reviewText}
