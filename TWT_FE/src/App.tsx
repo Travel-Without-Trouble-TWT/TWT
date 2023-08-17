@@ -12,6 +12,7 @@ function App() {
           <Route path="/location" element={<Selected />} />
           <Route path="/" element={<Main />} />
           <Route path="/location" element={<Selected />} />
+          <Route path="/search/location" element={<Selected />} />
         </Routes>
       </BrowserRouter>
     </div>
