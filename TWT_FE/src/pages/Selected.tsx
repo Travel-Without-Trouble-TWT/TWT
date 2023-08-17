@@ -7,6 +7,10 @@ import DatePicker from 'react-datepicker';
 import ko from 'date-fns/locale/ko';
 import 'react-datepicker/dist/react-datepicker.css';
 
+import { MdOutlineFoodBank, MdOutlineAttractions } from 'react-icons/md';
+import { AiOutlineHome } from 'react-icons/ai';
+import { useQuery } from 'react-query';
+
 function Selected() {
   // 초기 리스트
   const [items, setItems] = useState();
@@ -18,6 +22,26 @@ function Selected() {
   ]);
   const [startDate, endDate] = dateRange;
 
+  // const fetchAttractions = () => {
+  //   axios.get('/search/location?placeLocation=')
+  // }
+  // const {isLoading, isError, data, error} = useQuery('attractions', fetchAttractions, {
+  //   refetchOnWindowFocus : false,
+  //   retry : 0,
+  //   onSuccess : data => {
+  //     console.log(data);
+  //   },
+  //   onError: event =>{
+  //     console.log(event.message)
+  //   }
+  // });
+  // if(isLoading) {
+  //   return <Loader />
+  // }
+  // if(isError){
+  //   return <h1>Error : {error.message}</h1>
+  // }
+
   return (
     <>
       <section className="bg-white dark:bg-gray-900">
@@ -26,21 +50,24 @@ function Selected() {
             00여행
           </h1>
           <div className="py-3 flex justify-between border-b border-lightgray mb-4">
-            <div>
-              <button className="text-sm border-2 px-2 py-1 border-lightgray rounded-md mr-2 hover:bg-lightgray">
+            <div className="flex">
+              <button className="flex text-sm border-2 px-2 py-1 border-lightgray rounded-md mr-2 hover:bg-lightgray transition-colors duration-300 items-center">
+                <MdOutlineAttractions />
                 명소
               </button>
-              <button className="text-sm border-2 px-2 py-1 border-lightgray rounded-md mr-2 hover:bg-lightgray">
+              <button className="flex text-sm border-2 px-2 py-1 border-lightgray rounded-md mr-2 hover:bg-lightgray transition-colors duration-300 items-center">
+                <MdOutlineFoodBank />
                 맛집
               </button>
-              <button className="text-sm border-2 px-2 py-1 border-lightgray rounded-md hover:bg-lightgray">
+              <button className="flex text-sm border-2 px-2 py-1 border-lightgray rounded-md hover:bg-lightgray transition-colors duration-300 items-center">
+                <AiOutlineHome />
                 숙소
               </button>
             </div>
 
             <div>
               <DatePicker
-                className="border-2 border-lightgray rounded-md px-2 py-1 text-sm"
+                className="border-2 border-lightgray rounded-md px-2 py-1 text-sm cursor-pointer"
                 selectsRange={true}
                 startDate={startDate}
                 endDate={endDate}
