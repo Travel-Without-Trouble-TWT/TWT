@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -29,15 +28,30 @@ public class Schedule {
     private Member member;
     @Column(nullable = false)
     private String travelPlace;
-    private LocalDateTime startAt;
-    private LocalDateTime endAt;
+    @Column(nullable = true)
+    private LocalDate startAt;
+    @Column(nullable = true)
+    private LocalDate endAt;
+    private int days;
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<DaySchedule> dayScheduleList;
     private String scheduleImageUrl;
 
-    public void updateDate(LocalDateTime start, LocalDateTime end) {
+    public void updateDate(LocalDate start, LocalDate end) {
         this.startAt = start;
         this.endAt = end;
+    }
+
+    public void uploadPhoto(String url) {
+        this.scheduleImageUrl = url;
+    }
+
+    public void changeDayScheduleList(List<DaySchedule> list) {
+        this.dayScheduleList = list;
+    }
+
+    public void insertDays(int day) {
+        this.days = day;
     }
 }

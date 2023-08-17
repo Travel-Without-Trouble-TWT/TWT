@@ -30,7 +30,7 @@ public class HeartService {
 
     @Transactional
     public String likeIt (HttpServletRequest request, HeartDto heartDto) {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
 
         Member member = memberRepository.findByEmail(email)

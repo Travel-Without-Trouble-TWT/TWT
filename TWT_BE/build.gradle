@@ -35,7 +35,7 @@ dependencies {
 
 	// 웹 크롤링 jsoup : 정적페이지 / selenium : 동적페이지 ( 개발자 도구 에서 Disable Js 했을 때 자료 뜨면 정적, 안뜨면 동적 )
 	implementation 'org.jsoup:jsoup:1.14.2'
-//	 implementation 'org.seleniumhq.selenium:selenium-java:4.6.0'
+	implementation 'org.seleniumhq.selenium:selenium-java:4.6.0'
 
 	// AWS S3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'

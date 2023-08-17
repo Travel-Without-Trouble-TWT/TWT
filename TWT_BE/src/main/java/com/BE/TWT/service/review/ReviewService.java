@@ -15,10 +15,12 @@ import com.BE.TWT.repository.review.ReviewRepository;
 import com.BE.TWT.service.function.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.BE.TWT.exception.message.MemberErrorMessage.USER_NOT_FOUND;
@@ -32,8 +34,9 @@ public class ReviewService {
     private final S3Service s3Service;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Transactional
     public Review postPlaceReview (HttpServletRequest request, List<MultipartFile> multipartFile, ReviewDto reviewDto) {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
 
         Member member = memberRepository.findByEmail(email)
@@ -46,13 +49,14 @@ public class ReviewService {
 
         Review review = Review.builder()
                 .place(place)
-                .createAt(LocalDate.now())
+                .createAt(LocalDateTime.now())
                 .memberId(member.getId())
                 .reviewImageList(reviewImages)
                 .star(reviewDto.getStar())
                 .reviewComment(reviewDto.getReviewComment())
                 .build();
 
+        place.addReview(review);
         place.updateAverageRating(place.getStar());
 
         return placeReviewRepository.save(review);

@@ -104,7 +104,7 @@ public class CustomOauth2Service {
 
     public Member saveMember(String email, String name) {
         Member member = Member.builder()
-                .nickname(name)
+                .nickName(name)
                 .email(email)
                 .password(passwordEncoder.encode(name))
                 .build();

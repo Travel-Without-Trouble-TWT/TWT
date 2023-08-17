@@ -1,6 +1,8 @@
 package com.BE.TWT.model.entity.member;
 
-import com.BE.TWT.model.entity.function.Heart;
+import com.BE.TWT.model.entity.function.Notification;
+import com.BE.TWT.model.entity.review.Review;
+import com.BE.TWT.model.entity.schedule.Schedule;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,15 +26,17 @@ public class Member {
     @Column(nullable = false)
     private String password;
     @Column(unique = true, nullable = false)
-    private String nickname;
+    private String nickName;
     private String profileUrl;
-//    @JsonIgnore
-//    private List<Schedule> scheduleList;
-//    @JsonIgnore
-//    private List<Review> reviewList;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Notification> notificationList;
 
     public void update(String nickname) {
-        this.nickname = nickname;
+        this.nickName = nickname;
     }
 
+    public void updateProfileUrl(String url) {
+        this.profileUrl = url;
+    }
 }

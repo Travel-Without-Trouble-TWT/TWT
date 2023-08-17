@@ -1,14 +1,16 @@
 package com.BE.TWT.controller.function;
 
+import com.BE.TWT.exception.error.MapException;
+import com.BE.TWT.model.dto.function.Point;
+import com.BE.TWT.model.dto.function.SearchOfPlaceTypeAndLocation;
+import com.BE.TWT.model.dto.function.SearchOfPlaceTypeAndName;
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.type.PlaceType;
 import com.BE.TWT.service.function.SearchPlaceService;
+import com.BE.TWT.service.point.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchController {
     private final SearchPlaceService searchPlaceService;
+    private final PointService pointService;
 
 
     @GetMapping("/location")
@@ -26,14 +29,17 @@ public class SearchController {
     }
 
     @GetMapping("/category")
-    public ResponseEntity<List<Place>> filterByPlaceTypeAndLocation(@RequestParam @Valid PlaceType placeType,
-                                                                    @RequestParam @Valid String placeLocation) {
-        return ResponseEntity.ok(searchPlaceService.filterByPlaceTypeAndPlaceLocation(placeType, placeLocation));
+    public ResponseEntity<List<Place>> filterByPlaceTypeAndLocation(@RequestBody @Valid SearchOfPlaceTypeAndLocation dto) {
+        return ResponseEntity.ok(searchPlaceService.filterByPlaceTypeAndPlaceLocation(dto));
     }
 
     @GetMapping("/keyword")
-    public ResponseEntity<List<Place>> filterByPlaceTypeAndPlaceName(@RequestParam @Valid PlaceType placeType,
-                                                                    @RequestParam @Valid String placeName) {
-        return ResponseEntity.ok(searchPlaceService.filterByPlaceTypeAndPlaceName(placeType, placeName));
+    public ResponseEntity<List<Place>> filterByPlaceTypeAndPlaceName(@RequestBody @Valid SearchOfPlaceTypeAndName dto) {
+        return ResponseEntity.ok(searchPlaceService.filterByPlaceTypeAndPlaceName(dto));
+    }
+
+    @GetMapping("/point")
+    public ResponseEntity<Point> findPoint(@RequestParam @Valid String place) throws MapException {
+        return ResponseEntity.ok(pointService.getMapString(place));
     }
 }
