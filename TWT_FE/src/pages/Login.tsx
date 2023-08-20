@@ -1,11 +1,14 @@
-import { useForm } from 'react-hook-form';
-
-import Header from '../components/Header';
+import { useNavigate } from 'react-router-dom';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 import logo from '../assets/img/logo.png';
-//import googleLoginIcon from '../assets/img/googleIcon.png';
+import googleLoginIcon from '../assets/img/googleIcon.png';
+import { useMutation } from '@tanstack/react-query';
+import { loginFn } from '../api/auth';
+import { useEffect } from 'react';
+import { useUser } from '../hooks/useUser';
 
-interface LoginProps {
+export interface LoginProps {
   email: string;
   password: string;
 }
@@ -18,9 +21,45 @@ function Login() {
     setError,
   } = useForm<LoginProps>({ mode: 'onBlur' });
 
+  const navigate = useNavigate();
+  const { data: user, isLoading: isUserLoading } = useUser();
+
+  const { mutate: loginUser, isLoading } = useMutation(
+    (userData: LoginProps) => loginFn(userData),
+    {
+      onSuccess: () => {
+        //alert
+        navigate('/');
+      },
+      onError: (error: any) => {
+        if (Array.isArray((error as any).response.data.error)) {
+          (error as any).response.data.error.forEach((element: any) => {
+            //alert
+          });
+        } else {
+          //alert
+        }
+      },
+    }
+  );
+
+  const {
+    reset,
+    formState: { isSubmitSuccessful },
+  } = useForm<LoginProps>({ mode: 'onBlur' });
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful]);
+
+  const onSubmit: SubmitHandler<LoginProps> = (values) => {
+    loginUser(values);
+  };
+
   return (
     <>
-      <Header />
       <div className="flex items-center justify-center h-screen">
         <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 w-4/5 absolute rounded-xl bg-skyblue shadow-lg">
           <div className="hidden tablet:flex tablet:flex-col tablet:justify-end border-white border-r">
@@ -36,7 +75,10 @@ function Login() {
             />
           </div>
           <div className="tablet:flex justify-center align-middle p-12">
-            <form className="flex justify-center align-middle flex-col space-y-3">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex justify-center align-middle flex-col space-y-3"
+            >
               <p className="self-center text-3xl font-bold text-left mb-9">
                 로그인
               </p>
@@ -82,15 +124,15 @@ function Login() {
                   {errors.password.message}
                 </small>
               )}
-              {isValid ? (
-                <button className="w-full h-[60px] font-bold rounded-lg border-solid bg-white">
-                  로그인
-                </button>
-              ) : (
-                <button className="w-full h-[60px] font-bold rounded-lg border-2 border-white border-solid">
-                  로그인
-                </button>
-              )}
+              <button
+                className={`w-full h-[60px] font-bold rounded-lg border-solid ${
+                  isValid ? 'bg-white' : 'border-2 border-white'
+                }`}
+                type="submit"
+                disabled={isLoading || isUserLoading}
+              >
+                {isLoading ? '로딩 중' : '로그인'}
+              </button>
 
               {/* <img
                 className="w-full h-[60px]"
