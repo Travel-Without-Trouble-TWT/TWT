@@ -1,6 +1,12 @@
 import axios from 'axios';
-import { BasicResponse, ILoginResponse, IUserResponse } from './type';
+import {
+  BasicResponse,
+  ILoginResponse,
+  IUserResponse,
+  VerifyResponse,
+} from './type';
 import { LoginProps } from '../pages/Login';
+import { JoinProps } from '../pages/Join';
 
 const BASE_URL = 'http://localhost:80000/member';
 
@@ -35,15 +41,25 @@ authApi.interceptors.response.use(
   }
 );
 
+export const joinFn = async (user: JoinProps) => {
+  const response = await authApi.post<BasicResponse>('/join', user);
+  return response.data;
+};
+
+export const nicknameFn = async (nickname: string) => {
+  const response = await authApi.get<BasicResponse>(
+    `/nick?/nickName=${nickname}`
+  );
+  return response.data;
+};
+
 export const loginFn = async (user: LoginProps) => {
   const response = await authApi.post<ILoginResponse>('/login', user);
   return response.data;
 };
 
-export const verifyFn = async (verificaitonCode: string) => {
-  const response = await authApi.get<BasicResponse>(
-    `/verify?code=${verificaitonCode}`
-  );
+export const verifyFn = async (email: string) => {
+  const response = await authApi.get<VerifyResponse>(`/verify?email=${email}`);
   return response.data;
 };
 
