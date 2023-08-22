@@ -25,7 +25,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secret.key}")
     private String secretKey;
     private static final String AUTHORITIES_KEY = "Authorization";
-    private static final String BEARER_TYPE = "Bearer";
+    private static final String BEARER_TYPE = "Bearer ";
     private final Long accessTokenValidTime = 1000L * 60 * 60 * 6;
     private final Long refreshTokenValidTime = 2 * 24 * 60 * 60 * 1000L;
     private final UserDetailsService userDetailsService;

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,7 +39,7 @@ public class CustomOauth2Service {
     private final PasswordEncoder passwordEncoder;
     private final String getMemberInfoUrl = "https://www.googleapis.com/userinfo/v2/me";
 
-    public String getGoogleToken(String code) {
+    public String getGoogleToken(String code, HttpServletResponse response) {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> params = new HashMap<>();
 
@@ -57,10 +58,10 @@ public class CustomOauth2Service {
 
         String accessToken = element.getAsJsonObject().get("access_token").getAsString();
 
-        return useTokenGetMember(accessToken);
+        return useTokenGetMember(accessToken, response);
     }
 
-    public String useTokenGetMember(String token) {
+    public String useTokenGetMember(String token, HttpServletResponse response) { // 왜 토큰 비 활성화...??
         try {
             URL url = new URL(getMemberInfoUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -91,7 +92,7 @@ public class CustomOauth2Service {
                     .password(name)
                     .build();
 
-            String accessToken = memberService.signIn(signInDto);
+            String accessToken = memberService.signIn(signInDto, response);
 
             br.close();
 

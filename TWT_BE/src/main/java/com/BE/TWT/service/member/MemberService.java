@@ -1,12 +1,15 @@
 package com.BE.TWT.service.member;
 
+import com.BE.TWT.config.CookieProvider;
 import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
+import com.BE.TWT.model.dto.member.InfoResponseDto;
 import com.BE.TWT.model.dto.member.SignInDto;
 import com.BE.TWT.model.dto.member.SignUpDto;
 import com.BE.TWT.model.dto.member.UpdateDto;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.repository.member.MemberRepository;
+import com.BE.TWT.service.function.EmailVerification;
 import com.BE.TWT.service.function.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.BE.TWT.exception.message.MemberErrorMessage.*;
 
@@ -30,11 +38,13 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final S3Service s3Service;
+    private final CookieProvider cookieProvider;
 
     public Member signUp (SignUpDto signUpDto) {
         if (memberRepository.findByEmail(signUpDto.getEmail()).isPresent()) {
             throw new MemberException(ALREADY_REGISTERED);
         }
+
         if (memberRepository.findByEmail(signUpDto.getNickName()).isPresent()) {
             throw new MemberException(DUPLICATED_NICKNAME);
         }
@@ -47,7 +57,7 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public String signIn (SignInDto signInDto) {
+    public String signIn (SignInDto signInDto, HttpServletResponse response) {
         Member member = memberRepository.findByEmail(signInDto.getEmail())
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
@@ -58,7 +68,12 @@ public class MemberService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInDto.getEmail(), signInDto.getPassword()));
 
-        return jwtTokenProvider.generateAccessToken(authentication);
+        String accessToken = jwtTokenProvider.generateAccessToken(authentication);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
+        cookieProvider.setRefreshTokenCookie(refreshToken, response);
+        cookieProvider.setAccessTokenCookie(accessToken, response);
+
+        return accessToken;
     }
 
     public void updateNickName(HttpServletRequest request, String nickName) {
@@ -86,4 +101,56 @@ public class MemberService {
 
         member.updateProfileUrl(photoUrl);
     }
+
+    public InfoResponseDto searchMemberInfo (HttpServletRequest request) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
+
+        return InfoResponseDto.builder()
+                .email(member.getEmail())
+                .nickName(member.getNickName())
+                .profileUrl(member.getProfileUrl())
+                .build();
+    }
+
+    public void logOut(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+
+        String refreshToken = "";
+        if (cookies != null) {
+            for (int i = 0; i < cookies.length; i++) {
+                Cookie cookie = cookies[i];
+                if (cookie.getName().equals("refreshToken")) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (!jwtTokenProvider.validateRefreshToken(refreshToken)) {
+            throw new MemberException(INVALID_TOKEN);
+        }
+
+        cookieProvider.deleteAccessTokenCookie(response);
+        cookieProvider.deleteRefreshTokenCookie(response);
+    }
+
+    public String getAccessTokenByRefreshToken(String refreshToken) {
+        if(!jwtTokenProvider.validateRefreshToken(refreshToken)) {
+            throw new MemberException(INVALID_TOKEN);
+        }
+
+        String email = jwtTokenProvider.getPayloadSub(refreshToken);
+        Member member = memberRepository.findByEmail(email).get();
+        String password = member.getPassword();
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(member, password));
+
+        return jwtTokenProvider.generateAccessToken(authentication);
+    }
+
 }
