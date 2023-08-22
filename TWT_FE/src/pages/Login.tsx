@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import logo from '../assets/img/logo.png';
@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import { loginFn } from '../api/auth';
 import { useEffect } from 'react';
 import { useUser } from '../hooks/useUser';
+import googleUrl from '../utils/googleUrl';
 
 export interface LoginProps {
   email: string;
@@ -22,7 +23,9 @@ function Login() {
   } = useForm<LoginProps>({ mode: 'onBlur' });
 
   const navigate = useNavigate();
-  const { data: user, isLoading: isUserLoading } = useUser();
+  const location = useLocation();
+  // const { data: user, isLoading: isUserLoading } = useUser();
+  const from = ((location.state as any)?.from.pathname as string) || '/profile';
 
   const { mutate: loginUser, isLoading } = useMutation(
     (userData: LoginProps) => loginFn(userData),
@@ -61,8 +64,8 @@ function Login() {
   return (
     <>
       <div className="flex items-center justify-center h-screen">
-        <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 w-4/5 absolute rounded-xl bg-skyblue shadow-lg">
-          <div className="hidden tablet:flex tablet:flex-col tablet:justify-end border-white border-r">
+        <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 w-2/3 h-2/3 absolute rounded-xl bg-skyblue shadow-lg">
+          <div className="hidden tablet:flex tablet:flex-col tablet:justify-end">
             <div className="self-center mb-10">
               <p className="text-lg font-extrabold text-white">TWT</p>
               <p className="text-lg font-semibold text-white">TWT</p>
@@ -74,74 +77,104 @@ function Login() {
               alt="로고 이미지"
             />
           </div>
-          <div className="tablet:flex justify-center align-middle p-12">
+          <div className="tablet:flex justify-center align-middle p-12 bg-white tablet:rounded-r-xl">
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="flex justify-center align-middle flex-col space-y-3"
+              className="w-full flex justify-center align-middle py-10 flex-col space-y-2"
             >
               <p className="self-center text-3xl font-bold text-left mb-9">
                 로그인
               </p>
-              <label className="text-md font-medium" htmlFor="email">
-                이메일
-              </label>
-              <input
-                className="placeholder:text-sm text-lightgray appearance-none bg-skyblue py-2 px-2 leading-tight focus:outline-none"
-                type="text"
-                placeholder="이메일 입력"
-                {...register('email', {
-                  required: '이메일은 필수 입력입니다.',
-                  pattern: {
-                    value:
-                      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
-                    message: '이메일 형식에 맞지 않습니다.',
-                  },
-                })}
-              />
+
+              <div className="flex relative">
+                <input
+                  className={`peer w-full relative h-10 rounded border border-slate-200 px-4 placeholder-transparent text-gray text-sm bg-transparent py-2 leading-tight outline-none autofill:bg-white ${
+                    errors.email &&
+                    'border-rose-500 text-rose-500 focus:border-rose-500'
+                  }  focus:border-skyblue focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-gray`}
+                  type="text"
+                  placeholder="이메일 입력"
+                  {...register('email', {
+                    required: '✓ 이메일을 입력해주세요.',
+                    pattern: {
+                      value:
+                        /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
+                      message: '✓ 이메일 형식에 맞지 않습니다.',
+                    },
+                  })}
+                />
+                <label
+                  className={`absolute text-gray left-2 -top-2 z-[1] cursor-text text-xs px-2 transition-all before:absolute before:top-0 before:left-0 before:z-[-1] before:block before:h-full before:w-full before:bg-white before:transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-required:after:text-rose-500 peer-required:after:content-['*'] peer-invalid:text-rose-500 peer-focus:-top-2 peer-focus:cursor-default peer-focus:text-xs peer-focus:text-skyblue ${
+                    errors.email && 'peer-focus:text-rose-500'
+                  } peer-disabled:cursor-not-allowed peer-disabled:text-gray peer-disabled:before:bg-transparent`}
+                  htmlFor="email"
+                >
+                  이메일
+                </label>
+              </div>
               {errors.email && (
-                <small className="text-red italic" role="alert">
+                <small
+                  className="text-rose-500 text-xs px-1 mt-[-3px]"
+                  role="alert"
+                >
                   {errors.email.message}
                 </small>
               )}
-              <label className="text-md font-medium" htmlFor="password">
-                비밀번호
-              </label>
-              <input
-                className="placeholder:text-sm text-lightgray appearance-none bg-skyblue py-2 px-2 leading-tight focus:outline-none"
-                type="password"
-                placeholder="비밀번호 입력"
-                {...register('password', {
-                  required: '비밀번호는 필수 입력입니다.',
-                  pattern: {
-                    value:
-                      /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/,
-                    message: '영문, 숫자, 특수문자 조합 8자리 이상 입력',
-                  },
-                })}
-              />
+
+              <div className="flex relative">
+                <input
+                  className={`peer w-full relative h-10 rounded border border-slate-200 px-4 placeholder-transparent text-gray text-sm bg-transparent py-2 leading-tight outline-none autofill:bg-white ${
+                    errors.password &&
+                    'border-rose-500 text-rose-500 focus:border-rose-500'
+                  }  focus:border-skyblue focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-gray`}
+                  type="password"
+                  placeholder="비밀번호 입력"
+                  {...register('password', {
+                    required: '✓ 비밀번호를 입력해주세요.',
+                    pattern: {
+                      value:
+                        /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/,
+                      message: '✓ 영문, 숫자, 특수문자 조합 8자리 이상 입력',
+                    },
+                  })}
+                />
+                <label
+                  className={`absolute text-gray left-2 -top-2 z-[1] cursor-text text-xs px-2 transition-all before:absolute before:top-0 before:left-0 before:z-[-1] before:block before:h-full before:w-full before:bg-white before:transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-sm peer-required:after:text-rose-500 peer-required:after:content-['*'] peer-invalid:text-rose-500 peer-focus:-top-2 peer-focus:cursor-default peer-focus:text-xs peer-focus:text-skyblue ${
+                    errors.password && 'peer-focus:text-rose-500'
+                  } peer-disabled:cursor-not-allowed peer-disabled:text-gray peer-disabled:before:bg-transparent`}
+                  htmlFor="password"
+                >
+                  비밀번호
+                </label>
+              </div>
               {errors.password && (
-                <small className="text-red italic" role="alert">
+                <small
+                  className="text-rose-500 text-xs px-1 mt-[-3px]"
+                  role="alert"
+                >
                   {errors.password.message}
                 </small>
               )}
               <button
-                className={`w-full h-[60px] font-bold rounded-lg border-solid ${
-                  isValid ? 'bg-white' : 'border-2 border-white'
+                className={`w-full h-[60px] font-bold rounded-lg ${
+                  isValid ? 'bg-skyblue' : ' bg-lightgray'
                 }`}
                 type="submit"
-                disabled={isLoading || isUserLoading}
+                disabled={isLoading || !isValid}
               >
                 {isLoading ? '로딩 중' : '로그인'}
               </button>
-
-              {/* <img
-                className="w-full h-[60px]"
-                src={googleLoginIcon}
-                alt="구글 로그인"
-              /> */}
+              <hr className="w-full h-1"></hr>
+              <a href={googleUrl(from)}>
+                <img
+                  className="w-full h-[60px]"
+                  src={googleLoginIcon}
+                  alt="구글 로그인"
+                />
+              </a>
 
               <a className="flex self-center" href="/join">
-                <p className="text-white">회원가입하기</p>
+                <p className="text-xs text-gray">회원가입 하러가기</p>
               </a>
             </form>
           </div>
