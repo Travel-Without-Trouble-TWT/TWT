@@ -1,7 +1,7 @@
 export interface IUser {
-  nickname: string;
+  nickName: string;
   email: string;
-  profile: string;
+  profilUrl: string;
 }
 
 export interface ILoginResponse {
@@ -19,4 +19,8 @@ export interface IUserResponse {
 export interface BasicResponse {
   status: string;
   message: string;
+}
+
+export interface VerifyResponse extends BasicResponse {
+  verificationCode: string;
 }
