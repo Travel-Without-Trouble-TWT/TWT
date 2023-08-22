@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import { getUserFn } from '../api/auth';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { getUserFn, nicknameFn, verifyFn } from '../api/auth';
 import { useStateContext } from '../context';
 
 export function useUser() {
