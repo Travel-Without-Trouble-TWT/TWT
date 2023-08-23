@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import Input from '../components/Input';
-import logo from '../assets/img/logo.png';
+import logo from '../assets/logo.png';
 import { joinFn, nicknameFn, verifyFn } from '../api/auth';
 
 export interface JoinProps {
@@ -161,8 +160,7 @@ function Join() {
               <div className="flex justify-between relative">
                 <input
                   className={`peer w-2/3 relative h-10 rounded border border-slate-200 px-4 placeholder-transparent text-gray text-sm bg-transparent py-2 leading-tight outline-none autofill:bg-white ${
-                    errors.nickName &&
-                    'border-rose-500 text-rose-500 focus:border-rose-500'
+                    errors.nickName && 'border-rose-500 focus:border-rose-500'
                   }  focus:border-skyblue focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-gray`}
                   type="text"
                   placeholder="닉네임 입력"
@@ -214,8 +212,7 @@ function Join() {
               <div className="flex justify-between relative">
                 <input
                   className={`peer w-2/3 relative h-10 rounded border border-slate-200 px-4 placeholder-transparent text-gray text-sm bg-transparent py-2 leading-tight outline-none autofill:bg-white ${
-                    errors.email &&
-                    'border-rose-500 text-rose-500 focus:border-rose-500'
+                    errors.email && 'border-rose-500 focus:border-rose-500'
                   }  focus:border-skyblue focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-gray`}
                   type="text"
                   placeholder="이메일 입력"
@@ -296,8 +293,7 @@ function Join() {
               <div className="flex relative">
                 <input
                   className={`peer w-full relative h-10 rounded border border-slate-200 px-4 placeholder-transparent text-gray text-sm bg-transparent py-2 leading-tight outline-none autofill:bg-white ${
-                    errors.password &&
-                    'border-rose-500 text-rose-500 focus:border-rose-500'
+                    errors.password && 'border-rose-500 focus:border-rose-500'
                   }  focus:border-skyblue focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-gray`}
                   type="password"
                   placeholder="비밀번호 입력"
@@ -328,8 +324,7 @@ function Join() {
               <div className="flex relative">
                 <input
                   className={`peer w-full relative h-10 rounded border border-slate-200 px-4 placeholder-transparent text-gray text-sm bg-transparent py-2 leading-tight outline-none autofill:bg-white ${
-                    errors.confirmPw &&
-                    'border-rose-500 text-rose-500 focus:border-rose-500'
+                    errors.confirmPw && 'border-rose-500 focus:border-rose-500'
                   }  focus:border-skyblue focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-gray`}
                   type="password"
                   placeholder="비밀번호 확인"

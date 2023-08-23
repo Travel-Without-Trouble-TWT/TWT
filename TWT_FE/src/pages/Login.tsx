@@ -1,8 +1,8 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import logo from '../assets/img/logo.png';
-import googleLoginIcon from '../assets/img/googleIcon.png';
+import logo from '../assets/logo.png';
+import GoogleLogo from '../assets/google.png';
 import { useMutation } from '@tanstack/react-query';
 import { loginFn } from '../api/auth';
 import { useEffect } from 'react';
@@ -25,7 +25,7 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   // const { data: user, isLoading: isUserLoading } = useUser();
-  const from = ((location.state as any)?.from.pathname as string) || '/profile';
+  const from = ((location.state as any)?.from.pathname as string) || '/';
 
   const { mutate: loginUser, isLoading } = useMutation(
     (userData: LoginProps) => loginFn(userData),
@@ -63,7 +63,7 @@ function Login() {
 
   return (
     <>
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 w-2/3 h-2/3 absolute rounded-xl bg-skyblue shadow-lg">
           <div className="hidden tablet:flex tablet:flex-col tablet:justify-end">
             <div className="self-center mb-10">
@@ -85,12 +85,10 @@ function Login() {
               <p className="self-center text-3xl font-bold text-left mb-9">
                 로그인
               </p>
-
               <div className="flex relative">
                 <input
                   className={`peer w-full relative h-10 rounded border border-slate-200 px-4 placeholder-transparent text-gray text-sm bg-transparent py-2 leading-tight outline-none autofill:bg-white ${
-                    errors.email &&
-                    'border-rose-500 text-rose-500 focus:border-rose-500'
+                    errors.email && 'border-rose-500 focus:border-rose-500'
                   }  focus:border-skyblue focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-gray`}
                   type="text"
                   placeholder="이메일 입력"
@@ -120,12 +118,10 @@ function Login() {
                   {errors.email.message}
                 </small>
               )}
-
               <div className="flex relative">
                 <input
                   className={`peer w-full relative h-10 rounded border border-slate-200 px-4 placeholder-transparent text-gray text-sm bg-transparent py-2 leading-tight outline-none autofill:bg-white ${
-                    errors.password &&
-                    'border-rose-500 text-rose-500 focus:border-rose-500'
+                    errors.password && 'border-rose-500 focus:border-rose-500'
                   }  focus:border-skyblue focus:outline-none focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-gray`}
                   type="password"
                   placeholder="비밀번호 입력"
@@ -165,14 +161,21 @@ function Login() {
                 {isLoading ? '로딩 중' : '로그인'}
               </button>
               <hr className="w-full h-1"></hr>
-              <a href={googleUrl(from)}>
-                <img
-                  className="w-full h-[60px]"
-                  src={googleLoginIcon}
-                  alt="구글 로그인"
-                />
+              <a
+                className="relative px-3 py-3 text-white font-medium text-sm leading-snug rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center mb-3"
+                style={{ backgroundColor: '#90DCE1' }}
+                href={googleUrl(from)}
+                role="button"
+              >
+                <div className="bg-white p-3 absolute rounded-l left-0 top-0 h-full">
+                  <img
+                    src={GoogleLogo}
+                    alt="구글 로그인"
+                    style={{ height: '18px', width: '18px' }}
+                  />
+                </div>
+                <span className="">Sign in with Google</span>
               </a>
-
               <a className="flex self-center" href="/join">
                 <p className="text-xs text-gray">회원가입 하러가기</p>
               </a>
