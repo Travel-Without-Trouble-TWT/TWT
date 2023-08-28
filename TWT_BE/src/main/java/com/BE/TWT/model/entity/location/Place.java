@@ -2,6 +2,7 @@ package com.BE.TWT.model.entity.location;
 
 import com.BE.TWT.model.entity.review.Review;
 import com.BE.TWT.model.type.PlaceType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +39,7 @@ public class Place {
     private String placeCallNumber;
     @Enumerated(EnumType.STRING)
     private PlaceType placeType;
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
     private List<Review> reviewList;
@@ -50,9 +52,14 @@ public class Place {
         placeHeart--;
     }
 
+
     public void updateAverageRating(double newStar) {
         this.totalStar += newStar;
         int size = reviewList.size();
         star = totalStar / size;
+    }
+
+    public void addReview(Review review) {
+        this.reviewList.add(review);
     }
 }
