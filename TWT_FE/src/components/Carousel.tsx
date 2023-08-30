@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+
+import Glide from '@glidejs/glide';
 
 function Carousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
   const images = [
     {
       theme: '평화역사 이야기여행',
@@ -47,28 +47,41 @@ function Carousel() {
   ];
 
   useEffect(() => {
-    //resetTimeout();
-    const timer = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 9000);
+    const slider = new Glide('.glide-02', {
+      type: 'carousel',
+      focusAt: 'center',
+      perView: 1,
+      autoplay: 3000,
+      animationDuration: 1000,
+      gap: 24,
+    }).mount();
 
     return () => {
-      clearInterval(timer);
+      slider.destroy();
     };
   }, []);
 
   return (
-    <div
-      id="default-carousel"
-      className="relative w-full items-center mt-2"
-      data-carousel="slide"
-    >
-      <img
-        className="w-full h-[350px] rounded-xl"
-        src={images[currentIndex]['img']}
-        alt="Carousel"
-      />
-    </div>
+    <>
+      <div className="glide-02 relative w-full">
+        <div className="overflow-hidden" data-glide-el="track">
+          <ul className="whitespace-no-wrap flex-no-wrap [backface-visibility: hidden] [transform-style: preserve-3d] touch-pan-y will-change-transform relative flex w-full overflow-hidden p-0">
+            {images.map((img, idx) => (
+              <li key={idx} className="relative h-[430px] w-full lg:h-[600px]">
+                <img
+                  src={img.img}
+                  alt={img.theme}
+                  className="m-auto h-full w-full object-cover rounded-xl"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 text-white text-center rounded-xl opacity-0 hover:opacity-100 hover:cursor-pointer transition-opacity">
+                  <p className="text-2xl font-bold">{img.theme}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </>
   );
 }
 
