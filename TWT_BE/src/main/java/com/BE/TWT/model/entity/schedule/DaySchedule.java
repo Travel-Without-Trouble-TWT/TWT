@@ -23,7 +23,9 @@ public class DaySchedule { // 당일 일정
     @Column(nullable = false)
     private Long scheduleId;
     @ElementCollection
+    @CollectionTable(name = "course_list")
     private List<Course> courseList;
+    private int dateNumber;
     private LocalDate day;
 
     @PrePersist // DB 저장하기 전 실행

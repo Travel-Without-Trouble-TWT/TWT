@@ -17,10 +17,11 @@ import javax.persistence.*;
 public class Heart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "heart_id")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", referencedColumnName = "id")
-    private Member member; // Token 에서 userId 값 빼내서 채우기
+    private Member member;
     @Enumerated(EnumType.STRING)
     private PlaceType placeType;
     @Column(nullable = false)
