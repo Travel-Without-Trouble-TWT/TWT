@@ -72,12 +72,11 @@ const locationData = [
 function Searchbar() {
   const [isClick, setIsClick] = useState(false);
   return (
-    <div className="max-w-md mx-auto">
-      <div className="relative flex items-center w-full h-12 rounded-2xl shadow-lg focus:shadow-none bg-lightgray overflow-hidden">
+    <div className="max-w-md mx-auto relative">
+      <div className="flex items-center w-full h-12 rounded-2xl shadow-lg focus:shadow-none bg-lightgray overflow-hidden">
         <div className="grid place-items-center h-full w-12 text-gray-300">
           <AiOutlineSearch />
         </div>
-
         <input
           className="peer h-full w-full outline-none bg-lightgray text-sm text-gray-700 pr-2 "
           type="text"
@@ -85,10 +84,14 @@ function Searchbar() {
           placeholder="어디로 가시나요?"
           onClick={() => setIsClick(true)}
           onBlur={() => setIsClick(false)}
+          readOnly
         />
       </div>
       {isClick && (
-        <div className="bg-white w-full rounded-xl shadow-xl overflow-hidden p-1">
+        <div
+          className="bg-white w-full rounded-xl shadow-xl overflow-hidden p-1 absolute top-12 z-10"
+          onClick={(e) => e.stopPropagation()}
+        >
           {locationData.map((item, index) => (
             <div
               key={index}
@@ -100,7 +103,9 @@ function Searchbar() {
                 </div>
               </div>
               <div>
-                <div className="font-semibold text-lg">{item.sur}</div>
+                <a href={`/search/location?placeLocation=${item.sur}`}>
+                  <div className="font-semibold text-lg">{item.sur}</div>
+                </a>
                 <div className="text-xs text-gray">
                   <span className="mr-2">{item.sub}</span>
                 </div>
