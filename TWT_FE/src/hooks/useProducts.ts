@@ -1,6 +1,6 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
-import { getReviewsFn } from '../api';
+import { getReviewsFn, getTop10Fn } from '../api';
 
 const useReviews = () => {
   const {
@@ -26,4 +26,20 @@ const useReviews = () => {
   );
 };
 
-export default useReviews;
+const useTop10 = () => {
+  const {
+    data: top10,
+    isLoading: top10Loading,
+    isError,
+  } = useQuery(['top10'], getTop10Fn, {
+    enabled: false,
+    retry: 1,
+    onSuccess: (data) => {
+      // id,placeName,placeType,placeLocation,star,placeHeart,placeImageUrl,
+    },
+    onError: (error) => {
+      //alert
+    },
+  });
+};
+export default { useReviews, useTop10 };
