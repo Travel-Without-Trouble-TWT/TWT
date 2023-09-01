@@ -23,3 +23,10 @@ export const getPlaceFn = async (
   );
   return response.data;
 };
+
+export const getUserDataFn = async (category: string, page: number) => {
+  const response = await axios.get(
+    `/search/member/${category}?pageNum=${page + 1}`
+  );
+  return response.data;
+};
