@@ -43,12 +43,22 @@ module.exports = smp.wrap(
     },
     plugins: [
       new webpack.DefinePlugin({
+        'process.env': JSON.stringify(process.env), //ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ😂
         BASE_URL: JSON.stringify(process.env.DEV_BASE_URL),
         CLIENT_ID: JSON.stringify(process.env.CLIENT_ID),
         PUBLIC_KEY: JSON.stringify(process.env.PUBLIC_KEY),
         IS_LOCAL: JSON.stringify(isLocal),
         REACT_APP_KAKAO_MAP_KEY: JSON.stringify(
           process.env.REACT_APP_KAKAO_MAP_KEY
+        ),
+        REACT_APP_GOOGLE_CLIENT_ID: JSON.stringify(
+          process.env.REACT_APP_GOOGLE_CLIENT_ID
+        ),
+        REACT_APP_GOOGLE_OAUTH_CLIENT_SECRET: JSON.stringify(
+          process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_SECRET
+        ),
+        REACT_APP_GOOGLE_OAUTH_REDIRECT: JSON.stringify(
+          process.env.REACT_APP_GOOGLE_OAUTH_REDIRECT
         ),
       }),
     ],
