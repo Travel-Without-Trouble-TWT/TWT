@@ -7,12 +7,14 @@ import Login from './pages/Login';
 import Join from './pages/Join';
 import Selected from './pages/Selected';
 import Mypage from './pages/Mypage';
+import Schedule from './pages/Schedule';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
+          <Route path="/schedule" element={<Schedule />} />
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
