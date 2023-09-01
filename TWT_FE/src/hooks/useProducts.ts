@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
-import { getReviewsFn, getTop10Fn, getPlaceFn } from '../api';
+import { getReviewsFn, getTop10Fn, getPlaceFn, getUserDataFn } from '../api';
 
 export const useReviews = () => {
   const {
@@ -69,4 +69,36 @@ export const useTop10 = () => {
     },
   });
   return { top10, top10Loading, top10Error };
+};
+
+export const useUserDatas = (category: string) => {
+  const {
+    data: userDatas,
+    fetchNextPage,
+    hasNextPage,
+    isLoading: userDataLoading,
+    isError: userDataError,
+  } = useInfiniteQuery(
+    ['userDatas'],
+    ({ pageParam = 0 }) => getUserDataFn(category, pageParam),
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage.number + 1;
+      },
+      select: (data) => {
+        const pages = data.pages.flatMap((page) => page.content);
+        return {
+          places: pages,
+          hasNextPage: !data.last,
+        };
+      },
+    }
+  );
+  return {
+    userDatas,
+    fetchNextPage,
+    hasNextPage,
+    userDataLoading,
+    userDataError,
+  };
 };
