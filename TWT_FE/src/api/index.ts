@@ -8,7 +8,18 @@ export const getTop10Fn = async () => {
 
 export const getReviewsFn = async (page: number) => {
   const response = await axios.get<ReviewProps>(
-    `/search/recent/page=${page + 1}`
+    `/search/recent/pageNum=${page + 1}`
+  );
+  return response.data;
+};
+
+export const getPlaceFn = async (
+  placeLocation: string,
+  placeType: string,
+  page: number
+) => {
+  const response = await axios.get<Top10Props>(
+    `/search/location?placeLocation=${placeLocation}&placeType=${placeType}&pageNum=${page}`
   );
   return response.data;
 };
