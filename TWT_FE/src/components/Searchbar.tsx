@@ -71,6 +71,7 @@ const locationData = [
 
 function Searchbar() {
   const [isClick, setIsClick] = useState(false);
+
   return (
     <div className="max-w-md mx-auto relative">
       <div className="flex items-center w-full h-12 rounded-2xl shadow-lg focus:shadow-none bg-lightgray overflow-hidden">
@@ -82,15 +83,14 @@ function Searchbar() {
           type="text"
           id="search"
           placeholder="어디로 가시나요?"
-          onClick={() => setIsClick(true)}
-          onBlur={() => setIsClick(false)}
+          onClick={() => setIsClick(!isClick)}
           readOnly
         />
       </div>
       {isClick && (
         <div
           className="bg-white w-full rounded-xl shadow-xl overflow-hidden p-1 absolute top-12 z-10"
-          onClick={(e) => e.stopPropagation()}
+          onBlur={() => setIsClick(false)}
         >
           {locationData.map((item, index) => (
             <div
@@ -103,9 +103,12 @@ function Searchbar() {
                 </div>
               </div>
               <div>
-                <a href={`/search/location?placeLocation=${item.sur}`}>
-                  <div className="font-semibold text-lg">{item.sur}</div>
-                </a>
+                <div className="font-semibold text-lg">
+                  <a href={`/search/location?placeLocation=${item.sur}`}>
+                    {item.sur}
+                  </a>
+                </div>
+
                 <div className="text-xs text-gray">
                   <span className="mr-2">{item.sub}</span>
                 </div>
