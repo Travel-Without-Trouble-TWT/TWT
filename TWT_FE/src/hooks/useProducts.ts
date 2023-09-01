@@ -1,8 +1,8 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
-import { getReviewsFn, getTop10Fn } from '../api';
+import { getReviewsFn, getTop10Fn, getPlaceFn } from '../api';
 
-const useReviews = () => {
+export const useReviews = () => {
   const {
     data: reviews,
     fetchNextPage,
@@ -24,13 +24,40 @@ const useReviews = () => {
       }),
     }
   );
+  return { reviews, fetchNextPage, hasNextPage, reviewLoading, reviewError };
 };
 
-const useTop10 = () => {
+export const usePlaces = (placeType: string, placeLocation: string) => {
+  const {
+    data: places,
+    fetchNextPage,
+    hasNextPage,
+    isLoading: placeLoading,
+    isError: placeError,
+  } = useInfiniteQuery(
+    ['places'],
+    ({ pageParam = 0 }) => getPlaceFn(placeType, placeLocation, pageParam),
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage.number + 1;
+      },
+      select: (data) => {
+        const pages = data.pages.flatMap((page) => page.content);
+        return {
+          places: pages,
+          hasNextPage: !data.last,
+        };
+      },
+    }
+  );
+  return { places, fetchNextPage, hasNextPage, placeLoading, placeError };
+};
+
+export const useTop10 = () => {
   const {
     data: top10,
     isLoading: top10Loading,
-    isError,
+    isError: top10Error,
   } = useQuery(['top10'], getTop10Fn, {
     enabled: false,
     retry: 1,
@@ -41,5 +68,5 @@ const useTop10 = () => {
       //alert
     },
   });
+  return { top10, top10Loading, top10Error };
 };
-export default { useReviews, useTop10 };
