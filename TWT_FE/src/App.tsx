@@ -1,5 +1,3 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Detail from './pages/Detail';
 import { BrowserRouter, Routes, Route, useRoutes } from 'react-router-dom';
 import routes from './router/index';
 
@@ -10,6 +8,7 @@ import Join from './pages/Join';
 import Selected from './pages/Selected';
 import Mypage from './pages/Mypage';
 import Schedule from './pages/Schedule';
+import Detail from './pages/Detail';
 
 function App() {
   return (
