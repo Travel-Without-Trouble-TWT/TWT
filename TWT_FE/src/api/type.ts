@@ -8,6 +8,7 @@ export interface Top10Props {
   star: string; //number
   placeHeart: 0 | 1; //number
   placeImageUrl: string;
+  reviewNum: number;
 }
 
 export interface ScheduleProps {
