@@ -4,7 +4,6 @@ import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.exception.error.PlaceException;
 import com.BE.TWT.exception.message.MemberErrorMessage;
-import com.BE.TWT.model.dto.function.HeartDto;
 import com.BE.TWT.model.entity.function.Heart;
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.member.Member;
@@ -13,6 +12,10 @@ import com.BE.TWT.repository.function.HeartRepository;
 import com.BE.TWT.repository.location.PlaceRepository;
 import com.BE.TWT.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,23 +35,23 @@ public class HeartService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public String likeIt (HttpServletRequest request, HeartDto heartDto) {
+    public String likeIt (HttpServletRequest request, Long placeId) {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(MemberErrorMessage.USER_NOT_FOUND));
 
-        Place place = placeRepository.findByPlaceName(heartDto.getPlaceName())
+        Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
-        PlaceType placeType = heartDto.getPlaceType();
+        PlaceType placeType = place.getPlaceType();
 
         if (heartRepository.findByMemberAndPlaceTypeAndPlaceId
-                (member, placeType, heartDto.getPlaceName()).isPresent()) {
+                (member, placeType, place.getPlaceName()).isPresent()) {
 
             Heart heart = heartRepository.findByMemberAndPlaceTypeAndPlaceId
-                            (member, placeType, heartDto.getPlaceName())
+                            (member, placeType, place.getPlaceName())
                     .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
             heartRepository.deleteById(heart.getId());
@@ -57,8 +60,8 @@ public class HeartService {
             return "좋아요 취소";
         } else {
             Heart heart = Heart.builder()
-                    .placeName(heartDto.getPlaceName())
-                    .placeType(heartDto.getPlaceType())
+                    .placeName(place.getPlaceName())
+                    .placeType(place.getPlaceType())
                     .member(member)
                     .build();
             heartRepository.save(heart);
@@ -67,7 +70,7 @@ public class HeartService {
         }
     }
 
-    public List<Place> searchAllHeartByMember(HttpServletRequest request) {
+    public Page<Place> searchAllHeartByMember(HttpServletRequest request, int pageNum) {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
 
@@ -83,6 +86,17 @@ public class HeartService {
             placeList.add(place);
         }
 
-        return placeList;
+        Pageable pageable = PageRequest.of(pageNum, 10);
+
+        return listToPage(placeList, pageable);
+    }
+
+    public Page<Place> listToPage(List<Place> list, Pageable pageable) {
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), list.size());
+
+        List<Place> subList = list.subList(start, end);
+
+        return new PageImpl<>(subList, pageable, list.size());
     }
 }

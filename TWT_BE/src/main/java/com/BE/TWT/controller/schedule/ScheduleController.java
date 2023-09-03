@@ -1,8 +1,10 @@
 package com.BE.TWT.controller.schedule;
 
+import com.BE.TWT.model.dto.schedule.CreateScheduleDto;
 import com.BE.TWT.model.dto.schedule.EditScheduleNameDto;
 import com.BE.TWT.model.dto.schedule.SetDateDto;
 import com.BE.TWT.model.entity.schedule.Schedule;
+import com.BE.TWT.service.function.SearchService;
 import com.BE.TWT.service.schedule.ScheduleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @Api(tags = "일정 API")
 @RestController
@@ -21,20 +24,14 @@ import javax.validation.Valid;
 @RequestMapping("/schedule")
 public class ScheduleController {
     private final ScheduleService scheduleService;
+    private final SearchService searchService;
 
     @ApiOperation(value = "스케줄 추가")
     @Operation(description = "최초 스케줄 추가 API")
     @PostMapping("/create")
     public ResponseEntity<Schedule> createSchedule(HttpServletRequest request,
-                                                   @RequestParam @Valid String travelPlace) {
-        return ResponseEntity.ok(scheduleService.createSchedule(request, travelPlace));
-    }
-
-    @ApiOperation(value = "스케줄 날짜 설정")
-    @Operation(description = "스케줄 날짜 최초 설정 API, 최초엔 추가한 날 당일로 지정된 상태")
-    @PutMapping("/date")
-    public ResponseEntity<Schedule> setScheduleDate(HttpServletRequest request, @RequestBody @Valid SetDateDto setDateDto) {
-        return ResponseEntity.ok(scheduleService.setDate(request, setDateDto));
+                                                   @RequestBody @Valid CreateScheduleDto dto) {
+        return ResponseEntity.ok(scheduleService.addNewSchedule(request, dto));
     }
 
     @ApiOperation(value = "스케줄 날짜 변경")
@@ -65,5 +62,14 @@ public class ScheduleController {
     @PutMapping("/edit")
     public void editScheduleName(HttpServletRequest request, @RequestBody @Valid EditScheduleNameDto dto) {
         scheduleService.editScheduleName(request, dto);
+    }
+
+    @ApiOperation(value = "같은 여행지 스케줄 조회")
+    @Operation(description = "선택 여행지에서 일정 추가할 때 기존 일정 1, 2, 3, ... 리스트")
+    @GetMapping("/choose")
+    public ResponseEntity<List<Schedule>> chooseSchedule(HttpServletRequest request,
+                                                         @RequestParam @Valid String placeLocation) {
+        return ResponseEntity.ok(searchService.
+                findSamePlaceLocationSchedule(request, placeLocation));
     }
 }

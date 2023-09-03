@@ -36,7 +36,6 @@ public class S3Service {
 
         List<ReviewImage> s3files = new ArrayList<>();
 
-
         for (MultipartFile multipartFile : multipartFiles) {
 
             String originalFileName = multipartFile.getOriginalFilename();

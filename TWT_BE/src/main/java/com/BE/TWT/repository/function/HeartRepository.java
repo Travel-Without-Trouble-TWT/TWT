@@ -22,6 +22,12 @@ public interface HeartRepository extends JpaRepository<Heart, Long> {
             @Param("placeName") String placeName
     );
 
+    @Query("SELECT h FROM Heart h WHERE h.member = :member AND h.placeName = :placeName")
+    Optional<Heart> findByMemberAndPlaceId(
+            @Param("member") Member member,
+            @Param("placeName") String placeName
+    );
+
     @Modifying
     @Query("DELETE FROM Heart h WHERE h.id = :heartId")
     void deleteById(@Param("heartId") Long heartId);

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
@@ -16,5 +17,14 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByStartAt(LocalDate startAt);
     List<Schedule> findALlByEndAt(LocalDate endAt);
 
-    List<Schedule> findAllByMember(Member member);
+    Page<Schedule> findAllByMemberOrderByIdDesc(Member member, Pageable pageable);
+
+    Optional<Schedule> findByMemberAndScheduleNameAndTravelPlaceAndStartAtAndEndAt(
+                                                Member member,
+                                                String scheduleName,
+                                                String travelPlace,
+                                                LocalDate startAt,
+                                                LocalDate endAt);
+
+    List<Schedule> findAllByMemberAndTravelPlaceAndEndAtBefore(Member member, String travelPlace, LocalDate date);
 }

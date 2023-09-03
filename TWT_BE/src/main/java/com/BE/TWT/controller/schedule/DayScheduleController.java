@@ -21,13 +21,6 @@ import javax.validation.Valid;
 public class DayScheduleController {
     private final DayScheduleService dayScheduleService;
 
-    @ApiOperation(value = "코스 추가")
-    @Operation(description = "당일 일정에 코스 추가 API")
-    @PostMapping("/add")
-    public ResponseEntity<DaySchedule> addDayCourse(@RequestBody @Valid AddCourse addCourse) {
-        return ResponseEntity.ok(dayScheduleService.addCourse(addCourse));
-    }
-
     @ApiOperation(value = "코스 삭제")
     @Operation(description = "당일 일정에 코스 삭제 API")
     @DeleteMapping("/del")
@@ -44,8 +37,8 @@ public class DayScheduleController {
 
     @ApiOperation(value = "daySchedule 조회")
     @Operation(description = "당일 일정 조회 API")
-    @PutMapping("/info")
-    public void updateCourseTime(@RequestParam @Valid Long dayScheduleId) {
-        dayScheduleService.readDaySchedule(dayScheduleId);
+    @GetMapping("/info")
+    public ResponseEntity<DaySchedule> readDaySchedule(@RequestParam @Valid Long dayScheduleId) {
+        return ResponseEntity.ok(dayScheduleService.viewDaySchedule(dayScheduleId));
     }
 }

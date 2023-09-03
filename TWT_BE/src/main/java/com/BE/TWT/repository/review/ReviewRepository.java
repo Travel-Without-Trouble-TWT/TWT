@@ -2,6 +2,8 @@ package com.BE.TWT.repository.review;
 
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.review.Review;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +14,7 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findById(Long id);
 
-    List<Review> findAllByMemberId(Long memberId);
+    Page<Review> findAllByMemberId(Long memberId, Pageable pageable);
 
-    List<Review> findAllByPlace(Place place);
+    Page<Review> findAllByPlace(Place place, Pageable pageable);
 }

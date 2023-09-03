@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,17 +40,11 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.viewReview(reviewId));
     }
 
-    @ApiOperation(value = "유저 리뷰 불러오기")
-    @Operation(description = "유저가 작성한 리뷰 전체 불러오기")
-    @GetMapping("/member")
-    public ResponseEntity<List<Review>> readAllReviewByMember(HttpServletRequest request) {
-        return ResponseEntity.ok(reviewService.viewAllReviewByMember(request));
-    }
-
     @ApiOperation(value = "장소 리뷰 전체 불러오기")
     @Operation(description = "특정 장소 리뷰 전체 불러오기")
     @GetMapping("/place")
-    public ResponseEntity<List<Review>> readAllReviewByPlace(@RequestParam @Valid Long placeId) {
-        return ResponseEntity.ok(reviewService.viewAllReviewByPlace(placeId));
+    public ResponseEntity<Page<Review>> readAllReviewByPlace(@RequestParam @Valid Long placeId,
+                                                             @RequestParam @Valid int pageNum) {
+        return ResponseEntity.ok(reviewService.viewAllReviewByPlace(placeId, pageNum));
     }
 }

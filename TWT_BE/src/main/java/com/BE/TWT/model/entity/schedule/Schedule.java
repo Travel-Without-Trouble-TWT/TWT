@@ -31,7 +31,7 @@ public class Schedule {
     private LocalDate endAt;
     private int days;
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "schedule")
     private List<DaySchedule> dayScheduleList;
     private String scheduleImageUrl;
 
