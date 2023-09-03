@@ -5,7 +5,6 @@ import Stars from '../components/Stars';
 import ScheduleModal from '../components/ScheduleModal';
 import ReviewModal from '../components/ReviewModal';
 import Pagination from '../components/Pagination';
-import ZoomModal from '../components/ZoomModal';
 
 function Detail() {
   const [showModal, setShowModal] = useState<string | ''>('');
