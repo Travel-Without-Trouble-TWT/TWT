@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef } from 'react';
 import { TiDelete } from 'react-icons/ti';
 import { AiOutlineClose } from 'react-icons/ai';
 import Score from './Score';
