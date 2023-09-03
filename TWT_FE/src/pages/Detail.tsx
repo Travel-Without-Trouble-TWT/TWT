@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
-import ReviewCarousel from '../components/ReviewCarousel';
+import ReviewList from '../components/ReviewList';
 import Stars from '../components/Stars';
 import ScheduleModal from '../components/ScheduleModal';
 import ReviewModal from '../components/ReviewModal';
+import Pagination from '../components/Pagination';
+import ZoomModal from '../components/ZoomModal';
 
 function Detail() {
   const [showModal, setShowModal] = useState<string | ''>('');
@@ -18,13 +20,13 @@ function Detail() {
         className="w-full h-full rounded-lg mb-2"
         src="https://www.lottehotel.com/content/dam/lotte-hotel/signiel/seoul/overview/local-guide/180708-7-2000-ove-seoul-signiel.jpg.thumb.768.768.jpg"
       />
-      <div className="leading-10 bg-white rounded-lg shadow-xl p-8 mb-2 ">
+      <div className="leading-10 bg-white rounded-lg shadow-xl p-8 mb-2">
         <h2 className="text-xl font-bold">장소명</h2>
-        <div className="flex gap-2">
-          <Stars />
-          <span className="font-semibold text-gray">4.1 / 5</span>
+        <div className="flex gap-2 items-center">
+          <Stars size={'h-6 w-6'} rating={3.3} />
+          <span className="text-gray">3.3 / 5</span>
         </div>
-        <div className="flex gap-5">
+        <div className="flex gap-5 text-slate-700 font-semibold">
           <button onClick={() => setShowModal('schedule')}>일정 추가</button>
           <button
             className="flex items-center transition duration-300"
@@ -42,12 +44,15 @@ function Detail() {
         <h2 className="text-xl font-bold">기본 정보</h2>
         <h2 className="text-xl font-bold">상세 정보</h2>
       </div>
-      <div className="bg-white rounded-lg shadow-xl p-8 mb-2">
+      <div className="bg-white rounded-lg shadow-xl p-8 mb-2 flex flex-col justify-center">
         <div className="flex gap-2">
           <h2 className="text-xl font-bold">리뷰 </h2>
-          <h2 className="text-xl font-bold text-skyblue">100+</h2>
+          <h2 className="text-xl font-bold text-skyblue">100</h2>
         </div>
-        <ReviewCarousel />
+        <div className="flex flex-col justify-center items-center gap-3">
+          <ReviewList />
+          <Pagination />
+        </div>
       </div>
       <div className="bg-white rounded-lg shadow-xl p-8 mb-2">
         <div className="flex gap-2">
