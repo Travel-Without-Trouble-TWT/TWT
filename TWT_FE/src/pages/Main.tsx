@@ -35,9 +35,13 @@ function Main() {
             </p>
             <p>최근 많이 저장된 관광지・맛집・숙소</p>
           </div>
-          {top10 &&
-            top10.map((place: any) => (
+          {top10Loading ? (
+            <Spinner />
+          ) : (
+            Array.isArray(top10) &&
+            top10.map((place) => (
               <List
+                key={place.id}
                 id={place.id}
                 placeName={place.placeName}
                 placeType={place.placeType}
@@ -46,7 +50,8 @@ function Main() {
                 placeHeart={place.placeHeart}
                 placeImageUrl={place.placeImageUrl}
               />
-            ))}
+            ))
+          )}
         </div>
 
         <div className="flex flex-col items-center bg-white p-10 rounded">
