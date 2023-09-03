@@ -1,3 +1,5 @@
+import { StringLiteral } from 'typescript';
+
 export interface Top10Props {
   id: number;
   placeName: string;
@@ -8,7 +10,7 @@ export interface Top10Props {
   placeImageUrl: string;
 }
 
-export interface ReviewProps {
+export interface ScheduleProps {
   id: number;
   scheduleImageUrl: string | string[];
   nickName: string;
@@ -16,6 +18,32 @@ export interface ReviewProps {
   scheduleName: string;
   startAt: string;
   endAt: string;
+}
+
+export interface ReviewProps {
+  id: number;
+  createAt: string;
+  nickName: string;
+  reviewComment: string;
+  reviewImageList: string[];
+  star: number;
+}
+
+export interface DataProps {
+  id: number;
+  latitude: number;
+  longitude: number;
+  placeAddress: string;
+  placeCallNumber: string;
+  placeDescription: string;
+  placeHeart: number;
+  placeImageUrl: string;
+  placeLocation: string;
+  placeName: string;
+  placeType: string;
+  reviewNum: number;
+  star: number;
+  totalStar: number;
 }
 export interface IUser {
   nickName: string;
