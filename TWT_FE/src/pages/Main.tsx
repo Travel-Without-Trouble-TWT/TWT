@@ -14,7 +14,7 @@ function Main() {
     scheduleLoading,
     scheduleError,
   } = useSchedules();
-  const { top10, top10Loading, isError } = useTop10();
+  const { top10, top10Loading, top10Error } = useTop10();
 
   return (
     <div className="min-w-full min-h-screen flex justify-center items-center">
