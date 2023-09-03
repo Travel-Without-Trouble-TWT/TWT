@@ -3,7 +3,7 @@ import Carousel from '../components/Carousel';
 import Searchbar from '../components/Searchbar';
 import ReviewCard from '../components/ReviewCard';
 import Spinner from '../components/Spinner';
-import List from '../components/List';
+import ListItem from '../components/ListItem';
 import { useSchedules, useTop10 } from '../hooks/useProducts';
 
 function Main() {
@@ -35,23 +35,29 @@ function Main() {
             </p>
             <p>최근 많이 저장된 관광지・맛집・숙소</p>
           </div>
-          {top10Loading ? (
-            <Spinner />
-          ) : (
-            top10 &&
-            top10.map((place: any) => (
-              <List
-                key={place.id}
-                id={place.id}
-                placeName={place.placeName}
-                placeType={place.placeType}
-                placeLocation={place.placeLocation}
-                star={place.star}
-                placeHeart={place.placeHeart}
-                placeImageUrl={place.placeImageUrl}
-              />
-            ))
-          )}
+          <section className="dark:bg-gray-900">
+            <div className="container px-6 mx-auto">
+              <div className="grid grid-cols-1 gap-8 mt-8 tablet:mt-16 tablet:grid-cols-2">
+                {top10Loading ? (
+                  <Spinner />
+                ) : (
+                  top10 &&
+                  top10.map((place: any) => (
+                    <ListItem
+                      key={place.id}
+                      id={place.id}
+                      placeName={place.placeName}
+                      placeType={place.placeType}
+                      placeLocation={place.placeLocation}
+                      star={place.star}
+                      placeHeart={place.placeHeart}
+                      placeImageUrl={place.placeImageUrl}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+          </section>
         </div>
 
         <div className="flex flex-col items-center bg-white p-10 rounded">
