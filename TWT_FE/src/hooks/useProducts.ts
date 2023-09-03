@@ -81,7 +81,7 @@ export const useTop10 = () => {
     isLoading: top10Loading,
     isError: top10Error,
   } = useQuery(['top10'], getTop10Fn, {
-    enabled: false,
+    enabled: true,
     retry: 1,
     onSuccess: (data) => {
       // id,placeName,placeType,placeLocation,star,placeHeart,placeImageUrl,
