@@ -1,5 +1,9 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import ko from 'date-fns/locale/ko';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useRecoilState } from 'recoil';
+import { dateRangeState } from '../recoil/Atoms';
 
 function ScheduleModal({
   setShowModal,
@@ -7,7 +11,25 @@ function ScheduleModal({
   setShowModal: (showModal: string | '') => void;
 }) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [isAccordionOpen, setAccordionOpen] = useState<boolean>(false);
+  const [isAccordionOpen, setAccordionOpen] = useState<string | null>(null);
+  const [startAt, setStartAt] = useState<Date | null>(null);
+  const [endAt, setEndAt] = useState<Date | null>(null);
+  const [newScheduleDays, setNewScheduleDays] = useState<number[]>([]);
+
+  const getDaysNum = ({ startAt, endAt }: { startAt: Date; endAt: Date }) => {
+    let diff = Math.abs(startAt?.getTime() - endAt?.getTime());
+    diff = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    return diff;
+  };
+
+  useEffect(() => {
+    if (startAt && endAt) {
+      const days = getDaysNum({ startAt, endAt });
+      const arr = Array.from({ length: days + 1 }, (_, i) => i);
+      setNewScheduleDays(arr);
+    }
+  }, [startAt, endAt]);
+
   return (
     <>
       <div
@@ -29,38 +51,103 @@ function ScheduleModal({
               <AiOutlineClose />
             </button>
           </header>
-          <div className="flex overflow-auto justify-evenly">
-            <span className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer">
-              day01
-            </span>
+          <div className="flex flex-col gap-2 p-3" tabIndex={1}>
+            <div className="flex cursor-pointer items-center justify-between">
+              <span className="font-semibold">새로운 일정 추가</span>
+              <span
+                className="font-semibold transition-transform duration-300"
+                style={{
+                  transform:
+                    isAccordionOpen === '새로운일정'
+                      ? 'rotate(45deg)'
+                      : 'rotate(0deg)',
+                }}
+                onClick={() => setAccordionOpen('새로운일정')}
+              >
+                +
+              </span>
+            </div>
+
+            {isAccordionOpen === '새로운일정' && (
+              <>
+                <span className="text-sm text-slate-700">
+                  ✓ 여행 날짜를 입력해주세요.
+                </span>
+                <div className="flex justify-center gap-2">
+                  <DatePicker
+                    className="border-b border-skyblue px-2 py-1 text-sm cursor-pointer"
+                    onChange={(date) => {
+                      setStartAt(date);
+                    }}
+                    selected={startAt}
+                    selectsStart
+                    locale={ko}
+                    minDate={new Date()}
+                    monthsShown={1}
+                    placeholderText="YY.MM.dd"
+                    dateFormat="yy.MM.dd"
+                  ></DatePicker>
+                  <span>~</span>
+                  <DatePicker
+                    className="border-b border-skyblue px-2 py-1 text-sm cursor-pointer"
+                    onChange={(date) => {
+                      setEndAt(date);
+                    }}
+                    selected={endAt}
+                    selectsEnd
+                    locale={ko}
+                    minDate={startAt}
+                    monthsShown={1}
+                    placeholderText="YY.MM.dd"
+                    dateFormat="yy.MM.dd"
+                  ></DatePicker>
+                </div>
+
+                <div className="mt-2 flex w-full overflow-auto gap-2">
+                  {newScheduleDays.length > 0 &&
+                    newScheduleDays.map((day, index) => (
+                      <span
+                        key={`day${index}`}
+                        className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer"
+                      >
+                        DAY{day + 1}
+                      </span>
+                    ))}
+                </div>
+              </>
+            )}
           </div>
+
           <div className="flex flex-col gap-2 p-3" tabIndex={1}>
             <div className="flex cursor-pointer items-center justify-between">
               <span className="font-semibold">기존 일정</span>
               <span
                 className="font-semibold transition-transform duration-300"
                 style={{
-                  transform: isAccordionOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                  transform:
+                    isAccordionOpen === '기존일정'
+                      ? 'rotate(45deg)'
+                      : 'rotate(0deg)',
                 }}
-                onClick={() => setAccordionOpen(!isAccordionOpen)}
+                onClick={() => setAccordionOpen('기존일정')}
               >
                 +
               </span>
             </div>
 
-            {isAccordionOpen && (
+            {isAccordionOpen === '기존일정' && (
               <div className="mt-2 flex justify-evenly">
                 <span className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer">
                   day01
                 </span>
                 <span className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer">
-                  day01
+                  day02
                 </span>
                 <span className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer">
-                  day01
+                  day03
                 </span>
                 <span className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer">
-                  day01
+                  day04
                 </span>
               </div>
             )}
