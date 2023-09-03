@@ -1,16 +1,19 @@
-import { useQuery } from '@tanstack/react-query';
 import InfiniteScroll from 'react-infinite-scroller';
 import Carousel from '../components/Carousel';
 import Searchbar from '../components/Searchbar';
 import ReviewCard from '../components/ReviewCard';
 import Spinner from '../components/Spinner';
 import List from '../components/List';
-import { getTop10Fn } from '../api';
-import { useReviews, useTop10 } from '../hooks/useProducts';
+import { useSchedules, useTop10 } from '../hooks/useProducts';
 
 function Main() {
-  const { reviews, fetchNextPage, hasNextPage, reviewLoading, reviewError } =
-    useReviews();
+  const {
+    schedules,
+    fetchNextPage,
+    hasNextPage,
+    scheduleLoading,
+    scheduleError,
+  } = useSchedules();
   const { top10, top10Loading, isError } = useTop10();
 
   return (
@@ -57,7 +60,7 @@ function Main() {
             hasMore={hasNextPage}
             loader={<Spinner />}
           >
-            {reviews?.pages.map((page: any) =>
+            {schedules?.pages.map((page: any) =>
               page.map((review: any) => (
                 <ReviewCard key={review.id} data={review} />
               ))
