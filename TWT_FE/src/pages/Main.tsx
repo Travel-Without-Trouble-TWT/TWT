@@ -38,8 +38,8 @@ function Main() {
           {top10Loading ? (
             <Spinner />
           ) : (
-            Array.isArray(top10) &&
-            top10.map((place) => (
+            top10 &&
+            top10.map((place: any) => (
               <List
                 key={place.id}
                 id={place.id}
