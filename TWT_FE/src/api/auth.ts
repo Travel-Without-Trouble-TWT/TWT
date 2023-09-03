@@ -48,7 +48,7 @@ export const joinFn = async (user: JoinProps) => {
 
 export const nicknameFn = async (nickname: string) => {
   const response = await authApi.get<BasicResponse>(
-    `/nick?/nickName=${nickname}`
+    `member/nick?nickName=${nickname}`
   );
   return response.data;
 };
