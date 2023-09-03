@@ -17,6 +17,14 @@ export const authApi = axios.create({
 
 authApi.defaults.headers.common['Content-Type'] = 'application/json';
 
+authApi.interceptors.request.use((config) => {
+  const accessToken = document.cookie;
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return config;
+});
+
 export const refreshAccessToken = async () => {
   const response = await authApi.get<ILoginResponse>('/member/refresh');
   return response.data;
