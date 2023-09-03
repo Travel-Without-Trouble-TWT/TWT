@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { useUser } from '../hooks/useUser';
 import googleUrl from '../utils/googleUrl';
 import Alerts from '../components/Alerts';
+import Spinner from '../components/Spinner';
 
 export interface LoginProps {
   email: string;
@@ -25,29 +26,37 @@ function Login() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  // const { data: user, isLoading: isUserLoading } = useUser();
   const from = ((location.state as any)?.from.pathname as string) || '/';
 
-  const { mutate: loginUser, isLoading } = useMutation(
+  const { mutate: loginUser, isLoading: logining } = useMutation(
     (userData: LoginProps) => loginFn(userData),
     {
       onSuccess: () => {
-        <Alerts
-          type="success"
-          title="로그인"
-          message="로그인이 완료되었습니다!"
-        />;
-        navigate('/');
+        return (
+          <>
+            <Alerts
+              type="success"
+              title="로그인"
+              message="로그인이 완료되었습니다!"
+            />
+
+            {navigate('/')}
+          </>
+        );
       },
       onError: (error: any) => {
         if (Array.isArray((error as any).response.data.error)) {
           (error as any).response.data.error.forEach((element: any) => {
-            <Alerts
-              type="error"
-              title="로그인"
-              message="로그인에 실패하였습니다. 다시 시도해주세요."
-            />;
-            navigate('/login');
+            return (
+              <>
+                <Alerts
+                  type="error"
+                  title="로그인"
+                  message="로그인에 실패하였습니다. 다시 시도해주세요."
+                />
+                {navigate('/login')}
+              </>
+            );
           });
         } else {
           //alert
@@ -166,9 +175,9 @@ function Login() {
                   isValid ? 'bg-skyblue' : ' bg-lightgray'
                 }`}
                 type="submit"
-                disabled={isLoading || !isValid}
+                disabled={logining || !isValid}
               >
-                {isLoading ? '로딩 중' : '로그인'}
+                {logining ? <Spinner /> : '로그인'}
               </button>
               <hr className="w-full h-1"></hr>
               <a

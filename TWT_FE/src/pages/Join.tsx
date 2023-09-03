@@ -45,27 +45,38 @@ function Join() {
   //인증코드 유효성 검사
   const isCodeValid = watch('verificationCode')?.length === 6;
 
+  //const {joinUser, joining} =
+
   //회원가입 mutation
   const { mutate: joinUser, isLoading: joining } = useMutation(
     (userData: JoinProps) => joinFn(userData),
     {
       onSuccess: () => {
-        <Alerts
-          type="success"
-          title="🎉 회원가입"
-          message="회원가입이 완료되었습니다!"
-        />;
-        navigate('/login');
+        return (
+          <>
+            <Alerts
+              type="success"
+              title="🎉 회원가입"
+              message="회원가입이 완료되었습니다!"
+            />
+            {navigate('/login')}
+          </>
+        );
       },
       onError: (error: any) => {
         if (Array.isArray((error as any).response.data.error)) {
           (error as any).response.data.error.forEach((element: any) => {
-            <Alerts
-              type="error"
-              title="회원가입"
-              message="회원가입에 실패하였습니다. 다시 시도해주세요."
-            />;
-            navigate('/join');
+            return (
+              <>
+                <Alerts
+                  type="error"
+                  title="회원가입"
+                  message="회원가입에 실패하였습니다. 다시 시도해주세요."
+                />
+
+                {navigate('/join')}
+              </>
+            );
           });
         } else {
           //alert
@@ -94,17 +105,21 @@ function Join() {
 
   const handleCheckCode = () => {
     if (watch('verificationCode') === returnCode) {
-      <Alerts
-        type="success"
-        title="인증 완료"
-        message="인증이 완료되었습니다!"
-      />;
+      return (
+        <Alerts
+          type="success"
+          title="인증 완료"
+          message="인증이 완료되었습니다!"
+        />
+      );
     } else {
-      <Alerts
-        type="error"
-        title="인증 실패"
-        message="인증코드가 맞지 않습니다. 다시 시도해주세요."
-      />;
+      return (
+        <Alerts
+          type="error"
+          title="인증 실패"
+          message="인증코드가 맞지 않습니다. 다시 시도해주세요."
+        />
+      );
     }
   };
 
@@ -140,20 +155,24 @@ function Join() {
     (email: string) => verifyFn(email),
     {
       onSuccess: (data) => {
-        <Alerts
-          type="success"
-          title="인증 요청"
-          message="인증 코드가 발송되었습니다."
-        />;
         setReturnCode(data.verificationCode); //코드 저장
         setIsVerifyingCode(true);
+        return (
+          <Alerts
+            type="success"
+            title="인증 요청"
+            message="인증 코드가 발송되었습니다."
+          />
+        );
       },
       onError: (error: any) => {
-        <Alerts
-          type="error"
-          title="인증 요청 실패"
-          message="이메일 인증 요청에 실패하였습니다. 다시 시도해주세요."
-        />;
+        return (
+          <Alerts
+            type="error"
+            title="인증 요청 실패"
+            message="이메일 인증 요청에 실패하였습니다. 다시 시도해주세요."
+          />
+        );
       },
     }
   );
