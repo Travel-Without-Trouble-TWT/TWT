@@ -8,6 +8,7 @@ import { loginFn } from '../api/auth';
 import { useEffect } from 'react';
 import { useUser } from '../hooks/useUser';
 import googleUrl from '../utils/googleUrl';
+import Alerts from '../components/Alerts';
 
 export interface LoginProps {
   email: string;
@@ -31,13 +32,22 @@ function Login() {
     (userData: LoginProps) => loginFn(userData),
     {
       onSuccess: () => {
-        //alert
+        <Alerts
+          type="success"
+          title="로그인"
+          message="로그인이 완료되었습니다!"
+        />;
         navigate('/');
       },
       onError: (error: any) => {
         if (Array.isArray((error as any).response.data.error)) {
           (error as any).response.data.error.forEach((element: any) => {
-            //alert
+            <Alerts
+              type="error"
+              title="로그인"
+              message="로그인에 실패하였습니다. 다시 시도해주세요."
+            />;
+            navigate('/login');
           });
         } else {
           //alert

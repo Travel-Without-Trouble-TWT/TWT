@@ -5,6 +5,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import logo from '../assets/logo.png';
 import { joinFn, nicknameFn, verifyFn } from '../api/auth';
+import Spinner from '../components/Spinner';
+import Alerts from '../components/Alerts';
 
 export interface JoinProps {
   nickName: string;
@@ -44,17 +46,26 @@ function Join() {
   const isCodeValid = watch('verificationCode')?.length === 6;
 
   //회원가입 mutation
-  const { mutate, isLoading } = useMutation(
+  const { mutate: joinUser, isLoading: joining } = useMutation(
     (userData: JoinProps) => joinFn(userData),
     {
       onSuccess: () => {
-        alert('회원가입이 완료되었습니다!');
+        <Alerts
+          type="success"
+          title="🎉 회원가입"
+          message="회원가입이 완료되었습니다!"
+        />;
         navigate('/login');
       },
       onError: (error: any) => {
         if (Array.isArray((error as any).response.data.error)) {
           (error as any).response.data.error.forEach((element: any) => {
-            //alert
+            <Alerts
+              type="error"
+              title="회원가입"
+              message="회원가입에 실패하였습니다. 다시 시도해주세요."
+            />;
+            navigate('/join');
           });
         } else {
           //alert
@@ -78,14 +89,22 @@ function Join() {
     if (!Object.values(stepStates).every((state) => state)) {
       return;
     }
-    mutate(values);
+    joinUser(values);
   };
 
   const handleCheckCode = () => {
     if (watch('verificationCode') === returnCode) {
-      alert('인증완료!');
+      <Alerts
+        type="success"
+        title="인증 완료"
+        message="인증이 완료되었습니다!"
+      />;
     } else {
-      alert('인증코드가 맞지 않습니다. 다시 시도해주세요.');
+      <Alerts
+        type="error"
+        title="인증 실패"
+        message="인증코드가 맞지 않습니다. 다시 시도해주세요."
+      />;
     }
   };
 
@@ -121,12 +140,20 @@ function Join() {
     (email: string) => verifyFn(email),
     {
       onSuccess: (data) => {
-        alert('인증 코드가 발송되었습니다.');
+        <Alerts
+          type="success"
+          title="인증 요청"
+          message="인증 코드가 발송되었습니다."
+        />;
         setReturnCode(data.verificationCode); //코드 저장
         setIsVerifyingCode(true);
       },
       onError: (error: any) => {
-        alert('이메일 인증 요청에 실패하였습니다. 다시 시도해주세요.');
+        <Alerts
+          type="error"
+          title="인증 요청 실패"
+          message="이메일 인증 요청에 실패하였습니다. 다시 시도해주세요."
+        />;
       },
     }
   );
@@ -196,7 +223,7 @@ function Join() {
                     })
                   }
                 >
-                  {isCheckingNickname ? '로딩 중' : '중복확인'}
+                  {isCheckingNickname ? <Spinner /> : '중복확인'}
                 </button>
               </div>
               {isDuplicated ||
@@ -276,10 +303,12 @@ function Join() {
                         })
                       }
                       disabled={
-                        isLoading || stepStates.verificationCode || !isCodeValid
+                        isVerifyingEmail ||
+                        stepStates.verificationCode ||
+                        !isCodeValid
                       }
                     >
-                      {isLoading ? '로딩 중' : '확인'}
+                      {isVerifyingEmail ? '로딩 중' : '확인'}
                     </button>
                   </div>
                   {errors.verificationCode && (
@@ -359,11 +388,11 @@ function Join() {
                 type="submit"
                 disabled={
                   !isValid ||
-                  isLoading ||
+                  joining ||
                   !Object.values(stepStates).every((state) => state)
                 }
               >
-                {isLoading ? '로딩 중' : '회원가입'}
+                {joining ? '로딩 중' : '회원가입'}
               </button>
             </form>
           </div>
