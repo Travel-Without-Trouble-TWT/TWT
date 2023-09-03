@@ -4,7 +4,7 @@ import { Top10Props, ReviewProps, ScheduleProps } from './type';
 
 //방문지 top10
 export const getTop10Fn = async () => {
-  const response = await axios.get<Top10Props>('/search/main'); //authAPI로 변경예정
+  const response = await axios.get('/search/main'); //authAPI로 변경예정
   return response.data;
 };
 
