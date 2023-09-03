@@ -8,7 +8,7 @@ import {
 import { LoginProps } from '../pages/Login';
 import { JoinProps } from '../pages/Join';
 
-const BASE_URL = 'http://localhost:80000/member';
+const BASE_URL = 'http://13.124.68.229:8080';
 
 export const authApi = axios.create({
   baseURL: BASE_URL,
@@ -18,7 +18,7 @@ export const authApi = axios.create({
 authApi.defaults.headers.common['Content-Type'] = 'application/json';
 
 export const refreshAccessToken = async () => {
-  const response = await authApi.get<ILoginResponse>('/refresh');
+  const response = await authApi.get<ILoginResponse>('/member/refresh');
   return response.data;
 };
 
@@ -42,7 +42,7 @@ authApi.interceptors.response.use(
 );
 
 export const joinFn = async (user: JoinProps) => {
-  const response = await authApi.post<BasicResponse>('/join', user);
+  const response = await authApi.post<BasicResponse>('/member/join', user);
   return response.data;
 };
 
@@ -54,21 +54,23 @@ export const nicknameFn = async (nickname: string) => {
 };
 
 export const loginFn = async (user: LoginProps) => {
-  const response = await authApi.post<ILoginResponse>('/login', user);
+  const response = await authApi.post<ILoginResponse>('/member/login', user);
   return response.data;
 };
 
 export const verifyFn = async (email: string) => {
-  const response = await authApi.get<VerifyResponse>(`/verify?email=${email}`);
+  const response = await authApi.get<VerifyResponse>(
+    `/member/verify?email=${email}`
+  );
   return response.data;
 };
 
 export const logoutFn = async () => {
-  const response = await authApi.get<BasicResponse>('/logout');
+  const response = await authApi.get<BasicResponse>('/member/logout');
   return response.data;
 };
 
 export const getUserFn = async () => {
-  const response = await authApi.get<IUserResponse>('/info');
+  const response = await authApi.get<IUserResponse>('/member/info');
   return response.data;
 };
