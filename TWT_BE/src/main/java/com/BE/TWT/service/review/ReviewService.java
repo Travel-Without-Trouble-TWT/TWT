@@ -85,10 +85,9 @@ public class ReviewService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
-        Long memberId = member.getId();
         Pageable pageable = PageRequest.of(pageNum, 10);
 
-        return reviewRepository.findAllByMemberId(memberId, pageable);
+        return reviewRepository.findAllByNickName(member.getNickName(), pageable);
     }
 
     public Page<Review> viewAllReviewByPlace(Long placeId, int pageNum) { // 특정 Place 에 대한 리뷰 전체보기

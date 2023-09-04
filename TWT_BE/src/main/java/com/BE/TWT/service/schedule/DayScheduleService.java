@@ -1,12 +1,17 @@
 package com.BE.TWT.service.schedule;
 
+import com.BE.TWT.exception.error.PlaceException;
 import com.BE.TWT.exception.error.ScheduleException;
+import com.BE.TWT.exception.message.PlaceErrorMessage;
 import com.BE.TWT.model.dto.schedule.AddNewCourse;
 import com.BE.TWT.model.dto.schedule.DeleteCourse;
+import com.BE.TWT.model.dto.schedule.ScheduleDetail;
 import com.BE.TWT.model.dto.schedule.UpdateCourse;
+import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.schedule.Course;
 import com.BE.TWT.model.entity.schedule.DaySchedule;
 import com.BE.TWT.model.entity.schedule.Schedule;
+import com.BE.TWT.repository.location.PlaceRepository;
 import com.BE.TWT.repository.schedule.DayScheduleRepository;
 import com.BE.TWT.repository.schedule.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 
+import static com.BE.TWT.exception.message.PlaceErrorMessage.WRONG_ADDRESS;
 import static com.BE.TWT.exception.message.ScheduleErrorMessage.NOT_REGISTERED_SCHEDULE;
 
 @Service
@@ -24,6 +30,7 @@ import static com.BE.TWT.exception.message.ScheduleErrorMessage.NOT_REGISTERED_S
 public class DayScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final DayScheduleRepository dayScheduleRepository;
+    private final PlaceRepository placeRepository;
 
     @Transactional
     public Schedule addNewCourse(AddNewCourse course) { // 코스 추가
@@ -32,9 +39,13 @@ public class DayScheduleService {
 
         DaySchedule daySchedule = schedule.getDayScheduleList().get(course.getDay());
         LocalDateTime time = daySchedule.getDay().atTime(LocalTime.of(0, 0)); // 00:00으로 설정
+        Place place = placeRepository.findById(course.getPlaceId())
+                .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
         Course addCourse = Course.builder()
-                .placeId(course.getPlaceId())
+                .placeName(place.getPlaceName())
+                .latitude(place.getLatitude())
+                .longitude(place.getLongitude())
                 .arriveAt(time)
                 .build();
         daySchedule.addCourse(addCourse);

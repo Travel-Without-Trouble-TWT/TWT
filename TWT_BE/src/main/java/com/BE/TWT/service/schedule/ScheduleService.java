@@ -3,10 +3,7 @@ package com.BE.TWT.service.schedule;
 import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.exception.error.ScheduleException;
-import com.BE.TWT.model.dto.schedule.AddNewCourse;
-import com.BE.TWT.model.dto.schedule.CreateScheduleDto;
-import com.BE.TWT.model.dto.schedule.EditScheduleNameDto;
-import com.BE.TWT.model.dto.schedule.SetDateDto;
+import com.BE.TWT.model.dto.schedule.*;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.model.entity.schedule.DaySchedule;
 import com.BE.TWT.model.entity.schedule.Schedule;
@@ -41,6 +38,7 @@ public class ScheduleService {
     private final DayScheduleService dayScheduleService;
     private final DayScheduleRepository dayScheduleRepository;
 
+    @Transactional
     public Schedule addNewSchedule(HttpServletRequest request, CreateScheduleDto dto) {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
@@ -123,42 +121,6 @@ public class ScheduleService {
     }
 
     @Transactional
-    public Schedule setDate(HttpServletRequest request, SetDateDto setDateDto) { // 선택 여행지 페이지의 날짜 입력 API
-        String token = request.getHeader("Authorization").replace("Bearer ", "");
-        String email = jwtTokenProvider.getPayloadSub(token);
-
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
-
-        Schedule schedule = scheduleRepository.findById(setDateDto.getScheduleId())
-                .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
-
-        if (schedule.getMember().equals(member)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-            String startDate = setDateDto.getStartAt();
-            String endDate = setDateDto.getEndAt();
-
-            LocalDate parseStart = LocalDate.parse(startDate, formatter);
-            LocalDate parseEnd = LocalDate.parse(endDate, formatter);
-            schedule.updateDate(parseStart, parseEnd);
-
-            int days = (int) ChronoUnit.DAYS.between(parseStart, parseEnd);
-            schedule.insertDays(days);
-            List<DaySchedule> dayScheduleList = new ArrayList<>();
-
-            for (int j = 0; j < days; j++) {
-                DaySchedule daySchedule = new DaySchedule();
-                dayScheduleList.add(daySchedule);
-            }
-            schedule.changeDayScheduleList(dayScheduleList);
-        } else {
-            throw new ScheduleException(UNAUTHORIZED_REQUEST);
-        }
-        return schedule;
-    }
-
-    @Transactional
     public Schedule changeTravelDate(HttpServletRequest request, SetDateDto dto) { // 여행 계획 날짜 변경
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
@@ -169,8 +131,8 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(dto.getScheduleId())
                 .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
 
-        String startDate = dto.getStartAt().toString();
-        String endDate = dto.getEndAt().toString();
+        String startDate = dto.getStartAt();
+        String endDate = dto.getEndAt();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
         LocalDate parseStart = LocalDate.parse(startDate, formatter);
@@ -244,5 +206,23 @@ public class ScheduleService {
         schedule.uploadPhoto(photoUrl);
 
         return schedule;
+    }
+
+    public ScheduleDetail readScheduleDetail(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
+
+        List<DaySchedule> dayScheduleList = dayScheduleRepository.findAllBySchedule(schedule);
+
+        return ScheduleDetail.builder()
+                .id(scheduleId)
+                .scheduleName(schedule.getScheduleName())
+                .travelPlace(schedule.getTravelPlace())
+                .startAt(schedule.getStartAt())
+                .endAt(schedule.getEndAt())
+                .scheduleImageUrl(schedule.getScheduleImageUrl())
+                .memberId(schedule.getMember().getId())
+                .dayScheduleList(dayScheduleList)
+                .build();
     }
 }

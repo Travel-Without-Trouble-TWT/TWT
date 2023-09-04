@@ -78,7 +78,7 @@ public class MemberService {
 
     public String checkDuplicateNickName(String nickName) { // 닉네임 중복 검사 이미 존재하는 닉네임일 경우 exception 발생
         if (memberRepository.findByNickName(nickName).isPresent()) {
-            return "message: 중복된 닉네임입니다.";
+            throw new MemberException(DUPLICATED_NICKNAME);
         } else {
             return "message: 사용 가능한 닉네임입니다.";
         }

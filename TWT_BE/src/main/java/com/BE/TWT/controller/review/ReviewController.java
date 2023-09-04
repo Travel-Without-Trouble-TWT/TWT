@@ -29,7 +29,7 @@ public class ReviewController {
     public ResponseEntity<Review> postPlaceReview(
             HttpServletRequest request,
             @RequestPart(value = "files", required = false) List<MultipartFile> multipartFile,
-            @RequestPart(value = "request") @Valid ReviewDto reviewDto) {
+            @RequestBody @Valid ReviewDto reviewDto) {
         return ResponseEntity.ok(reviewService.postPlaceReview(request, multipartFile, reviewDto));
     }
 
