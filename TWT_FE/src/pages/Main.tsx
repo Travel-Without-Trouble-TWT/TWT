@@ -11,8 +11,8 @@ function Main() {
     schedules,
     fetchNextPage,
     hasNextPage,
-    scheduleLoading,
-    scheduleError,
+    schedulesLoading,
+    schedulesError,
   } = useSchedules();
   const { top10, top10Loading, top10Error } = useTop10();
 
@@ -28,12 +28,14 @@ function Main() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center bg-white p-10 rounded">
+        <div className="flex flex-col items-center bg-white p-10 rounded dark:bg-slate-900">
           <div className="flex self-start items-center gap-2">
-            <p className="font-bold text-xl self-start">
+            <p className="font-bold text-xl self-start dark:text-white">
               여기가 그렇게 HOT 하다며? 😎
             </p>
-            <p>최근 많이 저장된 관광지・맛집・숙소</p>
+            <p className="dark:text-slate-200">
+              최근 많이 저장된 관광지・맛집・숙소
+            </p>
           </div>
           <section className="dark:bg-gray-900">
             <div className="container px-6 mx-auto">
@@ -60,10 +62,12 @@ function Main() {
           </section>
         </div>
 
-        <div className="flex flex-col items-center bg-white p-10 rounded">
+        <div className="flex flex-col items-center bg-white p-10 rounded dark:bg-slate-900">
           <div className="flex self-start items-center gap-2">
-            <p className="font-bold text-xl">너.. P야?🤦 그래서 준비했어!</p>
-            <p>여행 일정과 팁 알아가기</p>
+            <p className="font-bold text-xl dark:text-white">
+              너.. P야?🤦 그래서 준비했어!
+            </p>
+            <p className="dark:text-slate-200"> 여행 일정과 팁 알아가기</p>
           </div>
 
           <InfiniteScroll
