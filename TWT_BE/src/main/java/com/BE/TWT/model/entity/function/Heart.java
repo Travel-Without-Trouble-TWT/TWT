@@ -6,8 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @NoArgsConstructor
@@ -24,4 +27,7 @@ public class Heart {
     private Member member;
     @Column(nullable = false)
     private Long placeId;
+    @CreatedDate
+    @Column(nullable = false)
+    private Date likedDate;
 }

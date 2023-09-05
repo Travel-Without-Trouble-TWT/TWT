@@ -1,17 +1,11 @@
 package com.BE.TWT.model.entity.member;
 
-import com.BE.TWT.model.entity.function.Heart;
-import com.BE.TWT.model.entity.function.Notification;
-import com.BE.TWT.model.entity.review.Review;
-import com.BE.TWT.model.entity.schedule.Schedule;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
