@@ -11,7 +11,7 @@ export interface Top10Props {
   reviewNum: number;
 }
 
-export interface ScheduleProps {
+export interface SchedulesProps {
   id: number;
   scheduleImageUrl: string | string[];
   nickName: string;
