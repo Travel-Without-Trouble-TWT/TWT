@@ -16,7 +16,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/detail/:id" element={<Detail />} />
-          <Route path="/schedule" element={<Schedule />} />
+          <Route path="/schedule/:id" element={<Schedule />} />
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
