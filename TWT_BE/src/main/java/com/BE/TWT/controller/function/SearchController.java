@@ -2,6 +2,7 @@ package com.BE.TWT.controller.function;
 
 import com.BE.TWT.exception.error.MapException;
 import com.BE.TWT.model.dto.function.Point;
+import com.BE.TWT.model.entity.function.Heart;
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.review.Review;
 import com.BE.TWT.model.entity.schedule.Schedule;
@@ -67,16 +68,9 @@ public class SearchController {
         return ResponseEntity.ok(searchService.detailPlace(request, response, placeId));
     }
 
-    @ApiOperation(value = "좌표 검색 API")
-    @Operation(description = "장소명 검색하면 x,y 값 리턴")
-    @GetMapping("/point")
-    public ResponseEntity<Point> findPoint(@RequestParam @Valid String place) throws MapException {
-        return ResponseEntity.ok(pointService.getMapString(place));
-    }
-
     @ApiOperation(value = "최근 여행 계획표 리스트")
     @Operation(description = "메인페이지 내에 최근에 종료된 여행 계획표를 최신순으로 보여주는 API")
-    @GetMapping("/recent")
+    @GetMapping("/schedule")
     public ResponseEntity<Page<Schedule>> searchAllScheduleRecently(@RequestParam @Valid int pageNum) {
         return ResponseEntity.ok(searchService.searchScheduleRecent(pageNum));
     }

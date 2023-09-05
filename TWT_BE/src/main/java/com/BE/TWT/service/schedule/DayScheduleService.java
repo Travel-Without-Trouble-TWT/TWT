@@ -2,10 +2,8 @@ package com.BE.TWT.service.schedule;
 
 import com.BE.TWT.exception.error.PlaceException;
 import com.BE.TWT.exception.error.ScheduleException;
-import com.BE.TWT.exception.message.PlaceErrorMessage;
 import com.BE.TWT.model.dto.schedule.AddNewCourse;
 import com.BE.TWT.model.dto.schedule.DeleteCourse;
-import com.BE.TWT.model.dto.schedule.ScheduleDetail;
 import com.BE.TWT.model.dto.schedule.UpdateCourse;
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.schedule.Course;

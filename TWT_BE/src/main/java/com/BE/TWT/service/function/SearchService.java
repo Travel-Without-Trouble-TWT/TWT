@@ -3,6 +3,7 @@ package com.BE.TWT.service.function;
 import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.exception.error.PlaceException;
+import com.BE.TWT.model.entity.function.Heart;
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.model.entity.schedule.Schedule;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.BE.TWT.exception.message.MemberErrorMessage.USER_NOT_FOUND;
@@ -65,7 +68,28 @@ public class SearchService {
     }
 
     public List<Place> searchTopTenPlace() {
-        return placeRepository.findTop10ByOrderByPlaceHeartDesc();
+        LocalDate endLocalDate = LocalDate.now();
+        LocalDate startLocalDate = endLocalDate.minusMonths(1);
+
+        Date endDate = java.sql.Date.valueOf(endLocalDate);
+        Date startDate = java.sql.Date.valueOf(startLocalDate);
+
+        List<Object []> heartList = heartRepository.findTopPlacesByLikesInLastMonth(startDate, endDate);
+
+        List<Place> placeList = new ArrayList<>();
+
+        for (Object [] heart : heartList) {
+            Long placeId = (Long) heart[0];
+            Place place = placeRepository.findById(placeId).get();
+            placeList.add(place);
+        }
+
+        int maxResults = 10;
+        if (placeList.size() > maxResults) {
+            placeList = placeList.subList(0, maxResults);
+        }
+
+        return placeList;
     }
 
     public Page<Schedule> searchScheduleByMember(HttpServletRequest request, int pageNum) {
@@ -91,7 +115,7 @@ public class SearchService {
             Member member = memberRepository.findByEmail(email)
                     .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
-            if(heartRepository.findByMemberAndPlaceId(member, place.getPlaceName()).isPresent()) {
+            if(heartRepository.findByMemberAndPlaceId(member, place.getId()).isPresent()) {
                 response.addHeader("likeIt", "true");
             } else {
                 response.addHeader("likeIt", "false");
