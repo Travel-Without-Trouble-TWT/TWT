@@ -2,9 +2,13 @@ import { MdOutlineFoodBank, MdOutlineAttractions } from 'react-icons/md';
 import { AiOutlineHome } from 'react-icons/ai';
 
 function Feeds({
-  setIsShowModal,
+  setIsShowTimeModal,
+  setIsShowAlert,
+  schedule,
 }: {
-  setIsShowModal: (isShowModal: boolean) => void;
+  setIsShowTimeModal: (isShowTimeModal: boolean) => void;
+  setIsShowAlert: (isShowAlert: string) => void;
+  schedule: string[];
 }) {
   return (
     <>
@@ -26,7 +30,7 @@ function Feeds({
               <button className="hover:font-semibold text-sm">장소 삭제</button>
               <button
                 className="hover:font-semibold text-sm"
-                onClick={() => setIsShowModal(true)}
+                onClick={() => setIsShowTimeModal(true)}
               >
                 시간 입력
               </button>
@@ -49,7 +53,7 @@ function Feeds({
               <button className="hover:font-semibold text-sm">장소 삭제</button>
               <button
                 className="hover:font-semibold text-sm"
-                onClick={() => setIsShowModal(true)}
+                onClick={() => setIsShowTimeModal(true)}
               >
                 시간 입력
               </button>
@@ -69,7 +73,7 @@ function Feeds({
               <button className="hover:font-semibold text-sm">장소 삭제</button>
               <button
                 className="hover:font-semibold text-sm"
-                onClick={() => setIsShowModal(true)}
+                onClick={() => setIsShowTimeModal(true)}
               >
                 시간 입력
               </button>
