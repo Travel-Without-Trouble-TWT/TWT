@@ -13,6 +13,7 @@ import {
   postReviewFn,
   getPlaceReviewsFn,
   getPlaceInfoFn,
+  getScheduleFn,
 } from '../api';
 
 //메인페이지 스케쥴들
@@ -21,8 +22,8 @@ export const useSchedules = () => {
     data: schedules,
     fetchNextPage,
     hasNextPage,
-    isLoading: scheduleLoading,
-    isError: scheduleError,
+    isLoading: schedulesLoading,
+    isError: schedulesError,
   } = useInfiniteQuery(
     ['schedules'],
     ({ pageParam = 0 }) => getSchedulesFn(pageParam),
@@ -42,8 +43,8 @@ export const useSchedules = () => {
     schedules,
     fetchNextPage,
     hasNextPage,
-    scheduleLoading,
-    scheduleError,
+    schedulesLoading,
+    schedulesError,
   };
 };
 
@@ -170,6 +171,21 @@ export const usePlaceInfo = (placeId: number) => {
     },
   });
   return { placeInfos, placeInfoLoading, placeInfoError };
+};
+
+//해당 스케줄 정보
+export const useSchedule = (scheduleId: number) => {
+  const {
+    data: schedule,
+    isLoading: scheduleLoading,
+    isError: scheduleError,
+  } = useQuery(['schedule', scheduleId], () => getScheduleFn(scheduleId), {
+    enabled: true,
+    retry: 1,
+    onSuccess: {},
+    onErro: (error) => {},
+  });
+  return { schedule, scheduleLoading, scheduleError };
 };
 
 //useMutation
