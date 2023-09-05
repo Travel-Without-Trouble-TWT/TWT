@@ -10,7 +10,7 @@ function Header() {
   const alertItems = [{ content: '알람1' }, { content: '알람2' }];
 
   return (
-    <header className="border-b-1 relative z-50 w-full border-b border-slate-200 shadow-lg shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full  lg:border-slate-200 lg:backdrop-blur-sm lg:after:hidden to-sky-50 bg-gradient-to-b from-[#A5E0F8]">
+    <header className="border-b-1 relative sticky z-50 w-full border-b border-slate-200 shadow-lg shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full  lg:border-slate-200 lg:backdrop-blur-sm lg:after:hidden to-sky-50 bg-gradient-to-b from-[#A5E0F8]">
       <div className="relative mx-auto max-w-full px-6 lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[96rem]">
         <nav
           aria-label="main navigation"
@@ -37,7 +37,7 @@ function Header() {
               </span>
             </span>
           </a>
-          {/*      <!-- Mobile trigger --> */}
+
           <button
             className={`relative order-10 block h-10 w-10 self-center lg:hidden
           ${
@@ -93,9 +93,9 @@ function Header() {
                 aria-haspopup="false"
                 tabIndex={0}
                 className="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-blue lg:px-8"
-                href="/setting"
+                href="/profile"
               >
-                <span>설정</span>
+                <span>프로필 수정</span>
               </a>
             </li>
             <li role="none" className="flex items-stretch">
