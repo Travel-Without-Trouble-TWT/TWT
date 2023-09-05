@@ -50,6 +50,12 @@ export const getPlaceInfoFn = async (placeId: number) => {
   return response.data;
 };
 
+//스케쥴 정보
+export const getScheduleFn = async (scheduleId: number) => {
+  const response = await authApi.get(`/schedule/info?scheduleId=${scheduleId}`);
+  return response.data;
+};
+
 //post
 export const postReviewFn = async (data, files) => {
   const formData = new FormData();
