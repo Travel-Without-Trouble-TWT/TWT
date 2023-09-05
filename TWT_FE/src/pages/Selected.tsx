@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { dateRangeState } from '../recoil/Atoms';
 
 import { Map, CustomOverlayMap } from 'react-kakao-maps-sdk';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import DatePicker from 'react-datepicker';
-import ko from 'date-fns/locale/ko';
-import 'react-datepicker/dist/react-datepicker.css';
 
 import { MdOutlineFoodBank, MdOutlineAttractions } from 'react-icons/md';
 import { AiOutlineHome } from 'react-icons/ai';
@@ -16,9 +11,7 @@ import Spinner from '../components/Spinner';
 import Button from '../components/Button';
 
 function Selected() {
-  const [dateRange, setDateRange] = useRecoilState(dateRangeState);
-  const [startDate, endDate] = dateRange;
-  const [placeLocation, setPlaceLoacation] = useState('');
+  const [placeLocation, setPlaceLocation] = useState('');
   const [placeType, setPlaceType] = useState('ALL'); //"ALL", "STAY", "RESTAURANT", "HOT_PLACE"
   const [isTitleOpen, setIsTitleOpen] = useState<number | null>(null);
 
@@ -28,7 +21,12 @@ function Selected() {
     const locationParam = urlParams.get('placeLocation');
 
     if (locationParam) {
-      setPlaceLoacation(locationParam);
+      setPlaceLocation(locationParam);
+    }
+
+    const typeParam = urlParams.get('placeType');
+    if (typeParam) {
+      setPlaceType(typeParam);
     }
   }, []);
 
@@ -63,7 +61,7 @@ function Selected() {
                 <Spinner />
               ) : (
                 <>
-                  {places && places?.length > 0 ? (
+                  {places ? (
                     places.map((page) =>
                       page.data.map((place) => (
                         <div key={place.id}>
