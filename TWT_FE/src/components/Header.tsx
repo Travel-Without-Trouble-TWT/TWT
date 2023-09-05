@@ -17,7 +17,6 @@ function Header() {
           className="flex h-[5.5rem] items-stretch justify-between font-medium text-slate-700"
           role="navigation"
         >
-          {/*      <!-- Brand logo --> */}
           <a
             id="TWT"
             aria-label="TWT logo"
@@ -37,7 +36,6 @@ function Header() {
               </span>
             </span>
           </a>
-
           <button
             className={`relative order-10 block h-10 w-10 self-center lg:hidden
           ${
@@ -65,7 +63,6 @@ function Header() {
               ></span>
             </div>
           </button>
-          {/*      <!-- Navigation links --> */}
           <ul
             role="menubar"
             aria-label="Select page"
