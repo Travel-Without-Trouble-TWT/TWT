@@ -15,17 +15,10 @@ import java.util.Optional;
 @Repository
 public interface HeartRepository extends JpaRepository<Heart, Long> {
     Optional<Heart> findById(Long id);
-    @Query("SELECT h FROM Heart h WHERE h.member = :member AND h.placeType = :placeType AND h.placeName = :placeName")
-    Optional<Heart> findByMemberAndPlaceTypeAndPlaceId(
-            @Param("member") Member member,
-            @Param("placeType") PlaceType placeType,
-            @Param("placeName") String placeName
-    );
-
-    @Query("SELECT h FROM Heart h WHERE h.member = :member AND h.placeName = :placeName")
+    @Query("SELECT h FROM Heart h WHERE h.member = :member AND h.placeId = :placeId")
     Optional<Heart> findByMemberAndPlaceId(
             @Param("member") Member member,
-            @Param("placeName") String placeName
+            @Param("placeId") Long placeId
     );
 
     @Modifying

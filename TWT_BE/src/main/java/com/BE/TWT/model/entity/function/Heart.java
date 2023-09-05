@@ -22,8 +22,6 @@ public class Heart {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     private Member member;
-    @Enumerated(EnumType.STRING)
-    private PlaceType placeType;
     @Column(nullable = false)
-    private String placeName;
+    private Long placeId;
 }
