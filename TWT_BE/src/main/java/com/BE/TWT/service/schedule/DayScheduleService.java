@@ -36,18 +36,20 @@ public class DayScheduleService {
                 .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
 
         DaySchedule daySchedule = schedule.getDayScheduleList().get(course.getDay());
-        LocalDateTime time = daySchedule.getDay().atTime(LocalTime.of(0, 0)); // 00:00으로 설정
+        LocalDateTime time = daySchedule.getDay().atTime(LocalTime.of(23, 59));
         Place place = placeRepository.findById(course.getPlaceId())
                 .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
         Course addCourse = Course.builder()
                 .placeName(place.getPlaceName())
+                .placeType(place.getPlaceType())
                 .latitude(place.getLatitude())
                 .longitude(place.getLongitude())
                 .arriveAt(time)
                 .build();
         daySchedule.addCourse(addCourse);
         saveDaySchedule(daySchedule);
+        daySchedule.setDistance();
 
         return schedule;
     }
@@ -71,6 +73,7 @@ public class DayScheduleService {
         course.setTime(updateCourse.getArriveAt());
 
         saveDaySchedule(daySchedule);
+        daySchedule.setDistance();
     }
 
     public void deleteCourse(DeleteCourse deleteCourse) {
@@ -81,5 +84,6 @@ public class DayScheduleService {
 
         daySchedule.deleteCourse(course);
         saveDaySchedule(daySchedule);
+        daySchedule.setDistance();
     }
 }

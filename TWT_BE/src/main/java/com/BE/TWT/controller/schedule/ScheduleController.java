@@ -54,7 +54,7 @@ public class ScheduleController {
     @Operation(description = "스케줄 썸네일 및 대표 사진 추가 API")
     @PutMapping("/photo")
     public ResponseEntity<Schedule> setSchedulePhoto(@RequestPart(value = "file", required = false)MultipartFile file,
-                                                     @RequestPart(value = "request") @Valid Long scheduleId) {
+                                                     @RequestParam @Valid Long scheduleId) {
         return ResponseEntity.ok(scheduleService.updateSchedulePhoto(file, scheduleId));
     }
 
