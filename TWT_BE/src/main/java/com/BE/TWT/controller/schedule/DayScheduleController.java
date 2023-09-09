@@ -12,22 +12,22 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/day")
+@RequestMapping("/daily")
 @RequiredArgsConstructor
 public class DayScheduleController {
     private final DayScheduleService dayScheduleService;
 
-    @PostMapping("/plus")
+    @PostMapping("/add")
     public ResponseEntity<DaySchedule> addDayCourse(@RequestBody @Valid AddCourse addCourse) {
         return ResponseEntity.ok(dayScheduleService.addCourse(addCourse));
     }
 
-    @DeleteMapping("/minus")
+    @DeleteMapping("/del")
     public void deleteDayCourse(@RequestBody @Valid DeleteCourse deleteCourse) {
         dayScheduleService.deleteCourse(deleteCourse);
     }
 
-    @PutMapping("/time")
+    @PutMapping("/fix")
     public void updateCourseTime(@RequestBody @Valid UpdateCourse updateCourse) {
          dayScheduleService.updateCourseTime(updateCourse);
     }
