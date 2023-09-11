@@ -1,172 +1,181 @@
 import { useEffect, useState } from 'react';
-
+import { useNavigate, useParams } from 'react-router-dom';
 import { Map, CustomOverlayMap } from 'react-kakao-maps-sdk';
+//component
 import InfiniteScroll from 'react-infinite-scroll-component';
-
+import Spinner from '../components/Spinner';
+//icons
 import { MdOutlineFoodBank, MdOutlineAttractions } from 'react-icons/md';
 import { AiOutlineHome } from 'react-icons/ai';
 import { usePlaces } from '../hooks/useProducts';
 
-import Spinner from '../components/Spinner';
-import Button from '../components/Button';
-
 function Selected() {
-  const [placeLocation, setPlaceLocation] = useState('');
-  const [placeType, setPlaceType] = useState('ALL'); //"ALL", "STAY", "RESTAURANT", "HOT_PLACE"
+  const [placeType, setPlaceType] = useState<string>('ALL'); //"ALL", "STAY", "RESTAURANT", "HOT_PLACE"
   const [isTitleOpen, setIsTitleOpen] = useState<number | null>(null);
 
+  const { location, type } = useParams();
+  const placeLocation = decodeURIComponent(String(location));
+  const navigate = useNavigate();
+
   useEffect(() => {
-    //현재 url에서 placeLoacation 파라미터 추출
-    const urlParams = new URLSearchParams(window.location.search);
-    const locationParam = urlParams.get('placeLocation');
-
-    if (locationParam) {
-      setPlaceLocation(locationParam);
+    //현재 url에서 placeType 파라미터 추출
+    if (type) {
+      setPlaceType(type);
     }
+  }, [location, type]);
 
-    const typeParam = urlParams.get('placeType');
-    if (typeParam) {
-      setPlaceType(typeParam);
-    }
-  }, []);
+  const {
+    places,
+    fetchNextPage,
+    hasNextPage,
+    placeLoading,
+    placeError,
+    center,
+  } = usePlaces(placeType, placeLocation);
 
-  const { places, fetchNextPage, hasNextPage, placeLoading, placeError } =
-    usePlaces(placeType, placeLocation);
+  const handleLocationButtonClick = (newPlaceType: string) => {
+    // 버튼 클릭 시 URL 업데이트
+    setPlaceType(newPlaceType);
+    fetchNextPage({ pageParam: 0 });
+    navigate(`/search/${placeLocation}/${newPlaceType}`);
+  };
 
   return (
     <>
       <section className="bg-white dark:bg-gray-900">
-        <div className="container px-6 py-10 mx-auto">
+        <div className="container px-6 py-10 mx-auto lg:flex lg:flex-row">
           <h1 className="text-3xl font-bold lg:text-4xl dark:text-white">
             {placeLocation} 여행
           </h1>
           <div className="py-3 flex justify-between border-b border-lightgray mb-4">
             <div className="flex">
-              <Button type="ALL" label="전체" />
-              <Button
-                type="HOT_PLACE"
-                icon={<MdOutlineAttractions />}
-                label="명소"
-              />
-              <Button
-                type="RESTAURANT"
-                icon={<MdOutlineFoodBank />}
-                label="맛집"
-              />
-              <Button type="STAY" icon={<AiOutlineHome />} label="숙소" />
+              <button
+                className="flex text-sm border-2 px-2 py-1 border-lightgray rounded-md mr-2 hover:bg-lightgray transition-colors duration-300 items-center"
+                id="ALL"
+                onClick={() => handleLocationButtonClick('ALL')}
+              >
+                전체
+              </button>
+              <button
+                className="flex text-sm border-2 px-2 py-1 border-lightgray rounded-md mr-2 hover:bg-lightgray transition-colors duration-300 items-center"
+                id="HOT_PLACE"
+                onClick={() => handleLocationButtonClick('HOT_PLACE')}
+              >
+                <MdOutlineAttractions />
+                명소
+              </button>
+              <button
+                className="flex text-sm border-2 px-2 py-1 border-lightgray rounded-md mr-2 hover:bg-lightgray transition-colors duration-300 items-center"
+                id="RESTAURANT"
+                onClick={() => handleLocationButtonClick('RESTAURANT')}
+              >
+                <MdOutlineFoodBank />
+                맛집
+              </button>
+              <button
+                className="flex text-sm border-2 px-2 py-1 border-lightgray rounded-md mr-2 hover:bg-lightgray transition-colors duration-300 items-center"
+                id="STAY"
+                onClick={() => handleLocationButtonClick('STAY')}
+              >
+                <AiOutlineHome />
+                숙소
+              </button>
             </div>
+          </div>
+          <div className="flex flex-col w-full lg:w-1/2 ">
+            {placeLoading ? (
+              <Spinner />
+            ) : (
+              <>
+                {places ? (
+                  places?.pages.map((content) => (
+                    <div key={content.id}>
+                      <div className="h-32 flex justify-between border-b-2 border-lightgray">
+                        <div className="flex p-3">
+                          <img
+                            className="w-[130px] h-full mr-4"
+                            src={content.placeImageUrl}
+                          />
+                          <div className="flex flex-col justify-evenly">
+                            <p
+                              className="text-lg font-bold leading-5 hover:underline hover:cursor-pointer"
+                              role="button"
+                              onClick={() => setIsTitleOpen(content.id)}
+                            >
+                              {content.placeName}
+                            </p>
+                            <p className="leading-5 text-sm">
+                              {content.placeAddress}
+                            </p>
+                            <p className="text-gray leading-5 text-sm">
+                              {content.placeType} |{content.placeLocation}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex self-center mr-3">
+                          <button className="text-blue text-sm bg-skyblue bg-opacity-20 px-3 py-1 rounded-2xl">
+                            선택
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <span>데이터가 존재하지 않습니다.</span>
+                )}
+              </>
+            )}
 
-            <div className="flex flex-col w-full lg:flex-row">
+            <div className="grid flex-grow lg:h-[890px] h-[590px] z-0">
               {placeLoading ? (
                 <Spinner />
               ) : (
                 <>
-                  {places ? (
-                    places.map((page) =>
-                      page.data.map((place) => (
-                        <div key={place.id}>
-                          <div className="h-32 flex justify-between border-b-2 border-lightgray">
-                            <div className="flex p-3">
-                              <img
-                                className="w-[130px] h-full mr-4"
-                                src="https://www.gtdc.or.kr/dzSmart/upfiles/Tours/2018August/34/0cbd16f8edf5e3e1ec23f1da43b791de_1534734408.jpg"
-                              />
-                              <div className="flex flex-col justify-evenly">
-                                <p
-                                  className="text-lg font-bold leading-5 hover:underline hover:cursor-pointer"
-                                  role="button"
-                                  onClick={() => setIsTitleOpen(place.title)}
-                                >
-                                  {place.title}
-                                </p>
-                                <p className="leading-5 text-sm">상세주소</p>
-                                <p className="text-gray leading-5 text-sm">
-                                  {place.placeType} |
-                                  {place.placeAddress.split(' ')[1].length === 4
-                                    ? place.placeAddress
-                                        .split(' ')[1]
-                                        .substr(0, 3)
-                                    : place.placeAddress
-                                        .split(' ')[1]
-                                        .substr(0, 2)}
-                                </p>
+                  <Map
+                    center={center}
+                    style={{ width: 'full', height: 'full' }}
+                    level={11}
+                  >
+                    {places ? (
+                      places?.pages.map((content) => (
+                        <CustomOverlayMap
+                          position={{
+                            lat: content.latitude,
+                            lng: content.longitude,
+                          }}
+                          key={content.id}
+                        >
+                          <div
+                            className={`z-10 flex items-center justify-center text-white -translate-x-1/2 rounded-full bg-amber-500 ring-2 ring-white ${
+                              isTitleOpen && 'py-1 px-3 gap-1'
+                            }`}
+                          >
+                            <MdOutlineAttractions />
+                            {isTitleOpen === content.id && (
+                              <div className="flex flex-col">
+                                <span className="text-sm font-semibold">
+                                  <a
+                                    href={`/detail/${content.id}`}
+                                    className="hover:underline"
+                                  >
+                                    {content.placeName}
+                                  </a>
+                                  ({content.reviewNum})
+                                </span>
+                                <span className="text-xs font-semibold">
+                                  ★{content.star} ♥︎{content.placeHeart}
+                                </span>
                               </div>
-                            </div>
-                            <div className="flex self-center mr-3">
-                              <button className="text-blue text-sm bg-skyblue bg-opacity-20 px-3 py-1 rounded-2xl">
-                                선택
-                              </button>
-                            </div>
+                            )}
                           </div>
-                        </div>
+                        </CustomOverlayMap>
                       ))
-                    )
-                  ) : (
-                    <span>데이터가 존재하지 않습니다.</span>
-                  )}
+                    ) : (
+                      <span>데이터가 존재하지 않습니다.</span>
+                    )}
+                  </Map>
                 </>
               )}
-
-              <div className="grid flex-grow lg:h-[890px] h-[590px] z-0">
-                <Map
-                  center={{ lat: 33.55635, lng: 126.795841 }}
-                  style={{ width: 'full', height: 'full' }}
-                  level={4}
-                >
-                  <InfiniteScroll
-                    dataLength={places ? places.length : 0}
-                    next={fetchNextPage}
-                    hasMore={hasNextPage}
-                    loader={<Spinner />}
-                  >
-                    {placeLoading ? (
-                      <Spinner />
-                    ) : (
-                      <>
-                        {places && places?.length > 0 ? (
-                          places.map((page) =>
-                            page.data.map((place) => (
-                              <CustomOverlayMap
-                                position={{
-                                  lat: place.latitude,
-                                  lng: place.longitude,
-                                }}
-                                key={place.id}
-                              >
-                                <div
-                                  className={`z-10 flex items-center justify-center text-white -translate-x-1/2 rounded-full bg-amber-500 ring-2 ring-white ${
-                                    isTitleOpen && 'py-1 px-3 gap-1'
-                                  }`}
-                                >
-                                  <MdOutlineAttractions />
-                                  {isTitleOpen && (
-                                    <div className="flex flex-col">
-                                      <span className="text-sm font-semibold">
-                                        <a
-                                          href={`/detail/${place.id}`}
-                                          className="hover:underline"
-                                        >
-                                          {place.placeName}
-                                        </a>
-                                        ({place.reviewNum})
-                                      </span>
-                                      <span className="text-xs font-semibold">
-                                        ★{place.star} ♥︎{place.placeHeart}
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
-                              </CustomOverlayMap>
-                            ))
-                          )
-                        ) : (
-                          <span>데이터가 존재하지 않습니다.</span>
-                        )}
-                      </>
-                    )}
-                  </InfiniteScroll>
-                </Map>
-              </div>
             </div>
           </div>
         </div>
