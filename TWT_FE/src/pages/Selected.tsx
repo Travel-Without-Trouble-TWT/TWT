@@ -43,7 +43,7 @@ function Selected() {
   return (
     <>
       <section className="bg-white dark:bg-gray-900">
-        <div className="container px-6 py-10 mx-auto lg:flex lg:flex-row">
+        <div className="container px-6 py-10 mx-auto lg:flex-row">
           <h1 className="text-3xl font-bold lg:text-4xl dark:text-white">
             {placeLocation} 여행
           </h1>
@@ -82,51 +82,53 @@ function Selected() {
               </button>
             </div>
           </div>
-          <div className="flex flex-col w-full lg:w-1/2 ">
-            {placeLoading ? (
-              <Spinner />
-            ) : (
-              <>
-                {places ? (
-                  places?.pages.map((content) => (
-                    <div key={content.id}>
-                      <div className="h-32 flex justify-between border-b-2 border-lightgray">
-                        <div className="flex p-3">
-                          <img
-                            className="w-[130px] h-full mr-4"
-                            src={content.placeImageUrl}
-                          />
-                          <div className="flex flex-col justify-evenly">
-                            <p
-                              className="text-lg font-bold leading-5 hover:underline hover:cursor-pointer"
-                              role="button"
-                              onClick={() => setIsTitleOpen(content.id)}
-                            >
-                              {content.placeName}
-                            </p>
-                            <p className="leading-5 text-sm">
-                              {content.placeAddress}
-                            </p>
-                            <p className="text-gray leading-5 text-sm">
-                              {content.placeType} |{content.placeLocation}
-                            </p>
+          <div className="grid lg:grid-cols-2 lg:gap-1 flex-col lg:flex-row w-full">
+            <div>
+              {placeLoading ? (
+                <Spinner />
+              ) : (
+                <>
+                  {places ? (
+                    places?.pages.map((content) => (
+                      <div key={content.id}>
+                        <div className="h-32 flex justify-between border-b-2 border-lightgray">
+                          <div className="flex p-3">
+                            <img
+                              className="w-[130px] h-full mr-4"
+                              src={content.placeImageUrl}
+                            />
+                            <div className="flex flex-col justify-evenly">
+                              <p
+                                className="text-lg font-bold leading-5 hover:underline hover:cursor-pointer"
+                                role="button"
+                                onClick={() => setIsTitleOpen(content.id)}
+                              >
+                                {content.placeName}
+                              </p>
+                              <p className="leading-5 text-sm">
+                                {content.placeAddress}
+                              </p>
+                              <p className="text-gray leading-5 text-sm">
+                                {content.placeType} |{content.placeLocation}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex self-center mr-3">
+                            <button className="text-blue text-sm bg-skyblue bg-opacity-20 px-3 py-1 rounded-2xl">
+                              선택
+                            </button>
                           </div>
                         </div>
-                        <div className="flex self-center mr-3">
-                          <button className="text-blue text-sm bg-skyblue bg-opacity-20 px-3 py-1 rounded-2xl">
-                            선택
-                          </button>
-                        </div>
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  <span>데이터가 존재하지 않습니다.</span>
-                )}
-              </>
-            )}
+                    ))
+                  ) : (
+                    <span>데이터가 존재하지 않습니다.</span>
+                  )}
+                </>
+              )}
+            </div>
 
-            <div className="grid flex-grow lg:h-[890px] h-[590px] z-0">
+            <div className="grid flex-grow lg:w-full lg:h-full h-[590px] z-0">
               {placeLoading ? (
                 <Spinner />
               ) : (
@@ -134,7 +136,7 @@ function Selected() {
                   <Map
                     center={center}
                     style={{ width: 'full', height: 'full' }}
-                    level={11}
+                    level={10}
                   >
                     {places ? (
                       places?.pages.map((content) => (
