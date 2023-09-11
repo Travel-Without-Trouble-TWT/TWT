@@ -104,9 +104,7 @@ function Searchbar() {
               </div>
               <div>
                 <div className="font-semibold text-lg">
-                  <a href={`/search/location?placeLocation=${item.sur}`}>
-                    {item.sur}
-                  </a>
+                  <a href={`/search/${item.sur}/ALL`}>{item.sur}</a>
                 </div>
 
                 <div className="text-xs text-gray">
