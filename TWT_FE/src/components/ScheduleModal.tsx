@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import ko from 'date-fns/locale/ko';
 import { AiOutlineClose } from 'react-icons/ai';
-import { useRecoilState } from 'recoil';
-import { dateRangeState } from '../recoil/Atoms';
 
 function ScheduleModal({
   setShowModal,
