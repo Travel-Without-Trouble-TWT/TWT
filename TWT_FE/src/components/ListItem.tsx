@@ -11,7 +11,7 @@ function ListItem({
   reviewNum,
 }: Top10Props) {
   return (
-    <div className="lg:flex dark:bg-slate-900">
+    <div className="flex flex-col dark:bg-slate-900">
       <img
         className="object-cover w-full h-56 rounded-lg lg:w-64"
         src={placeImageUrl}
@@ -32,7 +32,7 @@ function ListItem({
           </p>
           <span className="w-1 h-1 mx-0.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
           <a
-            href={`/${id}`}
+            href={`/detail/${id}`}
             className="text-sm font-medium text-gray hover:underline dark:text-gray-300"
           >
             {reviewNum === 0 ? '0' : reviewNum}개의 리뷰
