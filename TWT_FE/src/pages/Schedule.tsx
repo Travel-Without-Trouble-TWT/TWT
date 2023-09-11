@@ -8,6 +8,7 @@ import TimeModal from '../components/TimeModal';
 import Feeds from '../components/Feeds';
 import Distance from '../components/Distance';
 import Alerts from '../components/Alerts';
+import DateModal from '../components/DateModal';
 //hooks
 import { useSchedule } from '../hooks/useProducts';
 //icons
@@ -20,6 +21,7 @@ function Schedule() {
   const [isShowTimeModal, setIsShowTimeModal] = useState<boolean>(false);
   const [isPolylineHovered, setIsPolylineHovered] = useState<number | null>(0);
   const [isShowAlert, setIsShowAlert] = useState<string>('');
+  const [isShowDateModal, setIsShowDateModal] = useState<boolean>(false);
   const scheduleId = useParams();
 
   const { schedule, scheduleLoading, scheduleError } = useSchedule(
@@ -42,7 +44,12 @@ function Schedule() {
             <span className="font-bold text-2xl text-white">강원도 여행</span>
             <div className="flex gap-2">
               <span className="text-white underline">2023.07.16 - 07.19</span>
-              <button className="text-gray text-sm">편집</button>
+              <button
+                className="text-gray text-sm"
+                onClick={() => setIsShowDateModal(true)}
+              >
+                편집
+              </button>
             </div>
             <span className="font-bold text-2xl text-white">D - 00</span>
           </div>
@@ -166,7 +173,15 @@ function Schedule() {
           type="warn"
         />
       )}
+      {isShowAlert === '장소삭제' && (
+        <Alerts
+          title="장소 삭제"
+          message="정말로 장소를 삭제하시겠습니까?"
+          type="warn"
+        />
+      )}
       {isShowTimeModal && <TimeModal setIsShowModal={setIsShowTimeModal} />}
+      {isShowDateModal && <DateModal setIsShowDateModal={setIsShowDateModal} />}
       <Footer />
     </>
   );
