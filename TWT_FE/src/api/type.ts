@@ -1,14 +1,15 @@
-import { StringLiteral } from 'typescript';
-
-export interface Top10Props {
-  id: number;
-  placeName: string;
-  placeType: string;
-  placeLocation: string;
-  star: string; //number
-  placeHeart: 0 | 1; //number
-  placeImageUrl: string;
-  reviewNum: number;
+export interface PaginationProps {
+  content: string[];
+  empty: boolean;
+  first: boolean;
+  last: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: object;
+  size: number;
+  sort: object;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface SchedulesProps {
