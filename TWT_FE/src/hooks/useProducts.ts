@@ -14,6 +14,7 @@ import {
   getPlaceReviewsFn,
   getPlaceInfoFn,
   getScheduleFn,
+  deleteScheduleFn,
 } from '../api';
 
 //메인페이지 스케쥴들
@@ -183,7 +184,7 @@ export const useSchedule = (scheduleId: number) => {
     enabled: true,
     retry: 1,
     onSuccess: {},
-    onErro: (error) => {},
+    onError: (error) => {},
   });
   return { schedule, scheduleLoading, scheduleError };
 };
@@ -198,4 +199,14 @@ export const usePostReivews = () => {
   } = useMutation((data) => postReviewFn(reviewPost, file), {
     onSuccess: () => queryClient.invalidateQueries(reviews),
   });
+};
+
+export const useDeleteSchedule = (scheduleId: number) => {
+  const queryClient = useQueryClient();
+  const { isLoading, isSuccess, isError } = useMutation(
+    (data) => deleteScheduleFn(scheduleId),
+    {
+      onSuccess: (schedule) => queryClient.invalidateQueries(schedule),
+    }
+  );
 };
