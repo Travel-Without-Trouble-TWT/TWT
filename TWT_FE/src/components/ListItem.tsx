@@ -20,7 +20,7 @@ function ListItem({
 
       <div className="flex flex-col justify-between py-4 lg:mx-6">
         <a
-          href={`/${id}`}
+          href={`/detail/${id}`}
           className="text-xl font-semibold hover:underline dark:text-white"
         >
           {placeName}
