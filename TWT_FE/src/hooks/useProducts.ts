@@ -1,4 +1,5 @@
 import {
+  InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -16,6 +17,7 @@ import {
   getScheduleFn,
   deleteScheduleFn,
 } from '../api';
+import { PaginationProps } from '../api/type';
 
 //메인페이지 스케쥴들
 export const useSchedules = () => {
@@ -50,7 +52,7 @@ export const useSchedules = () => {
 };
 
 //여행지 선택 후, 장소 리스트
-export const usePlaces = (placeType: string, placeLocation: string) => {
+export const usePlaces = (type: string, location: string) => {
   const {
     data: places,
     fetchNextPage,
@@ -59,21 +61,41 @@ export const usePlaces = (placeType: string, placeLocation: string) => {
     isError: placeError,
   } = useInfiniteQuery(
     ['places'],
-    ({ pageParam = 0 }) => getPlaceFn(placeType, placeLocation, pageParam),
+    ({ pageParam = 0 }) => getPlaceFn(type, location, pageParam),
     {
-      getNextPageParam: (lastPage) => {
-        return lastPage.number + 1;
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage = allPages.length + 1;
+        return lastPage.content.length === 0 ? undefined : nextPage;
       },
-      select: (data) => {
-        const pages = data.pages.flatMap((page) => page.content);
-        return {
-          places: pages,
-          hasNextPage: !data.last,
-        };
-      },
+      select: (data) => ({
+        pages: data.pages.flatMap((page) => page.content),
+        pageParams: data.pageParams,
+      }),
     }
   );
-  return { places, fetchNextPage, hasNextPage, placeLoading, placeError };
+  const allCoordinates = places
+    ? places.pages.map((content) => ({
+        latitude: content.latitude,
+        longitude: content.longitude,
+      }))
+    : [];
+
+  const avgLatitude =
+    allCoordinates.reduce((sum, coord) => sum + coord.latitude, 0) /
+    allCoordinates.length;
+  const avgLongitude =
+    allCoordinates.reduce((sum, coord) => sum + coord.longitude, 0) /
+    allCoordinates.length;
+
+  const center = { lat: avgLatitude, lng: avgLongitude };
+  return {
+    places,
+    fetchNextPage,
+    hasNextPage,
+    placeLoading,
+    placeError,
+    center,
+  };
 };
 
 //방문지 top10
