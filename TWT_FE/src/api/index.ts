@@ -81,3 +81,19 @@ export const postReviewFn = async (data, files) => {
   return response;
 };
 //
+
+//delete
+export const deleteScheduleFn = async (scheduleId: Number) => {
+  const response = await authApi.delete(
+    `/schedule/cancel?scheduleId=${scheduleId}`
+  );
+  return response.data;
+};
+
+export const deleteDailyScheduleFn = async (
+  dayScheduleId: number,
+  index: number
+) => {
+  const response = await authApi.delete(`/daily/del`);
+  return response.data;
+};
