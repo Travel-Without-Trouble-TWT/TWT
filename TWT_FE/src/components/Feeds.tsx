@@ -27,7 +27,12 @@ function Feeds({
               <p className="text-sm text-gray">10:00</p>
             </div>
             <div className="flex flex-col mr-5">
-              <button className="hover:font-semibold text-sm">장소 삭제</button>
+              <button
+                className="hover:font-semibold text-sm"
+                onClick={() => setIsShowAlert('장소삭제')}
+              >
+                장소 삭제
+              </button>
               <button
                 className="hover:font-semibold text-sm"
                 onClick={() => setIsShowTimeModal(true)}
