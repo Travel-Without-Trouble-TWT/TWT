@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { authApi } from './auth';
-import { Top10Props, ReviewProps, ScheduleProps } from './type';
+import { ReviewProps, ScheduleProps, PaginationProps } from './type';
 
 //방문지 top10
 export const getTop10Fn = async () => {
@@ -18,12 +17,12 @@ export const getSchedulesFn = async (page: number) => {
 
 //선택페이지 리스트들
 export const getPlaceFn = async (
-  placeLocation: string,
-  placeType: string,
+  type: string,
+  location: string,
   page: number
 ) => {
-  const response = await authApi.get<Top10Props>(
-    `/search/location?placeLocation=${placeLocation}&placeType=${placeType}&pageNum=${page}`
+  const response = await authApi.get<PaginationProps>(
+    `/search/location?placeLocation=${location}&placeType=${type}&pageNum=${page}`
   );
   return response.data;
 };
