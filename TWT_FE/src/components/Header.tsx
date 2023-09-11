@@ -115,7 +115,7 @@ function Header() {
                 title="user profile"
                 width="40"
                 height="40"
-                className="max-w-full rounded-full"
+                className="max-w-full rounded-full cursor-pointer"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               />
               <span className="absolute bottom-0 right-0 inline-flex items-center justify-center gap-1 rounded-full border-2 border-white bg-pink-500 p-1 text-sm text-white"></span>
