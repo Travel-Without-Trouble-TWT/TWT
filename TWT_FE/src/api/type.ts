@@ -1,5 +1,5 @@
 export interface PaginationProps {
-  content: string[];
+  content: DataProps[];
   empty: boolean;
   first: boolean;
   last: boolean;
