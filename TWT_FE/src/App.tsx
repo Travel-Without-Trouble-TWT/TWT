@@ -20,7 +20,7 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
-          <Route path="/search/:location/:type" element={<Selected />} />
+          <Route path="/search/:location" element={<Selected />} />
           <Route path="/mypage" element={<Mypage />} />
         </Routes>
       </BrowserRouter>
