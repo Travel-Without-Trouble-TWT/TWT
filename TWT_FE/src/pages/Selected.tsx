@@ -48,17 +48,17 @@ function Selected() {
 
   return (
     <>
-      <section className="bg-white dark:bg-gray-900">
+      <section className="bg-white dark:bg-slate-950">
         <div className="container px-6 py-10 mx-auto lg:flex-row">
           <h1 className="text-3xl font-bold lg:text-4xl dark:text-white">
             {placeLocation} 여행
           </h1>
-          <div className="py-3 flex justify-between border-b border-lightgray mb-4">
+          <div className="py-3 flex justify-between border-b border-lightgray mb-4 dark:border-slate-500">
             <div className="flex">
               {buttonData.map((button) => (
                 <button
                   key={button.id}
-                  className="flex text-sm border-2 px-2 py-1 border-lightgray rounded-md mr-2 hover:bg-lightgray hover:font-semibold transition-colors duration-300 items-center focus:bg-lightgray focus:font-semibold"
+                  className="flex text-sm border-2 px-2 py-1 border-lightgray dark:border-skyblue dark:text-white rounded-md mr-2 hover:bg-lightgray dark:hover:bg-skyblue hover:font-semibold transition-colors duration-300 items-center focus:bg-lightgray focus:font-semibold dark:focus:bg-skyblue"
                   id={button.id}
                   onClick={() => handleLocationButtonClick(button.id)}
                 >
@@ -68,7 +68,7 @@ function Selected() {
               ))}
             </div>
           </div>
-          <div className="grid lg:grid-cols-2 lg:gap-1 flex-col lg:flex-row w-full">
+          <div className="grid lg:grid-cols-2 lg:gap-1 flex-col lg:flex-row w-full dark:bg-slate-800">
             <PlaceLists
               places={places}
               placeLoading={placeLoading}
