@@ -1,4 +1,4 @@
-export interface PaginationProps {
+export interface PageProps {
   content: DataProps[];
   empty: boolean;
   first: boolean;
