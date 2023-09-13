@@ -21,5 +21,5 @@ public class SignUpDto {
     private String password;
     @ApiModelProperty(example = "닉네임", required = true)
     @Column(nullable = false, unique = true)
-    private String nickname;
+    private String nickName;
 }

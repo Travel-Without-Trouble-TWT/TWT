@@ -29,6 +29,7 @@ public class PointService {
         sb.append("&format=json");
         sb.append("&crs=" + EPSG);
         sb.append("&key=" + apiKey);
+        sb.append("&type=" + "road");
         sb.append("&address=" + URLEncoder.encode(address, StandardCharsets.UTF_8));
 
         try{
@@ -39,10 +40,10 @@ public class PointService {
             JsonObject jsob = jspa.parse(reader).getAsJsonObject();
             JsonObject jsrs = jsob.get("response").getAsJsonObject();
             JsonObject jsResult = jsrs.get("result").getAsJsonObject();
-            JsonObject jspoitn = jsResult.get("point").getAsJsonObject();
+            JsonObject jsPoint = jsResult.get("point").getAsJsonObject();
 
-            String jsonLongitude = jspoitn.get("y").getAsString();
-            String jsonLatitude = jspoitn.get("x").getAsString();
+            String jsonLongitude = jsPoint.get("y").getAsString();
+            String jsonLatitude = jsPoint.get("x").getAsString();
             return new Point(Double.parseDouble(jsonLongitude),Double.parseDouble(jsonLatitude));
         } catch (IOException e) {
             throw new MapException(INVALID_ADDRESS);

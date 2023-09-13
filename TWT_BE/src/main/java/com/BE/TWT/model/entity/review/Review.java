@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,9 +24,10 @@ public class Review {
     private Long id;
     @CreatedDate
     @Column(updatable = false)
-    private LocalDate createAt;
+    private LocalDateTime createAt;
     @Column(nullable = false)
     private double star;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "place_id", referencedColumnName = "id")
     private Place place;
@@ -38,11 +39,4 @@ public class Review {
     private Long memberId;
     @Column(nullable = false)
     private String reviewComment;
-
-
-    @PrePersist
-    public void plusStar() {
-        // 리뷰를 작성할 때 업체에 평균 평점을 자동으로 계산하여 설정
-        place.updateAverageRating(star);
-    }
 }

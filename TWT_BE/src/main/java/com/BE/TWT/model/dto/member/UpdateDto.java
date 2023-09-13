@@ -15,5 +15,5 @@ import javax.persistence.Column;
 public class UpdateDto {
     @ApiModelProperty(example = "닉네임", required = true)
     @Column(nullable = false, unique = true)
-    private String nickname;
+    private String nickName;
 }

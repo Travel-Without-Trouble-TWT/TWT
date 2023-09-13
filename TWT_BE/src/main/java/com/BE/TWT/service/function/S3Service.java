@@ -67,11 +67,47 @@ public class S3Service {
                                     .uploadFileName(uploadFileName)
                                     .uploadFileUrl(uploadFileUrl)
                                     .build();
+
             reviewImageRepository.save(reviewImage);
             s3files.add(reviewImage);
         }
 
         return s3files;
+    }
+
+    public String uploadFile(MultipartFile file) { // 한장 ( 프로필사진, 스케줄 대표 사진 )
+        String originalFileName = file.getOriginalFilename();
+        String uploadFileName = getUuidFileName(originalFileName);
+        String uploadFileUrl = "";
+        String imagePath = directoryName + "/" + uploadFileName;
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+
+        try (InputStream inputStream = file.getInputStream()) {
+
+            // S3에 폴더 및 파일 업로드
+            amazonS3Client.putObject(
+                    new PutObjectRequest(bucket, imagePath, inputStream, objectMetadata));
+
+            // S3에 업로드한 폴더 및 파일 URL
+            uploadFileUrl = amazonS3Client.getUrl(bucket, imagePath).toString();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("Filed upload failed", e);
+        }
+
+        ReviewImage reviewImage = ReviewImage.builder()
+                .originalFileName(originalFileName)
+                .uploadFileName(uploadFileName)
+                .uploadFileUrl(uploadFileUrl)
+                .build();
+
+        reviewImageRepository.save(reviewImage);
+
+        return uploadFileUrl;
     }
 
     /**

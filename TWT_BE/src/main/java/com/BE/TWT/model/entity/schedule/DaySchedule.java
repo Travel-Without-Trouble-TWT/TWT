@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -23,7 +24,7 @@ public class DaySchedule { // 당일 일정
     private Long scheduleId;
     @ElementCollection
     private List<Course> courseList;
-    private LocalDateTime day;
+    private LocalDate day;
 
     @PrePersist // DB 저장하기 전 실행
     public void sortCourseListByArriveAt() {
