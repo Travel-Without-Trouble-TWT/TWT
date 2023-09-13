@@ -1,5 +1,4 @@
 import {
-  InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -17,7 +16,9 @@ import {
   getScheduleFn,
   deleteScheduleFn,
 } from '../api';
-import { PaginationProps } from '../api/type';
+
+import { DataProps, PageProps } from '../api/type';
+import { calculateCenter } from '../utils/calculate';
 
 //메인페이지 스케쥴들
 export const useSchedules = () => {
@@ -52,46 +53,22 @@ export const useSchedules = () => {
 };
 
 //여행지 선택 후, 장소 리스트
-export const usePlaces = (type: string, location: string) => {
+export const usePlaces = (
+  type: string,
+  location: string,
+  pageParam: number
+) => {
   const {
     data: places,
-    fetchNextPage,
-    hasNextPage,
     isLoading: placeLoading,
     isError: placeError,
-  } = useInfiniteQuery(
-    ['places'],
-    ({ pageParam = 0 }) => getPlaceFn(type, location, pageParam),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        const nextPage = allPages.length + 1;
-        return lastPage.content.length === 0 ? undefined : nextPage;
-      },
-      select: (data) => ({
-        pages: data.pages.flatMap((page) => page.content),
-        pageParams: data.pageParams,
-      }),
-    }
-  );
-  const allCoordinates = places
-    ? places.pages.map((content) => ({
-        latitude: content.latitude,
-        longitude: content.longitude,
-      }))
-    : [];
-
-  const avgLatitude =
-    allCoordinates.reduce((sum, coord) => sum + coord.latitude, 0) /
-    allCoordinates.length;
-  const avgLongitude =
-    allCoordinates.reduce((sum, coord) => sum + coord.longitude, 0) /
-    allCoordinates.length;
-
-  const center = { lat: avgLatitude, lng: avgLongitude };
+  } = useQuery(['places'], () => getPlaceFn(type, location, pageParam), {
+    keepPreviousData: true,
+    refetchOnWindowFocus: true,
+  });
+  const center = calculateCenter(places);
   return {
     places,
-    fetchNextPage,
-    hasNextPage,
     placeLoading,
     placeError,
     center,
