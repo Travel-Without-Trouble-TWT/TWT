@@ -73,13 +73,13 @@ function Searchbar() {
   const [isClick, setIsClick] = useState(false);
 
   return (
-    <div className="max-w-md mx-auto relative">
-      <div className="flex items-center w-full h-12 rounded-2xl shadow-lg focus:shadow-none bg-lightgray overflow-hidden">
-        <div className="grid place-items-center h-full w-12 text-gray-300">
+    <div className="max-w-md mx-auto relative ">
+      <div className="flex items-center w-full h-12 rounded-2xl shadow-lg focus:shadow-none bg-lightgray overflow-hidden dark:bg-slate-800">
+        <div className="grid place-items-center h-full w-12 text-gray-300 dark:bg-slate-800 dark:text-white">
           <AiOutlineSearch />
         </div>
         <input
-          className="peer h-full w-full outline-none bg-lightgray text-sm text-gray-700 pr-2 "
+          className="peer h-full w-full outline-none bg-lightgray text-sm text-gray-700 pr-2 dark:bg-slate-800"
           type="text"
           id="search"
           placeholder="어디로 가시나요?"
@@ -89,13 +89,13 @@ function Searchbar() {
       </div>
       {isClick && (
         <div
-          className="bg-white w-full rounded-xl shadow-xl overflow-hidden p-1 absolute top-12 z-10"
+          className="bg-white w-full rounded-xl shadow-xl overflow-hidden p-1 absolute top-12 z-10 dark:bg-slate-800"
           onBlur={() => setIsClick(false)}
         >
           {locationData.map((item, index) => (
             <div
               key={index}
-              className="w-full flex p-3 pl-4 items-center hover:bg-lightgray rounded-lg cursor-pointer"
+              className="w-full flex p-3 pl-4 items-center hover:bg-lightgray rounded-lg cursor-pointer dark:hover:bg-slate-700 dark:text-white"
             >
               <div className="mr-4">
                 <div className="h-10 w-10 flex items-center justify-center text-3xl">
