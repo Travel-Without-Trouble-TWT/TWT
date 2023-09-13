@@ -1,6 +1,6 @@
 function Spinner({ size }: any) {
   return (
-    <>
+    <div className="flex w-full min-h-full justify-center items-center">
       <svg
         width={size}
         height={size}
@@ -23,7 +23,7 @@ function Spinner({ size }: any) {
           className="animate animate-bounce fill-skyblue [animation-delay:.4s]"
         />
       </svg>
-    </>
+    </div>
   );
 }
 
