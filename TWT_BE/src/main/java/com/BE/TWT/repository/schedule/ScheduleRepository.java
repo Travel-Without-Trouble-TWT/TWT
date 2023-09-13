@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByOrderByIdDesc();
+  
     List<Schedule> findAllByStartAt(LocalDate startAt);
     List<Schedule> findALlByEndAt(LocalDate endAt);
 }
