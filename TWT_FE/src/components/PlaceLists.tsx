@@ -30,22 +30,24 @@ function PlaceLists({
           {places ? (
             places.content.map((place) => (
               <div key={place.id}>
-                <div className="h-32 flex justify-between border-b-2 border-lightgray">
-                  <div className="flex p-3">
+                <div className="h-32 flex justify-between border-b-2 border-lightgray p-2 dark:border-slate-500">
+                  <div className="flex p-3 ">
                     <img
                       className="w-[130px] h-full mr-4"
                       src={place.placeImageUrl}
                     />
                     <div className="flex flex-col justify-evenly">
                       <p
-                        className="text-lg font-bold leading-5 hover:underline hover:cursor-pointer"
+                        className="text-lg font-bold leading-5 hover:underline hover:cursor-pointer dark:text-white"
                         role="button"
                         onClick={() => setIsTitleOpen(place.id)}
                       >
                         {place.placeName}
                       </p>
-                      <p className="leading-5 text-sm">{place.placeAddress}</p>
-                      <p className="text-gray leading-5 text-sm">
+                      <p className="leading-5 text-sm dark:text-white">
+                        {place.placeAddress}
+                      </p>
+                      <p className="text-gray leading-5 text-sm dark:text-gray-300">
                         {place.placeType === 'STAY'
                           ? '숙소'
                           : place.placeType === 'HOT_PLACE'
