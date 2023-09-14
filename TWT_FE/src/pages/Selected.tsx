@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Map, CustomOverlayMap } from 'react-kakao-maps-sdk';
-import { useQueryClient } from '@tanstack/react-query';
+
 //component
 import Spinner from '../components/Spinner';
 import PlaceLists from '../components/PlaceLists';
@@ -10,7 +10,6 @@ import { MdOutlineFoodBank, MdOutlineAttractions } from 'react-icons/md';
 import { AiOutlineHome } from 'react-icons/ai';
 import { usePlaces } from '../hooks/useProducts';
 import { DataProps } from '../api/type';
-import { getPlaceFn } from '../api';
 
 const buttonData = [
   { id: 'ALL', text: '전체' },
@@ -25,11 +24,10 @@ function Selected() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedPlace, setSelectedPlace] = useState({ lat: null, lng: null });
 
-  const queryClient = useQueryClient();
   const { location } = useParams();
   const placeLocation = decodeURIComponent(String(location));
 
-  const { places, placeLoading, placeError, center } = usePlaces(
+  const { places, placeLoading, placeError, center, placeRefetch } = usePlaces(
     placeType,
     placeLocation,
     currentPage - 1
@@ -41,10 +39,8 @@ function Selected() {
   };
 
   useEffect(() => {
-    queryClient.fetchQuery(['places'], () =>
-      getPlaceFn(placeType, placeLocation, currentPage - 1)
-    );
-  }, [placeType, currentPage, queryClient]);
+    placeRefetch();
+  }, [placeType, currentPage]);
 
   return (
     <>
@@ -71,6 +67,7 @@ function Selected() {
           <div className="grid lg:grid-cols-2 lg:gap-1 flex-col lg:flex-row w-full dark:bg-slate-800">
             <PlaceLists
               places={places}
+              placeLocation={placeLocation}
               placeLoading={placeLoading}
               setIsTitleOpen={setIsTitleOpen}
               setCurrentPage={setCurrentPage}
