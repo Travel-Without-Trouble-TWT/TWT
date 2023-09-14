@@ -20,8 +20,9 @@ function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitSuccessful },
     setError,
+    reset,
   } = useForm<LoginProps>({ mode: 'onBlur' });
 
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ function Login() {
   const { mutate: loginUser, isLoading: logining } = useMutation(
     (userData: LoginProps) => loginFn(userData),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         return (
           <>
             <Alerts
@@ -40,6 +41,7 @@ function Login() {
               message="로그인이 완료되었습니다!"
             />
 
+            {localStorage.setItem('accessToken', data)}
             {navigate('/')}
           </>
         );
@@ -64,11 +66,6 @@ function Login() {
       },
     }
   );
-
-  const {
-    reset,
-    formState: { isSubmitSuccessful },
-  } = useForm<LoginProps>({ mode: 'onBlur' });
 
   useEffect(() => {
     if (isSubmitSuccessful) {
