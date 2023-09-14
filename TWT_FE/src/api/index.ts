@@ -55,6 +55,14 @@ export const getScheduleFn = async (scheduleId: number) => {
   return response.data;
 };
 
+//일정 추가 => 기존 일정
+export const getExistedSchedule = async (placeLocation: string) => {
+  const response = await authApi.get(
+    `/schedule/choose?placeLocation=${placeLocation}`
+  );
+  return response.data;
+};
+
 //post
 export const postReviewFn = async (data, files) => {
   const formData = new FormData();
@@ -78,6 +86,11 @@ export const postReviewFn = async (data, files) => {
     },
   });
   return response;
+};
+
+export const postScheduleFn = async () => {
+  const response = await authApi.post(`/schedule/create`);
+  return response.data;
 };
 //
 
