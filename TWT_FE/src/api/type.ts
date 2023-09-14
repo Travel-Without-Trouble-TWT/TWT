@@ -53,11 +53,6 @@ export interface IUser {
   profilUrl: string;
 }
 
-export interface ILoginResponse {
-  status: string;
-  accessToken: string;
-}
-
 export interface IUserResponse {
   status: string;
   data: {
@@ -72,4 +67,15 @@ export interface BasicResponse {
 
 export interface VerifyResponse extends BasicResponse {
   verificationCode: string;
+}
+
+export interface postScheduleProps {
+  id: number;
+  scheduleName: string;
+  member: IUser[];
+  travelPlace: string;
+  startAt: string;
+  endAt: string;
+  days: number[];
+  scheduleImageUrl: string | null;
 }
