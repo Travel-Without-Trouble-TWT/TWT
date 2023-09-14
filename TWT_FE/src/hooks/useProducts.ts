@@ -15,6 +15,8 @@ import {
   getPlaceInfoFn,
   getScheduleFn,
   deleteScheduleFn,
+  postScheduleFn,
+  getExistedSchedule,
 } from '../api';
 
 import { DataProps, PageProps } from '../api/type';
@@ -181,11 +183,34 @@ export const useSchedule = (scheduleId: number) => {
     isError: scheduleError,
   } = useQuery(['schedule', scheduleId], () => getScheduleFn(scheduleId), {
     enabled: true,
-    retry: 1,
     onSuccess: {},
     onError: (error) => {},
   });
   return { schedule, scheduleLoading, scheduleError };
+};
+
+//기존 일정들 정보 (모달창용)
+export const useExistedSchedules = (placeLocation: string) => {
+  const {
+    data: existedSchedules,
+    isLoading: existedScheduling,
+    isError: existedScheduleError,
+    refetch: existedScheduleRefetch,
+  } = useQuery(
+    ['existedSchedule', placeLocation],
+    () => getExistedSchedule(placeLocation),
+    {
+      retry: 1,
+      enabled: false,
+      onError: (error) => console.log(error),
+    }
+  );
+  return {
+    existedSchedules,
+    existedScheduling,
+    existedScheduleError,
+    existedScheduleRefetch,
+  };
 };
 
 //useMutation
@@ -208,4 +233,13 @@ export const useDeleteSchedule = (scheduleId: number) => {
       onSuccess: (schedule) => queryClient.invalidateQueries(schedule),
     }
   );
+};
+
+export const usePostSchedule = () => {
+  const queryClient = useQueryClient();
+  const { isLoading, isSuccess, isError } = useMutation(postScheduleFn, {
+    onSuccess: (data) => {
+      queryClient.setQueryData();
+    },
+  });
 };
