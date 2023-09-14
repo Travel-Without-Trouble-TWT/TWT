@@ -88,8 +88,13 @@ export const postReviewFn = async (data, files) => {
   return response;
 };
 
-export const postScheduleFn = async () => {
-  const response = await authApi.post(`/schedule/create`);
+export const postScheduleFn = async (data: any) => {
+  const response = await authApi.post(`/schedule/create`, data);
+  return response.data;
+};
+
+export const addScheduleFn = async () => {
+  const response = await authApi.put(`/schedule/add`);
   return response.data;
 };
 //
