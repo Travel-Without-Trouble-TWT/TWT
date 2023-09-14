@@ -1,10 +1,5 @@
 import axios from 'axios';
-import {
-  BasicResponse,
-  ILoginResponse,
-  IUserResponse,
-  VerifyResponse,
-} from './type';
+import { BasicResponse, IUserResponse, VerifyResponse } from './type';
 import { LoginProps } from '../pages/Login';
 import { JoinProps } from '../pages/Join';
 
@@ -18,7 +13,7 @@ export const authApi = axios.create({
 authApi.defaults.headers.common['Content-Type'] = 'application/json';
 
 authApi.interceptors.request.use((config) => {
-  const accessToken = document.cookie;
+  const accessToken = localStorage.getItem('accessToken');
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
@@ -26,7 +21,7 @@ authApi.interceptors.request.use((config) => {
 });
 
 export const refreshAccessToken = async () => {
-  const response = await authApi.get<ILoginResponse>('/member/refresh');
+  const response = await authApi.get('/member/refresh');
   return response.data;
 };
 
@@ -62,7 +57,7 @@ export const nicknameFn = async (nickname: string) => {
 };
 
 export const loginFn = async (user: LoginProps) => {
-  const response = await authApi.post<ILoginResponse>('/member/login', user);
+  const response = await authApi.post<LoginProps>('/member/login', user);
   return response.data;
 };
 
