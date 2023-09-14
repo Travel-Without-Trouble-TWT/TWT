@@ -20,9 +20,10 @@ function Join() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitSuccessful },
     setError,
     watch,
+    reset,
   } = useForm<JoinProps>({ mode: 'onBlur' });
   const navigate = useNavigate();
   const [isDuplicated, setIsDuplicated] = useState<string | null>(null);
@@ -84,11 +85,6 @@ function Join() {
       },
     }
   );
-
-  const {
-    reset,
-    formState: { isSubmitSuccessful },
-  } = useForm<JoinProps>({ mode: 'onBlur' });
 
   useEffect(() => {
     if (isSubmitSuccessful) {
