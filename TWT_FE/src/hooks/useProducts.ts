@@ -17,6 +17,7 @@ import {
   deleteScheduleFn,
   postScheduleFn,
   getExistedSchedule,
+  addScheduleFn,
 } from '../api';
 
 import { DataProps, PageProps } from '../api/type';
@@ -64,6 +65,7 @@ export const usePlaces = (
     data: places,
     isLoading: placeLoading,
     isError: placeError,
+    refetch: placeRefetch,
   } = useQuery(['places'], () => getPlaceFn(type, location, pageParam), {
     keepPreviousData: true,
     refetchOnWindowFocus: true,
@@ -73,6 +75,7 @@ export const usePlaces = (
     places,
     placeLoading,
     placeError,
+    placeRefetch,
     center,
   };
 };
@@ -201,8 +204,18 @@ export const useExistedSchedules = (placeLocation: string) => {
     () => getExistedSchedule(placeLocation),
     {
       retry: 1,
-      enabled: false,
       onError: (error) => console.log(error),
+      select: (existedSchedules) => {
+        if (existedSchedules && Array.isArray(existedSchedules)) {
+          return existedSchedules.map((item) => ({
+            ...item,
+            days: item.days
+              ? Array.from({ length: item.days }, (_, index) => index + 1)
+              : [],
+          }));
+        }
+        return existedSchedules;
+      },
     }
   );
   return {
@@ -235,11 +248,45 @@ export const useDeleteSchedule = (scheduleId: number) => {
   );
 };
 
-export const usePostSchedule = () => {
+//새로운 일정 추가
+export const usePostSchedule = (data: any) => {
   const queryClient = useQueryClient();
-  const { isLoading, isSuccess, isError } = useMutation(postScheduleFn, {
+  const {
+    mutate: postSchedule,
+    isLoading: schedulePosting,
+    isSuccess: schedulePostingSuccess,
+    isError: schedulePostingError,
+  } = useMutation(() => postScheduleFn(data), {
     onSuccess: (data) => {
-      queryClient.setQueryData();
+      queryClient.invalidateQueries(['schedule']);
     },
   });
+  return {
+    postSchedule,
+    schedulePosting,
+    schedulePostingSuccess,
+    schedulePostingError,
+  };
+};
+
+//기존 일정에 추가
+export const useAddSchedule = () => {
+  const queryClient = useQueryClient();
+  const {
+    mutate: addSchedule,
+    isLoading: scheduleAdding,
+    isSuccess: scheduleAddingSuccess,
+    isError: scheduleAddingError,
+  } = useMutation(addScheduleFn, {
+    onError: (error) => console.log(error),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['schedule']);
+    },
+  });
+  return {
+    addSchedule,
+    scheduleAdding,
+    scheduleAddingSuccess,
+    scheduleAddingError,
+  };
 };
