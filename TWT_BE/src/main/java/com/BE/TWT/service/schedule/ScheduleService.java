@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class ScheduleService {
 
         Schedule schedule = Schedule.builder()
                 .scheduleName(dto.getScheduleName())
+                .startAt(LocalDate.now())
+                .endAt(LocalDate.now())
                 .travelPlace(dto.getTravelPlace())
                 .member(member)
                 .build();
@@ -57,10 +60,19 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(setDateDto.getScheduleId())
                 .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
 
-        schedule.updateDate(setDateDto.getStartAt(), setDateDto.getEndAt());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        LocalDateTime startDate = setDateDto.getStartAt();
-        LocalDateTime endDate = setDateDto.getEndAt();
+        LocalDate startDate = setDateDto.getStartAt();
+        String formatStart = startDate.format(formatter);
+        LocalDate endDate = setDateDto.getEndAt();
+        String formatEnd = endDate.format(formatter);
+
+        LocalDate parseStart = LocalDate.parse(formatStart, formatter);
+        LocalDate parseEnd = LocalDate.parse(formatEnd, formatter);
+        schedule.updateDate(parseStart, parseEnd);
+
+        schedule.updateDate(setDateDto.getStartAt(), setDateDto.getEndAt());
+     
         int days = (int) ChronoUnit.DAYS.between(startDate, endDate);
         schedule.insertDays(days);
         List<DaySchedule> dayScheduleList = new ArrayList<>();
@@ -88,9 +100,17 @@ public class ScheduleService {
         List<DaySchedule> oldDayScheduleList = schedule.getDayScheduleList();
         List<DaySchedule> newDayScheduleList = new ArrayList<>();
 
-        LocalDateTime startDate = dto.getStartAt();
-        LocalDateTime endDate = dto.getEndAt();
+        LocalDate startDate = dto.getStartAt();
+        LocalDate endDate = dto.getEndAt();
         int days = (int) ChronoUnit.DAYS.between(startDate, endDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String formatStart = startDate.format(formatter);
+        String formatEnd = endDate.format(formatter);
+
+        LocalDate parseStart = LocalDate.parse(formatStart, formatter);
+        LocalDate parseEnd = LocalDate.parse(formatEnd, formatter);
+        schedule.updateDate(parseStart, parseEnd);
 
         if(oldDayScheduleList.size() > days) { // 변경 후 기간이 더 짧다
             for (int i = 0; i < days; i++) {
@@ -151,3 +171,4 @@ public class ScheduleService {
         return schedule;
     }
 }
+

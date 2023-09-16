@@ -21,6 +21,7 @@ public class ScheduleController {
     @PostMapping("/create")
     public ResponseEntity<Schedule> createSchedule(HttpServletRequest request,
                                                   @RequestBody @Valid CreateScheduleDto createScheduleDto) {
+
         return ResponseEntity.ok(scheduleService.createSchedule(request, createScheduleDto));
     }
 
@@ -45,5 +46,4 @@ public class ScheduleController {
                                                      @RequestPart(value = "request") @Valid Long scheduleId) {
         return ResponseEntity.ok(scheduleService.updateSchedulePhoto(file, scheduleId));
     }
-
 }
