@@ -5,10 +5,7 @@ function Footer() {
         <div className="w-full md:w-4/12 px-4 mx-auto text-center">
           <div className="text-sm font-semibold py-1 flex flex-col">
             Copyright © {new Date().getFullYear()}
-            <a
-              href="https://www.creative-tim.com/product/notus-js"
-              target="blank"
-            >
+            <a href="/" target="blank">
               <strong className="text-blue">T</strong>ravel
               <strong className="text-blue">W</strong>ithout
               <strong className="text-blue">T</strong>rouble
