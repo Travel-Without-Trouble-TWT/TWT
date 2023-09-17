@@ -30,7 +30,7 @@ export const getPlaceFn = async (
 //마이페이지
 export const getUserDataFn = async (category: string, page: number) => {
   const response = await authApi.get(
-    `/search/member/${category}?pageNum=${page + 1}`
+    `/search/member/${category}?pageNum=${page}`
   );
   return response.data;
 };
@@ -93,8 +93,8 @@ export const postScheduleFn = async (data: any) => {
   return response.data;
 };
 
-export const addScheduleFn = async () => {
-  const response = await authApi.put(`/schedule/add`);
+export const addScheduleFn = async (data: any) => {
+  const response = await authApi.put(`/schedule/add`, data);
   return response.data;
 };
 //
