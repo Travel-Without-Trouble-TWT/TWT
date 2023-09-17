@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Stars from './Stars';
 import ZoomModal from './ZoomModal';
 
-function ReviewList() {
+function ReviewList(data) {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
