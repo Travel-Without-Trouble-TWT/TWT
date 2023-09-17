@@ -1,24 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TfiWrite } from 'react-icons/tfi';
 import { AiTwotoneCalendar } from 'react-icons/ai';
 
 import SouthKoreaMap from '../components/SouthKoreaMap';
-import ScheduleList from '../components/ScheduleList';
+
 import { useUserDatas } from '../hooks/useProducts';
+import ReviewList from '../components/ReviewList';
+import ScheduleList from '../components/ScheduleList';
 
 function Mypage() {
   const [isListOpen, setIsListOpen] = useState<string | null>(null);
   const [category, setCategory] = useState<string>('schedule');
-  const {
-    userDatas,
-    fetchNextPage,
-    hasNextPage,
-    userDataLoading,
-    userDataError,
-  } = useUserDatas(category);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const { userDatas, userDataLoading, userDataError, userDataRefetch } =
+    useUserDatas(category, currentPage - 1);
+
+  useEffect(() => {
+    userDataRefetch();
+  }, [category, currentPage]);
   return (
     <>
-      <section className="bg-lightgray dark:bg-gray-900 h-full flex justify-center flex-col lg:px-20 px-10 py-6">
+      <section className="bg-lightgray dark:bg-gray-900 min-w-full min-h-screen flex justify-center flex-col lg:px-48 tablet:px-10 py-6">
         <div className="bg-white rounded-lg shadow-xl pb-8 mb-2">
           <div className="w-full h-[150px] bg-lightgray"></div>
           <div className="flex flex-col items-center -mt-20">
@@ -67,15 +69,24 @@ function Mypage() {
         </div>
         <div className="bg-white rounded-lg shadow-xl pb-8">
           <div className="flex justify-center p-10">
-            <SouthKoreaMap
-              isListOpen={isListOpen}
-              setIsListOpen={setIsListOpen}
-            />
-            {isListOpen && !userDataLoading && (
-              <div>
-                <ScheduleList userDatas={userDatas} isListOpen={isListOpen} />
-              </div>
+            {category === 'schedule' && (
+              <>
+                <SouthKoreaMap
+                  isListOpen={isListOpen}
+                  setIsListOpen={setIsListOpen}
+                />
+                {isListOpen && !userDataLoading && (
+                  <div>
+                    <ScheduleList
+                      userDatas={userDatas}
+                      isListOpen={isListOpen}
+                    />
+                  </div>
+                )}
+              </>
             )}
+            {category === 'review' && <ReviewList data={userDatas} />}
+            {/* {category === 'heart' && } */}
           </div>
         </div>
       </section>
