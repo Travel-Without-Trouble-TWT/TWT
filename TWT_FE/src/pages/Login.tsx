@@ -6,7 +6,6 @@ import GoogleLogo from '../assets/google.png';
 import { useMutation } from '@tanstack/react-query';
 import { loginFn } from '../api/auth';
 import { useEffect } from 'react';
-import { useUser } from '../hooks/useUser';
 import googleUrl from '../utils/googleUrl';
 import Alerts from '../components/Alerts';
 import Spinner from '../components/Spinner';
