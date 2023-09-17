@@ -1,32 +1,81 @@
 import { useEffect, useRef, useState } from 'react';
-import DatePicker from 'react-datepicker';
-import ko from 'date-fns/locale/ko';
+import { useParams } from 'react-router-dom';
+
+//components
+import NewScheduleSection from './NewScheduleSection';
+import ExistingScheduleSection from './ExistingScheduleSection';
+
 import { AiOutlineClose } from 'react-icons/ai';
+import { useAddSchedule, usePostSchedule } from '../hooks/useProducts';
+
+type ScheduleModalProps = {
+  setShowModal: (value: string | '') => void;
+  data: any;
+  selectedPlace: number | null;
+};
 
 function ScheduleModal({
   setShowModal,
-}: {
-  setShowModal: (showModal: string | '') => void;
-}) {
+  data,
+  selectedPlace,
+}: ScheduleModalProps) {
+  const { location } = useParams();
+  const placeLocation = decodeURIComponent(String(location));
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [isAccordionOpen, setAccordionOpen] = useState<string | null>(null);
+  const [accordionType, setAccordionType] = useState<string | null>(null);
+  const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(
+    null
+  );
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [startAt, setStartAt] = useState<Date | null>(null);
   const [endAt, setEndAt] = useState<Date | null>(null);
-  const [newScheduleDays, setNewScheduleDays] = useState<number[]>([]);
+  const [isNewSchedule, setIsNewSchedule] = useState<boolean>(false);
 
-  const getDaysNum = ({ startAt, endAt }: { startAt: Date; endAt: Date }) => {
-    let diff = Math.abs(startAt?.getTime() - endAt?.getTime());
-    diff = Math.ceil(diff / (1000 * 60 * 60 * 24));
-    return diff;
+  const {
+    postSchedule,
+    schedulePosting,
+    schedulePostingSuccess,
+    schedulePostingError,
+  } = usePostSchedule();
+
+  const {
+    addSchedule,
+    scheduleAdding,
+    scheduleAddingSuccess,
+    scheduleAddingError,
+  } = useAddSchedule();
+
+  const getDatetoString = (date: Date) => {
+    const year = date.getFullYear();
+    const month = ('0' + (1 + date.getMonth())).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return year + '-' + month + '-' + day;
   };
 
-  useEffect(() => {
-    if (startAt && endAt) {
-      const days = getDaysNum({ startAt, endAt });
-      const arr = Array.from({ length: days + 1 }, (_, i) => i);
-      setNewScheduleDays(arr);
+  const handleAddButtonClick = () => {
+    if (isNewSchedule) {
+      // 새로운 일정 추가 시
+      if (startAt && endAt && selectedDay) {
+        const newPostData = {
+          startAt: getDatetoString(startAt),
+          endAt: getDatetoString(endAt),
+          placeId: selectedPlace,
+          placeLocation: placeLocation,
+          when: selectedDay,
+        };
+        postSchedule(newPostData);
+      } else {
+        // startAt 또는 endAt, when이 null일 때 오류 처리
+        console.error('모든 정보를 입력하지 않았습니다.');
+      }
+    } else {
+      addSchedule({
+        scheduleId: selectedScheduleId,
+        placeId: selectedPlace,
+        when: selectedDay,
+      });
     }
-  }, [startAt, endAt]);
+  };
 
   return (
     <>
@@ -56,63 +105,27 @@ function ScheduleModal({
                 className="font-semibold transition-transform duration-300"
                 style={{
                   transform:
-                    isAccordionOpen === '새로운일정'
+                    accordionType === '새로운일정'
                       ? 'rotate(45deg)'
                       : 'rotate(0deg)',
                 }}
-                onClick={() => setAccordionOpen('새로운일정')}
+                onClick={() => {
+                  setAccordionType('새로운일정');
+                  setIsNewSchedule(true);
+                }}
               >
                 +
               </span>
             </div>
 
-            {isAccordionOpen === '새로운일정' && (
-              <>
-                <span className="text-sm text-slate-700">
-                  ✓ 여행 날짜를 입력해주세요.
-                </span>
-                <div className="flex justify-center gap-2">
-                  <DatePicker
-                    className="border-b border-skyblue px-2 py-1 text-sm cursor-pointer"
-                    onChange={(date) => {
-                      setStartAt(date);
-                    }}
-                    selected={startAt}
-                    selectsStart
-                    locale={ko}
-                    minDate={new Date()}
-                    monthsShown={1}
-                    placeholderText="YY.MM.dd"
-                    dateFormat="yy.MM.dd"
-                  ></DatePicker>
-                  <span>~</span>
-                  <DatePicker
-                    className="border-b border-skyblue px-2 py-1 text-sm cursor-pointer"
-                    onChange={(date) => {
-                      setEndAt(date);
-                    }}
-                    selected={endAt}
-                    selectsEnd
-                    locale={ko}
-                    minDate={startAt}
-                    monthsShown={1}
-                    placeholderText="YY.MM.dd"
-                    dateFormat="yy.MM.dd"
-                  ></DatePicker>
-                </div>
-
-                <div className="mt-2 flex w-full overflow-auto gap-2">
-                  {newScheduleDays.length > 0 &&
-                    newScheduleDays.map((day, index) => (
-                      <span
-                        key={`day${index}`}
-                        className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer"
-                      >
-                        DAY{day + 1}
-                      </span>
-                    ))}
-                </div>
-              </>
+            {accordionType === '새로운일정' && (
+              <NewScheduleSection
+                startAt={startAt}
+                setStartAt={setStartAt}
+                endAt={endAt}
+                setEndAt={setEndAt}
+                setSelectedDay={setSelectedDay}
+              />
             )}
           </div>
 
@@ -123,35 +136,33 @@ function ScheduleModal({
                 className="font-semibold transition-transform duration-300"
                 style={{
                   transform:
-                    isAccordionOpen === '기존일정'
+                    accordionType === '기존일정'
                       ? 'rotate(45deg)'
                       : 'rotate(0deg)',
                 }}
-                onClick={() => setAccordionOpen('기존일정')}
+                onClick={() => {
+                  setAccordionType('기존일정');
+                  setIsNewSchedule(false);
+                }}
               >
                 +
               </span>
             </div>
 
-            {isAccordionOpen === '기존일정' && (
-              <div className="mt-2 flex justify-evenly">
-                <span className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer">
-                  day01
-                </span>
-                <span className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer">
-                  day02
-                </span>
-                <span className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer">
-                  day03
-                </span>
-                <span className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer">
-                  day04
-                </span>
-              </div>
+            {accordionType === '기존일정' && (
+              <ExistingScheduleSection
+                data={data}
+                setSelectedScheduleId={setSelectedScheduleId}
+                setSelectedDay={setSelectedDay}
+                selectedScheduleId={selectedScheduleId}
+              />
             )}
           </div>
           <div className="flex justify-end">
-            <button className="inline-flex items-center justify-center flex-1 h-10 gap-2 px-5 text-sm font-semibold tracking-wide duration-300 rounded whitespace-nowrap bg-skyblue/80 hover:bg-skyblue">
+            <button
+              onClick={handleAddButtonClick}
+              className="inline-flex items-center justify-center flex-1 h-10 gap-2 px-5 text-sm font-semibold tracking-wide duration-300 rounded whitespace-nowrap bg-skyblue/80 hover:bg-skyblue"
+            >
               추가
             </button>
           </div>
