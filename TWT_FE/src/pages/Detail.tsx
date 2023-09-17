@@ -26,7 +26,7 @@ function Detail() {
   return (
     <>
       <Header />
-      <section className="bg-lightgray dark:bg-slate-950 h-full flex justify-center flex-col lg:px-48 tablet:px-10 py-6">
+      <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen flex justify-center flex-col lg:px-48 tablet:px-10 py-6">
         {!placeInfoLoading && placeInfos ? (
           <>
             <img
