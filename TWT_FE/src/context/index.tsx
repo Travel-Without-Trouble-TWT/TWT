@@ -1,58 +1,47 @@
-import { IUser } from '../api/type';
-import React from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-type State = {
-  authUser: IUser | null;
+type User = {
+  email: string;
+  nickName: string;
+  profileUrl: string;
 };
 
-type Action = {
-  type: string;
-  payload: IUser | null;
+type UserContextType = {
+  user: User | null;
+  login: (userData: User) => void;
+  logout: () => void;
 };
 
-type Dispatch = (action: Action) => void;
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
-const initialState: State = {
-  authUser: null,
-};
-
-type StateContextProviderProps = { children: React.ReactNode };
-
-const StateContext = React.createContext<
-  { state: State; dispatch: Dispatch } | undefined
->(undefined);
-
-const stateReducer = (state: State, action: Action) => {
-  switch (action.type) {
-    case 'SET_USER': {
-      return {
-        ...state,
-        authUser: action.payload,
-      };
-    }
-    default: {
-      throw new Error('로그인을 해주세요.');
-    }
+export function useUserContext(): UserContextType {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUserContext must be used within a UserProvider');
   }
+  return context;
+}
+
+type UserProviderProps = {
+  children: ReactNode;
 };
 
-const StateContextProvider = ({ children }: StateContextProviderProps) => {
-  const [state, dispatch] = React.useReducer(stateReducer, initialState);
-  const value = { state, dispatch };
+export function UserProvider({ children }: UserProviderProps) {
+  const [user, setUser] = useState<User | null>(null);
+
+  const login = (userData: User) => {
+    //로그인 로직을 구현하고, userData를 받아서 setUser로 설정
+    setUser(userData);
+  };
+
+  const logout = () => {
+    // 로그아웃 로직을 구현하고, setUser(null)로 유저 정보 초기화
+    setUser(null);
+  };
+
   return (
-    <StateContext.Provider value={value}>{children}</StateContext.Provider>
+    <UserContext.Provider value={{ user, login, logout }}>
+      {children}
+    </UserContext.Provider>
   );
-};
-
-const useStateContext = () => {
-  const context = React.useContext(StateContext);
-
-  if (context) {
-    return context;
-  }
-  throw new Error(
-    'useStateContext는 StateContextProvider 내에서 사용해야 합니다.'
-  );
-};
-
-export { StateContextProvider, useStateContext };
+}
