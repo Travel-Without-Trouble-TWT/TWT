@@ -100,35 +100,21 @@ export const useTop10 = () => {
 };
 
 //마이페이지
-export const useUserDatas = (category: string) => {
+export const useUserDatas = (category: string, pageParam: number) => {
   const {
     data: userDatas,
-    fetchNextPage,
-    hasNextPage,
     isLoading: userDataLoading,
     isError: userDataError,
-  } = useInfiniteQuery(
-    ['userDatas'],
-    ({ pageParam = 0 }) => getUserDataFn(category, pageParam),
-    {
-      getNextPageParam: (lastPage) => {
-        return lastPage.number + 1;
-      },
-      select: (data) => {
-        const pages = data.pages.flatMap((page) => page.content);
-        return {
-          places: pages,
-          hasNextPage: !data.last,
-        };
-      },
-    }
-  );
+    refetch: userDataRefetch,
+  } = useQuery(['userDatas'], () => getUserDataFn(category, pageParam), {
+    keepPreviousData: true,
+    refetchOnWindowFocus: true,
+  });
   return {
     userDatas,
-    fetchNextPage,
-    hasNextPage,
     userDataLoading,
     userDataError,
+    userDataRefetch,
   };
 };
 
@@ -270,14 +256,14 @@ export const usePostSchedule = (data: any) => {
 };
 
 //기존 일정에 추가
-export const useAddSchedule = () => {
+export const useAddSchedule = (data: any) => {
   const queryClient = useQueryClient();
   const {
     mutate: addSchedule,
     isLoading: scheduleAdding,
     isSuccess: scheduleAddingSuccess,
     isError: scheduleAddingError,
-  } = useMutation(addScheduleFn, {
+  } = useMutation(() => addScheduleFn(data), {
     onError: (error) => console.log(error),
     onSuccess: (data) => {
       queryClient.invalidateQueries(['schedule']);
