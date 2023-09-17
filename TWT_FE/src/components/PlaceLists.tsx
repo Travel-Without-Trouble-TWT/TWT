@@ -1,10 +1,15 @@
+import { useState } from 'react';
+
 //components
 import { PageProps } from '../api/type';
 import Pagination from './Pagination';
 import Spinner from './Spinner';
+import ScheduleModal from './ScheduleModal';
+import { useExistedSchedules } from '../hooks/useProducts';
 
 interface PlaceListsProps {
   places: PageProps;
+  placeLocation: string;
   currentPage: number;
   setCurrentPage: (currentPage: number) => void;
   placeLoading: boolean;
@@ -13,14 +18,30 @@ interface PlaceListsProps {
 
 function PlaceLists({
   places,
+  placeLocation,
   placeLoading,
   setIsTitleOpen,
   setCurrentPage,
   currentPage,
 }: PlaceListsProps) {
+  const [selectedPlace, setSelectedPlace] = useState<null | number>(null);
+  const {
+    existedSchedules,
+    existedScheduling,
+    existedScheduleError,
+    existedScheduleRefetch,
+  } = useExistedSchedules(placeLocation);
+
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+
+  const handleSelectedClick = (id: number) => {
+    existedScheduleRefetch();
+    setShowModal('schedule');
+    setSelectedPlace(id);
+  };
+  const [showModal, setShowModal] = useState<string | ''>('');
   return (
     <div>
       {placeLoading ? (
@@ -60,7 +81,10 @@ function PlaceLists({
                     </div>
                   </div>
                   <div className="flex self-center mr-3">
-                    <button className="text-blue text-sm bg-skyblue bg-opacity-20 px-3 py-1 rounded-2xl">
+                    <button
+                      className="text-blue text-sm bg-skyblue bg-opacity-20 px-3 py-1 rounded-2xl"
+                      onClick={() => handleSelectedClick(place.id)}
+                    >
                       선택
                     </button>
                   </div>
@@ -68,7 +92,9 @@ function PlaceLists({
               </div>
             ))
           ) : (
-            <span>데이터가 존재하지 않습니다.</span>
+            <span className="flex justify-center items-center text-gray font-semibold">
+              데이터가 존재하지 않습니다.
+            </span>
           )}
           <Pagination
             currentPage={currentPage}
@@ -77,6 +103,13 @@ function PlaceLists({
             onPageChange={handlePageChange}
           />
         </>
+      )}
+      {showModal === 'schedule' && (
+        <ScheduleModal
+          setShowModal={setShowModal}
+          data={existedSchedules}
+          selectedPlace={selectedPlace}
+        />
       )}
     </div>
   );
