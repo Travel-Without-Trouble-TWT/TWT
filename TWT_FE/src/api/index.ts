@@ -1,5 +1,5 @@
 import { authApi } from './auth';
-import { ReviewProps, ScheduleProps, PaginationProps } from './type';
+import { ReviewProps, ScheduleProps, PageProps } from './type';
 
 //방문지 top10
 export const getTop10Fn = async () => {
@@ -21,24 +21,30 @@ export const getPlaceFn = async (
   location: string,
   page: number
 ) => {
-  const response = await authApi.get<PaginationProps>(
+  const response = await authApi.get<PageProps>(
     `/search/location?placeLocation=${location}&placeType=${type}&pageNum=${page}`
   );
   return response.data;
 };
 
 //마이페이지
-export const getUserDataFn = async (category: string, page: number) => {
-  const response = await authApi.get(
-    `/search/member/${category}?pageNum=${page}`
-  );
+export const getUserDataFn = async (
+  category: string,
+  page: number,
+  placeLocation?: string
+) => {
+  let url = `/search/member/${category}?pageNum=${page}`;
+  if (category === 'schedule') {
+    url += `&placeLocation=${placeLocation}`;
+  }
+  const response = await authApi.get(url);
   return response.data;
 };
 
 //리뷰 리스트들
-export const getPlaceReviewsFn = async (page: number) => {
-  const response = await authApi.get<ReviewProps>(
-    `/review/place?placeId=&pageNum=${page}`
+export const getPlaceReviewsFn = async (placeId: number, page: number) => {
+  const response = await authApi.get<PageProps>(
+    `/review/place?placeId=${placeId}&pageNum=${page}`
   );
   return response.data;
 };
@@ -95,6 +101,11 @@ export const postScheduleFn = async (data: any) => {
 
 export const addScheduleFn = async (data: any) => {
   const response = await authApi.put(`/schedule/add`, data);
+  return response.data;
+};
+
+export const addLikeFn = async (placeId: number) => {
+  const response = await authApi.post(`/member?placeId=${placeId}`);
   return response.data;
 };
 //
