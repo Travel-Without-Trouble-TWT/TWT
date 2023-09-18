@@ -1,4 +1,5 @@
 import {
+  QueryClient,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -18,6 +19,7 @@ import {
   postScheduleFn,
   getExistedSchedule,
   addScheduleFn,
+  addLikeFn,
 } from '../api';
 
 import { DataProps, PageProps } from '../api/type';
@@ -100,16 +102,24 @@ export const useTop10 = () => {
 };
 
 //마이페이지
-export const useUserDatas = (category: string, pageParam: number) => {
+export const useUserDatas = (
+  category: string,
+  pageParam: number,
+  placeLocation?: string
+) => {
   const {
     data: userDatas,
     isLoading: userDataLoading,
     isError: userDataError,
     refetch: userDataRefetch,
-  } = useQuery(['userDatas'], () => getUserDataFn(category, pageParam), {
-    keepPreviousData: true,
-    refetchOnWindowFocus: true,
-  });
+  } = useQuery(
+    ['userDatas'],
+    () => getUserDataFn(category, pageParam, placeLocation),
+    {
+      refetchOnWindowFocus: true,
+      enabled: !!placeLocation,
+    }
+  );
   return {
     userDatas,
     userDataLoading,
@@ -119,30 +129,17 @@ export const useUserDatas = (category: string, pageParam: number) => {
 };
 
 //리뷰 리스트들
-export const useReviews = () => {
+export const useReviews = (placeId: number, pageParam: number) => {
   const {
     data: reviews,
-    fetchNextPage,
-    hasNextPage,
     isLoading: reviewLoading,
     isError: reviewError,
-  } = useInfiniteQuery(
-    ['reviews'],
-    ({ pageParam = 0 }) => getPlaceReviewsFn(pageParam),
-    {
-      getNextPageParam: (lastPage) => {
-        return lastPage.number + 1;
-      },
-      select: (data) => {
-        const pages = data.pages.flatMap((page) => page.content);
-        return {
-          places: pages,
-          hasNextPage: !data.last,
-        };
-      },
-    }
-  );
-  return { reviews, fetchNextPage, hasNextPage, reviewLoading, reviewError };
+    refetch: reviewRefetch,
+  } = useQuery(['reviews'], () => getPlaceReviewsFn(placeId, pageParam), {
+    keepPreviousData: true,
+    refetchOnWindowFocus: true,
+  });
+  return { reviews, reviewLoading, reviewError, reviewRefetch };
 };
 
 //해당 장소 정보
@@ -275,4 +272,20 @@ export const useAddSchedule = (data: any) => {
     scheduleAddingSuccess,
     scheduleAddingError,
   };
+};
+
+export const useAddLike = (postId: number) => {
+  const queryClient = useQueryClient();
+  const {
+    mutate: addLike,
+    isLoading: likeAdding,
+    isSuccess: likeAddingSuccess,
+    isError: likeAddingError,
+  } = useMutation(() => addLikeFn(postId), {
+    onError: (error) => console.log(error),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['placeInfos']);
+    },
+  });
+  return { addLike, likeAdding, likeAddingSuccess, likeAddingError };
 };
