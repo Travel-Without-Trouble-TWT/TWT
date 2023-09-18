@@ -8,24 +8,31 @@ function ScheduleList({
   return (
     <>
       <ul className="divide-y divide-slate-100 shadow-md ml-5 rounded">
-        {userDatas &&
-          userDatas.content.map((userData) => {
+        {userDatas ? (
+          userDatas.content.map((userData: any) => (
             <li key={userData.id} className="flex items-center gap-4 px-4 py-3">
               <div className="flex items-center self-center">
                 <img
                   src={userData.scheduleImageUrl}
                   alt="schedule image"
-                  className="w-8 rounded"
+                  className="w-10 h-10 rounded"
                 />
               </div>
 
               <div className="flex min-h-[2rem] min-w-0 flex-1 flex-col items-start justify-center gap-0">
-                <span className="w-full truncate text-sm text-gray">
-                  {userData.scheduleName} {userData.startAt} ~ {userData.endAt}
+                <span className="w-full truncate text-sm hover:font-semibold">
+                  <a href={`/schedule/${userData.id}`}>
+                    {userData.scheduleName}({userData.startAt}~{userData.endAt})
+                  </a>
                 </span>
               </div>
-            </li>;
-          })()}
+            </li>
+          ))
+        ) : (
+          <li className="flex items-center gap-4 px-4 py-3">
+            해당 지역에 일정이 없습니다.
+          </li>
+        )}
       </ul>
     </>
   );
