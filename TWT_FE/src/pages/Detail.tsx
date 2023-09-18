@@ -6,22 +6,25 @@ import ReviewList from '../components/ReviewList';
 import Stars from '../components/Stars';
 import ScheduleModal from '../components/ScheduleModal';
 import ReviewModal from '../components/ReviewModal';
-import Pagination from '../components/Pagination';
-import { usePlaceInfo } from '../hooks/useProducts';
+
+import { useAddLike, usePlaceInfo } from '../hooks/useProducts';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 function Detail() {
   const [showModal, setShowModal] = useState<string | ''>('');
-  const [isLiked, setIsLiked] = useState<boolean>(false);
-  const placeId = useParams();
+  const { id } = useParams();
+  const placeId = Number(id);
 
   const { placeInfos, placeInfoLoading, placeInfoError } = usePlaceInfo(
-    Number(placeId.id)
+    Number(placeId)
   );
 
+  const { addLike, likeAdding, likeAddingSuccess, likeAddingError } =
+    useAddLike(Number(placeId));
+
   const handleLike = async () => {
-    setIsLiked(!isLiked);
+    addLike();
   };
   return (
     <>
@@ -50,7 +53,7 @@ function Detail() {
                   onClick={handleLike}
                 >
                   좋아요
-                  {isLiked ? (
+                  {placeInfos.placeHeart ? (
                     <AiFillHeart className="text-red ml-1" />
                   ) : (
                     <AiOutlineHeart className="text-red ml-1" />
@@ -94,15 +97,14 @@ function Detail() {
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-xl p-8 mb-2 flex flex-col justify-center dark:bg-slate-800">
-              <div className="flex gap-2">
-                <h2 className="text-2xl font-bold dark:text-white">리뷰 </h2>
-                <h2 className="text-xl font-bold text-skyblue">
+              <div className="flex gap-2 items-center">
+                <h2 className="text-2xl font-bold dark:text-white">리뷰</h2>
+                <h2 className="text-2xl font-bold text-skyblue">
                   {placeInfos.reviewNum}
                 </h2>
               </div>
               <div className="flex flex-col justify-center items-center gap-3">
-                <ReviewList />
-                <Pagination />
+                <ReviewList placeId={placeId} />
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-xl p-8 mb-2 dark:bg-slate-800">
