@@ -5,11 +5,13 @@ import { AiTwotoneCalendar } from 'react-icons/ai';
 import SouthKoreaMap from '../components/SouthKoreaMap';
 
 import { useUserDatas } from '../hooks/useProducts';
+import { useUserContext } from '../context';
 import ReviewList from '../components/ReviewList';
 import ScheduleList from '../components/ScheduleList';
 import ListItem from '../components/ListItem';
 
 function Mypage() {
+  const { user } = useUserContext();
   const [isListOpen, setIsListOpen] = useState<string | null>(null);
   const [category, setCategory] = useState<string>('schedule');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -32,10 +34,10 @@ function Mypage() {
           <div className="w-full h-[150px] bg-lightgray"></div>
           <div className="flex flex-col items-center -mt-20">
             <img
-              src="https://png.pngtree.com/png-vector/20191115/ourmid/pngtree-beautiful-profile-line-vector-icon-png-image_1990469.jpg"
+              src="https://mblogthumb-phinf.pstatic.net/20150427_73/ninevincent_1430122793329pvryW_JPEG/kakao_7.jpg?type=w420"
               className="w-[120px] h-[120px] border-4 border-white rounded-full"
             />
-            <p className="text-2xl mt-2">닉네임</p>
+            <p className="text-2xl mt-2">{user?.nickName}</p>
             <p className="mt-2 text-gray mb-5">
               <a href="/profile">프로필 수정</a>
             </p>
