@@ -7,13 +7,20 @@ import SouthKoreaMap from '../components/SouthKoreaMap';
 import { useUserDatas } from '../hooks/useProducts';
 import ReviewList from '../components/ReviewList';
 import ScheduleList from '../components/ScheduleList';
+import ListItem from '../components/ListItem';
 
 function Mypage() {
   const [isListOpen, setIsListOpen] = useState<string | null>(null);
   const [category, setCategory] = useState<string>('schedule');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { userDatas, userDataLoading, userDataError, userDataRefetch } =
-    useUserDatas(category, currentPage - 1);
+    useUserDatas(category, currentPage - 1, isListOpen);
+
+  useEffect(() => {
+    if (isListOpen !== null) {
+      userDataRefetch();
+    }
+  }, [isListOpen]);
 
   useEffect(() => {
     userDataRefetch();
@@ -68,7 +75,7 @@ function Mypage() {
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-xl pb-8">
-          <div className="flex justify-center p-10">
+          <div className="flex justify-center lg:p-10 tablet:p-4">
             {category === 'schedule' && (
               <>
                 <SouthKoreaMap
@@ -85,8 +92,12 @@ function Mypage() {
                 )}
               </>
             )}
-            {category === 'review' && <ReviewList data={userDatas} />}
-            {/* {category === 'heart' && } */}
+            {category === 'review' && <ReviewList data={userDatas.content} />}
+            {category === 'heart' && (
+              <div className="grid grid-cols-1 gap-8 mt-8 tablet:mt-16 tablet:grid-cols-2">
+                <ListItem data={userDatas.content} />
+              </div>
+            )}
           </div>
         </div>
       </section>
