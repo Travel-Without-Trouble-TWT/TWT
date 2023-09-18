@@ -1,44 +1,18 @@
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { useNavigate, useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 
-import { joinFn } from '../api/auth';
-import { JoinProps } from '../pages/Join';
-import Alerts from '../components/Alerts';
-const navigate = useNavigate();
+import { LoginProps } from '../api/type';
+import { loginFn } from '../api/auth';
 
-//회원가입 mutation
-export const useJoin = () => {
-const { mutate: joinUser, isLoading: joining } = useMutation(
-  (userData: JoinProps) => joinFn(userData),
-  {
-    onSuccess: () => { 
-      return (
-      <Alerts 
-        type="success"
-        title="🎉 회원가입"
-        message="회원가입이 완료되었습니다!"
-      />);
-      navigate('/login');
-    },
-    onError: (error: any) => {
-      if (Array.isArray((error as any).response.data.error)) {
-        (error as any).response.data.error.forEach((element: any) => {
-          return (
-          <Alerts
-            type="error"
-            title="회원가입"
-            message="회원가입에 실패하였습니다. 다시 시도해주세요."
-          />);
-          navigate('/join');
-        });
-      } else {
-        //alert
-      }
-    },
-  }
-}
+//로그인 로직
+export const useLogin = () => {
+  const { mutate: loginUser, isLoading: logining } = useMutation(
+    (userData: LoginProps) => loginFn(userData),
+    {
+      onSuccess: (data) => {
+        localStorage.setItem('accessToken', data.accessToken);
+      },
+      onError: (error: any) => {},
+    }
+  );
+  return { loginUser, logining };
+};
