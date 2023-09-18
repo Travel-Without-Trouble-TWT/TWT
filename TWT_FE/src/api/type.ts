@@ -70,3 +70,8 @@ export interface postScheduleProps {
   days: number[];
   scheduleImageUrl: string | null;
 }
+
+export interface LoginProps {
+  email: string;
+  password: string;
+}
