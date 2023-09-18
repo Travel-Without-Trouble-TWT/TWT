@@ -1,12 +1,10 @@
 interface PaginationProps {
-  perPage: number;
   currentPage: number;
   totalPages: number;
   onPageChange: (pageNumber: number) => void;
 }
 
 function Pagination({
-  perPage,
   currentPage,
   totalPages,
   onPageChange,
