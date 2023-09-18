@@ -8,11 +8,14 @@ import Selected from './pages/Selected';
 import Mypage from './pages/Mypage';
 import Schedule from './pages/Schedule';
 import Detail from './pages/Detail';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
+        <Header />
         <Routes>
           <Route path="/detail/:id" element={<Detail />} />
           <Route path="/schedule/:id" element={<Schedule />} />
@@ -22,6 +25,7 @@ function App() {
           <Route path="/search/:location" element={<Selected />} />
           <Route path="/mypage" element={<Mypage />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </div>
   );
