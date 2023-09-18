@@ -47,19 +47,7 @@ function Main() {
                   {top10Loading ? (
                     <Spinner />
                   ) : (
-                    top10 &&
-                    top10.map((place: any) => (
-                      <ListItem
-                        key={place.id}
-                        id={place.id}
-                        placeName={place.placeName}
-                        placeType={place.placeType}
-                        placeLocation={place.placeLocation}
-                        star={place.star}
-                        placeHeart={place.placeHeart}
-                        placeImageUrl={place.placeImageUrl}
-                      />
-                    ))
+                    top10 && <ListItem data={top10} />
                   )}
                 </div>
               </div>
