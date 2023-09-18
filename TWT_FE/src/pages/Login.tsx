@@ -1,19 +1,16 @@
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { LoginProps } from '../api/type';
+import { useLogin } from '../hooks/useAuth';
 
 import logo from '../assets/logo.png';
 import GoogleLogo from '../assets/google.png';
-import { useMutation } from '@tanstack/react-query';
-import { loginFn } from '../api/auth';
-import { useEffect } from 'react';
-import googleUrl from '../utils/googleUrl';
-import Alerts from '../components/Alerts';
-import Spinner from '../components/Spinner';
 
-export interface LoginProps {
-  email: string;
-  password: string;
-}
+import { useUserContext } from '../context';
+import googleUrl from '../utils/googleUrl';
+//컴포넌트
+import Spinner from '../components/Spinner';
 
 function Login() {
   const {
@@ -24,47 +21,11 @@ function Login() {
     reset,
   } = useForm<LoginProps>({ mode: 'onBlur' });
 
+  const { login, user } = useUserContext();
+  const { loginUser, logining } = useLogin();
   const navigate = useNavigate();
   const location = useLocation();
   const from = ((location.state as any)?.from.pathname as string) || '/';
-
-  const { mutate: loginUser, isLoading: logining } = useMutation(
-    (userData: LoginProps) => loginFn(userData),
-    {
-      onSuccess: (data) => {
-        return (
-          <>
-            <Alerts
-              type="success"
-              title="로그인"
-              message="로그인이 완료되었습니다!"
-            />
-
-            {localStorage.setItem('accessToken', data.accessToken)}
-            {navigate('/')}
-          </>
-        );
-      },
-      onError: (error: any) => {
-        if (Array.isArray((error as any).response.data.error)) {
-          (error as any).response.data.error.forEach((element: any) => {
-            return (
-              <>
-                <Alerts
-                  type="error"
-                  title="로그인"
-                  message="로그인에 실패하였습니다. 다시 시도해주세요."
-                />
-                {navigate('/login')}
-              </>
-            );
-          });
-        } else {
-          //alert
-        }
-      },
-    }
-  );
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -73,7 +34,10 @@ function Login() {
   }, [isSubmitSuccessful]);
 
   const onSubmit: SubmitHandler<LoginProps> = (values) => {
-    loginUser(values);
+    try {
+      loginUser(values);
+      navigate('/');
+    } catch (error) {}
   };
 
   return (
