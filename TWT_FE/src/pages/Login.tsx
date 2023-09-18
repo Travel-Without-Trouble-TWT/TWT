@@ -40,7 +40,7 @@ function Login() {
               message="로그인이 완료되었습니다!"
             />
 
-            {localStorage.setItem('accessToken', data)}
+            {localStorage.setItem('accessToken', data.accessToken)}
             {navigate('/')}
           </>
         );
