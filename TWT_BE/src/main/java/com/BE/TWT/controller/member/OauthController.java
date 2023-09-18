@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -17,7 +18,7 @@ public class OauthController {
     private final CustomOauth2Service customOauth2Service;
 
     @GetMapping("/code/google")
-    public ResponseEntity<?> googleLogin(@RequestParam @Valid String code) {
-        return ResponseEntity.ok(customOauth2Service.getGoogleToken(code));
+    public ResponseEntity<?> googleLogin(@RequestParam @Valid String code, HttpServletResponse response) {
+        return ResponseEntity.ok(customOauth2Service.getGoogleToken(code, response));
     }
 }
