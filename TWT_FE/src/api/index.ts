@@ -69,6 +69,12 @@ export const getExistedSchedule = async (placeLocation: string) => {
   return response.data;
 };
 
+//주변 플레이스
+export const getNearPlaces = async (placeId: number) => {
+  const response = await authApi.get(`/search/near?placeId=${placeId}`);
+  return response.data;
+};
+
 //post
 export const postReviewFn = async (data, files) => {
   const formData = new FormData();
