@@ -30,7 +30,6 @@ function Schedule() {
 
   return (
     <>
-      <Header />
       <section className="bg-lightgray dark:bg-gray-900 h-full flex justify-center flex-col lg:px-40 mobile:px-10 py-6">
         <div className="bg-white rounded-lg shadow-xl pb-8">
           <div className="relative w-full h-[300px] bg-darkgray rounded-tl-lg rounded-tr-lg">
@@ -182,7 +181,6 @@ function Schedule() {
       )}
       {isShowTimeModal && <TimeModal setIsShowModal={setIsShowTimeModal} />}
       {isShowDateModal && <DateModal setIsShowDateModal={setIsShowDateModal} />}
-      <Footer />
     </>
   );
 }
