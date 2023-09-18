@@ -98,7 +98,6 @@ function PlaceLists({
           )}
           <Pagination
             currentPage={currentPage}
-            perPage={10}
             totalPages={places ? places.totalPages : 0}
             onPageChange={handlePageChange}
           />
