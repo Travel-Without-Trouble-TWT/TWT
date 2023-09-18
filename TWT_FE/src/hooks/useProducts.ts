@@ -1,5 +1,4 @@
 import {
-  QueryClient,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -20,9 +19,9 @@ import {
   getExistedSchedule,
   addScheduleFn,
   addLikeFn,
+  getNearPlaces,
 } from '../api';
 
-import { DataProps, PageProps } from '../api/type';
 import { calculateCenter } from '../utils/calculate';
 
 //메인페이지 스케쥴들
@@ -159,6 +158,18 @@ export const usePlaceInfo = (placeId: number) => {
     },
   });
   return { placeInfos, placeInfoLoading, placeInfoError };
+};
+
+//주변 플레이스
+export const useNearPlaces = (placeId: number) => {
+  const {
+    data: nearPlaces,
+    isLoading: nearPlacesLoading,
+    isError: nearPlacesError,
+  } = useQuery(['nearPlaces', placeId], () => getNearPlaces(placeId), {
+    enabled: true,
+  });
+  return { nearPlaces, nearPlacesLoading, nearPlacesError };
 };
 
 //해당 스케줄 정보
