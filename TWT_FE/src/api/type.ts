@@ -22,15 +22,6 @@ export interface SchedulesProps {
   endAt: string;
 }
 
-export interface ReviewProps {
-  id: number;
-  createAt: string;
-  nickName: string;
-  reviewComment: string;
-  reviewImageList: string[];
-  star: number;
-}
-
 export interface DataProps {
   id: number;
   latitude: number;
