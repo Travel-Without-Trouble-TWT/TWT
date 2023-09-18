@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { useLogin } from '../hooks/useAuth';
 
 type User = {
   email: string;
@@ -28,10 +29,20 @@ type UserProviderProps = {
 
 export function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User | null>(null);
+  const { loginUser } = useLogin();
 
-  const login = (userData: User) => {
-    //로그인 로직을 구현하고, userData를 받아서 setUser로 설정
-    setUser(userData);
+  const login = async (userData) => {
+    try {
+      const data = await loginUser(userData);
+      setUser({
+        email: data.email,
+        nickName: data.nickName,
+        profileUrl: data.profileUrl,
+      });
+      console.log(user);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const logout = () => {
