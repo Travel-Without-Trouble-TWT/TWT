@@ -6,8 +6,9 @@ import ReviewList from '../components/ReviewList';
 import Stars from '../components/Stars';
 import ScheduleModal from '../components/ScheduleModal';
 import ReviewModal from '../components/ReviewModal';
+import NearPlaces from '../components/NearPlaces';
 
-import { useAddLike, usePlaceInfo } from '../hooks/useProducts';
+import { useAddLike, usePlaceInfo, useNearPlaces } from '../hooks/useProducts';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -106,12 +107,13 @@ function Detail() {
                 <ReviewList placeId={placeId} />
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow-xl p-8 mb-2 dark:bg-slate-800">
+            <div className="bg-white rounded-lg shadow-xl p-8 mb-2 dark:bg-slate-800 absoulte">
               <div className="flex gap-2">
                 <h2 className="text-2xl font-bold dark:text-white">
                   주변 플레이스
                 </h2>
               </div>
+              <NearPlaces placeId={placeId} />
             </div>
           </>
         ) : (
@@ -120,11 +122,7 @@ function Detail() {
           </div>
         )}
         {showModal === 'schedule' && (
-          <ScheduleModal
-            setShowModal={setShowModal}
-            data={}
-            selectedPlace={placeId}
-          />
+          <ScheduleModal setShowModal={setShowModal} selectedPlace={placeId} />
         )}
         {showModal === 'review' && <ReviewModal setShowModal={setShowModal} />}
       </section>
