@@ -16,12 +16,11 @@ function Detail() {
   const { id } = useParams();
   const placeId = Number(id);
 
-  const { placeInfos, placeInfoLoading, placeInfoError } = usePlaceInfo(
-    Number(placeId)
-  );
+  const { placeInfos, placeInfoLoading, placeInfoError } =
+    usePlaceInfo(placeId);
 
   const { addLike, likeAdding, likeAddingSuccess, likeAddingError } =
-    useAddLike(Number(placeId));
+    useAddLike(placeId);
 
   const handleLike = async () => {
     addLike();
@@ -121,7 +120,11 @@ function Detail() {
           </div>
         )}
         {showModal === 'schedule' && (
-          <ScheduleModal setShowModal={setShowModal} />
+          <ScheduleModal
+            setShowModal={setShowModal}
+            data={}
+            selectedPlace={placeId}
+          />
         )}
         {showModal === 'review' && <ReviewModal setShowModal={setShowModal} />}
       </section>
