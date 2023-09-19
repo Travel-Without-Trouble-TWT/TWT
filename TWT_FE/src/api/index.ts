@@ -61,6 +61,12 @@ export const getScheduleFn = async (scheduleId: number) => {
   return response.data;
 };
 
+//유저 데이터
+export const getUserInfoFn = async () => {
+  const response = await authApi.get(`/member/info`);
+  return response.data;
+};
+
 //일정 추가 => 기존 일정
 export const getExistedSchedule = async (placeLocation: string) => {
   const response = await authApi.get(
