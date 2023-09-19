@@ -11,7 +11,7 @@ import ScheduleList from '../components/ScheduleList';
 import ListItem from '../components/ListItem';
 
 function Mypage() {
-  const { user } = useUserContext();
+  const { isLogin, user } = useUserContext();
   const [isListOpen, setIsListOpen] = useState<string | null>(null);
   const [category, setCategory] = useState<string>('schedule');
   const [currentPage, setCurrentPage] = useState<number>(1);
