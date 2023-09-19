@@ -1,29 +1,28 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Map, CustomOverlayMap, Polyline } from 'react-kakao-maps-sdk';
+
 //components
 import TimeModal from '../components/TimeModal';
 import Feeds from '../components/Feeds';
 import Distance from '../components/Distance';
 import Alerts from '../components/Alerts';
 import DateModal from '../components/DateModal';
+import Spinner from '../components/Spinner';
+import CustomMap from '../components/CustomMap';
 //hooks
 import { useSchedule } from '../hooks/useProducts';
 //icons
 import { FaShareSquare } from 'react-icons/fa';
-import Spinner from '../components/Spinner';
 
 function Schedule() {
   const [isMoreOpen, setIsMoreOpen] = useState<string | null>(null);
   const [isShowTimeModal, setIsShowTimeModal] = useState<boolean>(false);
-  const [isPolylineHovered, setIsPolylineHovered] = useState<number | null>(0);
   const [isShowAlert, setIsShowAlert] = useState<string>('');
   const [isShowDateModal, setIsShowDateModal] = useState<boolean>(false);
   const { id } = useParams();
   const scheduleId = Number(id);
 
-  const { schedule, scheduleLoading, scheduleError, center } =
-    useSchedule(scheduleId);
+  const { schedule, scheduleLoading, scheduleError } = useSchedule(scheduleId);
 
   return (
     <>
@@ -58,9 +57,8 @@ function Schedule() {
                 D
                 {Math.ceil(
                   (new Date(schedule.startAt) - new Date()) / (1000 * 3000 * 24)
-                ) < 0
-                  ? '+' +
-                    Math.ceil(
+                ) > 0
+                  ? Math.ceil(
                       (new Date() - new Date(schedule.startAt)) /
                         (1000 * 3000 * 24)
                     )
@@ -94,90 +92,20 @@ function Schedule() {
                       <p className="text-xs text-gray">{item.day}</p>
                     </div>
                     <div className="col-span-7 lg:col-span-11 shadow-md shadow-gray rounded-md px-5 py-5">
-                      <Feeds
-                        setIsShowTimeModal={setIsShowTimeModal}
-                        setIsShowAlert={setIsShowAlert}
-                        schedule={schedule}
-                      />
-                      {isMoreOpen === item.id && (
-                        <Map
-                          center={{
-                            // 지도의 중심좌표
-                            lat:
-                              (33.452344169439975 +
-                                33.452739313807456 +
-                                33.45178067090639) /
-                              3,
-                            lng:
-                              (126.56878163224233 +
-                                126.5709308145358 +
-                                126.572688693875) /
-                              3,
-                          }}
-                          style={{ width: '100%', height: '450px' }}
-                          level={3}
-                        >
-                          <Polyline
-                            path={[
-                              [
-                                {
-                                  lat: 33.452344169439975,
-                                  lng: 126.56878163224233,
-                                },
-                                {
-                                  lat: 33.452739313807456,
-                                  lng: 126.5709308145358,
-                                },
-                                {
-                                  lat: 33.45178067090639,
-                                  lng: 126.572688693875,
-                                },
-                              ],
-                            ]}
-                            strokeWeight={5}
-                            strokeColor={'#90DCE1'}
-                            strokeOpacity={1}
-                            strokeStyle={'solid'}
-                            onMouseover={() => setIsPolylineHovered(true)}
-                            onMouseout={() => setIsPolylineHovered(false)}
+                      {item.courseList && (
+                        <>
+                          <Feeds
+                            setIsShowTimeModal={setIsShowTimeModal}
+                            setIsShowAlert={setIsShowAlert}
+                            data={item.courseList}
+                            placeLocation={schedule.travelPlace}
                           />
-
-                          {/* 일정들의 모든 좌표 표시 */}
-                          <CustomOverlayMap
-                            //key={}
-                            position={{
-                              lat: 33.452344169439975,
-                              lng: 126.56878163224233,
-                            }}
-                          >
-                            <div className="w-5 h-5 z-10 flex items-center justify-center text-white -translate-x-1/2 rounded-full bg-blue ring-2 ring-white p-1">
-                              1
-                            </div>
-                          </CustomOverlayMap>
-                          <CustomOverlayMap
-                            //key={}
-                            position={{
-                              lat: 33.452739313807456,
-                              lng: 126.5709308145358,
-                            }}
-                          >
-                            <div className="w-5 h-5 z-10 flex items-center justify-center text-white -translate-x-1/2 rounded-full bg-pink-500 ring-2 ring-white p-1">
-                              2
-                            </div>
-                          </CustomOverlayMap>
-                          <CustomOverlayMap
-                            //key={}
-                            position={{
-                              lat: 33.45178067090639,
-                              lng: 126.572688693875,
-                            }}
-                          >
-                            <div className="w-5 h-5 z-10 flex items-center justify-center text-white -translate-x-1/2 rounded-full bg-amber-500 ring-2 ring-white p-1">
-                              3
-                            </div>
-                          </CustomOverlayMap>
-                        </Map>
+                          {isMoreOpen === item.id && item.courseList && (
+                            <CustomMap data={item} />
+                          )}
+                        </>
                       )}
+
                       <div className="flex justify-center mb-1 mt-2">
                         <button
                           className="text-sm"
