@@ -179,11 +179,9 @@ export const useSchedule = (scheduleId: number) => {
     isLoading: scheduleLoading,
     isError: scheduleError,
   } = useQuery(['schedule', scheduleId], () => getScheduleFn(scheduleId), {
-    enabled: true,
-    onSuccess: {},
-    onError: (error) => {},
+    refetchOnWindowFocus: true,
   });
-  return { schedule, scheduleLoading, scheduleError };
+  return { schedule, scheduleLoading, scheduleError, center };
 };
 
 //기존 일정들 정보 (모달창용)
