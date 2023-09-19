@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
+//컴포넌트
 import Spinner from '../components/Spinner';
 import ReviewList from '../components/ReviewList';
 import Stars from '../components/Stars';
@@ -8,9 +9,7 @@ import ScheduleModal from '../components/ScheduleModal';
 import ReviewModal from '../components/ReviewModal';
 import NearPlaces from '../components/NearPlaces';
 
-import { useAddLike, usePlaceInfo, useNearPlaces } from '../hooks/useProducts';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { useAddLike, usePlaceInfo } from '../hooks/useProducts';
 
 function Detail() {
   const [showModal, setShowModal] = useState<string | ''>('');
