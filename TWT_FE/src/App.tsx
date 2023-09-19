@@ -8,6 +8,7 @@ import Selected from './pages/Selected';
 import Mypage from './pages/Mypage';
 import Schedule from './pages/Schedule';
 import Detail from './pages/Detail';
+import Profile from './pages/Profile';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/join" element={<Join />} />
           <Route path="/search/:location" element={<Selected />} />
           <Route path="/mypage" element={<Mypage />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
         <Footer />
       </BrowserRouter>
