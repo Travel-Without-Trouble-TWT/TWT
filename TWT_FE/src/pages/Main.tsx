@@ -5,8 +5,6 @@ import ReviewCard from '../components/ReviewCard';
 import Spinner from '../components/Spinner';
 import ListItem from '../components/ListItem';
 import { useSchedules, useTop10 } from '../hooks/useProducts';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
 
 function Main() {
   const {
@@ -43,7 +41,7 @@ function Main() {
             <div className="container px-6 mx-auto">
               <div className="grid grid-cols-1 gap-8 mt-8 tablet:mt-16 tablet:grid-cols-2">
                 {top10Loading ? (
-                  <Spinner />
+                  <Spinner size={'20px'} />
                 ) : (
                   top10 && <ListItem data={top10} />
                 )}
