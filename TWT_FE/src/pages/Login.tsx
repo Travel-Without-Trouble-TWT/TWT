@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LoginProps } from '../api/type';
@@ -7,7 +7,7 @@ import { useLogin } from '../hooks/useAuth';
 import logo from '../assets/logo.png';
 import GoogleLogo from '../assets/google.png';
 
-import { useUserContext } from '../context';
+import { UserContext } from '../context';
 import googleUrl from '../utils/googleUrl';
 //컴포넌트
 import Spinner from '../components/Spinner';
@@ -21,7 +21,7 @@ function Login() {
     reset,
   } = useForm<LoginProps>({ mode: 'onBlur' });
 
-  const { login, user } = useUserContext();
+  const { setIsLogin } = useContext(UserContext);
   const { loginUser, logining } = useLogin();
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,6 +37,7 @@ function Login() {
     try {
       loginUser(values);
       navigate('/');
+      setIsLogin(true);
     } catch (error) {}
   };
 
@@ -137,7 +138,7 @@ function Login() {
                 type="submit"
                 disabled={logining || !isValid}
               >
-                {logining ? <Spinner /> : '로그인'}
+                {logining ? <Spinner size={'20px'} /> : '로그인'}
               </button>
               <hr className="w-full h-1"></hr>
               <a
