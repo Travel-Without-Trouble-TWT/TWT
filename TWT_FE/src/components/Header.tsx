@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useUserContext } from '../context';
 import { useUserInfo } from '../hooks/useAuth';
 
+import logo from '../assets/logo.png';
+
 function Header() {
   const { isLogin, user } = useUserContext();
   const [isToggleOpen, setIsToggleOpen] = useState(false);
@@ -24,18 +26,23 @@ function Header() {
             id="TWT"
             aria-label="TWT logo"
             aria-current="page"
-            className="flex items-center gap-2 whitespace-nowrap py-3 text-lg focus:outline-none lg:flex-1"
+            className="flex items-center whitespace-nowrap py-3 text-lg focus:outline-none lg:flex-1"
             href="/"
           >
-            <span className="flex flex-col text-xs">
-              <span>
-                <strong>T</strong>ravel
+            <img
+              className="h-[90px] w-[90px] self-center py-3"
+              src={logo}
+              alt="로고 이미지"
+            />
+            <span className="flex flex-col text-xs ml-[-19px] mb-3">
+              <span className="text-slate-500">
+                <strong className="text-black">T</strong>ravel
               </span>
-              <span>
-                <strong>W</strong>ithout
+              <span className="text-slate-500">
+                <strong className="text-black">W</strong>ithout
               </span>
-              <span>
-                <strong>T</strong>rouble
+              <span className="text-slate-500">
+                <strong className="text-black">T</strong>rouble
               </span>
             </span>
           </a>
