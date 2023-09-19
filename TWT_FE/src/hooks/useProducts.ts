@@ -181,7 +181,7 @@ export const useSchedule = (scheduleId: number) => {
   } = useQuery(['schedule', scheduleId], () => getScheduleFn(scheduleId), {
     refetchOnWindowFocus: true,
   });
-  return { schedule, scheduleLoading, scheduleError, center };
+  return { schedule, scheduleLoading, scheduleError };
 };
 
 //기존 일정들 정보 (모달창용)
