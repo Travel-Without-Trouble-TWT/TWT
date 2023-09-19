@@ -1,5 +1,12 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { useLogin } from '../hooks/useAuth';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useEffect,
+} from 'react';
+import { useUserInfo } from '../hooks/useAuth';
 
 type User = {
   email: string;
@@ -7,18 +14,19 @@ type User = {
   profileUrl: string;
 };
 
-type UserContextType = {
+const accessToken = localStorage.getItem('accessToken');
+export const UserContext = createContext<{
+  isLogin: boolean;
   user: User | null;
-  login: (userData: User) => void;
-  logout: () => void;
-};
+}>({
+  isLogin: accessToken !== null ? true : false,
+  user: null,
+});
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
-
-export function useUserContext(): UserContextType {
+export function useUserContext() {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUserContext must be used within a UserProvider');
+    throw new Error('useUserContext는 UserProvider 내에서 사용해야 합니다');
   }
   return context;
 }
@@ -28,31 +36,23 @@ type UserProviderProps = {
 };
 
 export function UserProvider({ children }: UserProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const { loginUser } = useLogin();
-
-  const login = async (userData) => {
-    try {
-      const data = await loginUser(userData);
-      setUser({
-        email: data.email,
-        nickName: data.nickName,
-        profileUrl: data.profileUrl,
-      });
-      console.log(user);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const logout = () => {
-    // 로그아웃 로직을 구현하고, setUser(null)로 유저 정보 초기화
-    setUser(null);
-  };
-
-  return (
-    <UserContext.Provider value={{ user, login, logout }}>
-      {children}
-    </UserContext.Provider>
+  const [isLogin, setIsLogin] = useState<boolean>(
+    accessToken !== null ? true : false
   );
+  const [user, setUser] = useState<User | null>(null);
+
+  const value = useMemo(
+    () => ({ isLogin, setIsLogin, user }),
+    [isLogin, setIsLogin, user]
+  );
+  const { userInfo, userInfoLoading, userInfoError } = useUserInfo();
+  useEffect(() => {
+    if (isLogin) {
+      if (!userInfoLoading && !userInfoError) {
+        setUser(userInfo);
+      }
+    }
+  }, [isLogin, userInfo, userInfoLoading, userInfoError]);
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
