@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { useUserContext } from '../context';
+import { useUserInfo } from '../hooks/useAuth';
 
 function Header() {
-  const { user, logout } = useUserContext();
+  const { isLogin, user } = useUserContext();
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
 
   const alertItems = [{ content: '알람1' }, { content: '알람2' }];
+
+  const { userInfo, userInfoLoading, userInfoError } = useUserInfo();
 
   return (
     <header className="border-b-1 relative sticky z-50 w-full border-b border-slate-200 shadow-lg shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full  lg:border-slate-200 lg:backdrop-blur-sm lg:after:hidden to-sky-50 bg-gradient-to-b from-[#A5E0F8]">
@@ -72,7 +75,7 @@ function Header() {
                 : 'invisible opacity-0'
             }`}
           >
-            {user ? (
+            {isLogin ? (
               <>
                 <li role="none" className="flex items-stretch">
                   <a
@@ -112,14 +115,14 @@ function Header() {
             ) : null}
           </ul>
           <div className="ml-auto flex items-center px-6 lg:ml-0 lg:p-0">
-            {user ? (
+            {isLogin ? (
               <>
                 <div className="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-white">
                   <img
                     src={
-                      user.profileUrl === null
-                        ? 'https://mblogthumb-phinf.pstatic.net/20150427_73/ninevincent_1430122793329pvryW_JPEG/kakao_7.jpg?type=w420'
-                        : user.profileUrl
+                      user?.profileUrl !== null
+                        ? user?.profileUrl
+                        : 'https://mblogthumb-phinf.pstatic.net/20150427_73/ninevincent_1430122793329pvryW_JPEG/kakao_7.jpg?type=w420'
                     }
                     alt="user profile"
                     title="user profile"
