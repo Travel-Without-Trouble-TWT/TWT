@@ -33,16 +33,12 @@ public class Place {
     private String placeImageUrl;
     private String placeDescription;
     private int placeHeart;
-
+    private int reviewNum; // 리뷰 개수 ( OneToMany 삭제 )
     private double totalStar;
     private double star;
     private String placeCallNumber;
     @Enumerated(EnumType.STRING)
     private PlaceType placeType;
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "place_id")
-    private List<Review> reviewList;
 
     public void plusHeart() {
         placeHeart++;
@@ -55,11 +51,10 @@ public class Place {
 
     public void updateAverageRating(double newStar) {
         this.totalStar += newStar;
-        int size = reviewList.size();
-        star = totalStar / size;
+        star = totalStar / this.reviewNum;
     }
 
-    public void addReview(Review review) {
-        this.reviewList.add(review);
+    public void addReview() {
+        this.reviewNum++;
     }
 }

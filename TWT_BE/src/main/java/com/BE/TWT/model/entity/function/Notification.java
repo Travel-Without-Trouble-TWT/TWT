@@ -1,5 +1,6 @@
 package com.BE.TWT.model.entity.function;
 
+import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.model.entity.schedule.Schedule;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -23,4 +24,8 @@ public class Notification {
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule;
     private String message;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "member_id", referencedColumnName = "id")
+    private Member member;
 }

@@ -57,8 +57,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:3000"); // 프론트 IPv4 주소
-        config.addAllowedOrigin("http://localhost:8080"); // 백엔드 IPv4 주소
+        config.addAllowedOrigin("http://localhost:3000"); // 프론트 Local 주소
+        config.addAllowedOrigin("http://localhost:8080"); // 백엔드 Local 주소
+        config.addAllowedOrigin("http://13.238.227.67"); // AWS EC2 주소
         config.addAllowedMethod("*"); // 모든 메소드 허용.
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);

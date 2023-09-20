@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.BE.TWT.exception.message.PlaceErrorMessage.*;
 
 @Service
@@ -49,6 +52,7 @@ public class HeartService {
                     .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
             heartRepository.deleteById(heart.getId());
+
             place.minusHeart();
             return "좋아요 취소";
         } else {
@@ -59,7 +63,26 @@ public class HeartService {
                     .build();
             heartRepository.save(heart);
             place.plusHeart();
-            return "좋아용";
+            return "좋아요!";
         }
+    }
+
+    public List<Place> searchAllHeartByMember(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(MemberErrorMessage.USER_NOT_FOUND));
+
+        List<Heart> heartList = heartRepository.findAllByMember(member);
+
+        List<Place> placeList = new ArrayList<>();
+
+        for (Heart heart : heartList) {
+            Place place = placeRepository.findByPlaceName(heart.getPlaceName()).get();
+            placeList.add(place);
+        }
+
+        return placeList;
     }
 }

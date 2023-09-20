@@ -1,5 +1,6 @@
 package com.BE.TWT.service.schedule;
 
+import com.BE.TWT.exception.error.ScheduleException;
 import com.BE.TWT.model.dto.schedule.AddCourse;
 import com.BE.TWT.model.dto.schedule.DeleteCourse;
 import com.BE.TWT.model.dto.schedule.UpdateCourse;
@@ -8,6 +9,8 @@ import com.BE.TWT.model.entity.schedule.DaySchedule;
 import com.BE.TWT.repository.schedule.DaySchedueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import static com.BE.TWT.exception.message.ScheduleErrorMessage.NOT_REGISTERED_SCHEDULE;
 
 @Service
 @RequiredArgsConstructor
@@ -52,5 +55,10 @@ public class DayScheduleService {
                 break;
             }
         }
+    }
+
+    public DaySchedule readDaySchedule(Long dayScheduleId) {
+        return daySchedueRepository.findById(dayScheduleId)
+                .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
     }
 }

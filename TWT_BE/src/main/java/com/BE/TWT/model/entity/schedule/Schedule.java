@@ -22,15 +22,12 @@ public class Schedule {
     private Long id;
     @Column(nullable = false)
     private String scheduleName;
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     private Member member;
     @Column(nullable = false)
     private String travelPlace;
-    @Column(nullable = true)
     private LocalDate startAt;
-    @Column(nullable = true)
     private LocalDate endAt;
     private int days;
     @JsonIgnore
@@ -53,5 +50,9 @@ public class Schedule {
 
     public void insertDays(int day) {
         this.days = day;
+    }
+
+    public void editScheduleName(String scheduleName) {
+        this.scheduleName = scheduleName;
     }
 }

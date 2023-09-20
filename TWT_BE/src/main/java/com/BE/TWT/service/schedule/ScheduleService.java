@@ -3,7 +3,7 @@ package com.BE.TWT.service.schedule;
 import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.exception.error.ScheduleException;
-import com.BE.TWT.model.dto.schedule.CreateScheduleDto;
+import com.BE.TWT.model.dto.schedule.EditScheduleNameDto;
 import com.BE.TWT.model.dto.schedule.SetDateDto;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.model.entity.schedule.DaySchedule;
@@ -37,7 +37,7 @@ public class ScheduleService {
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
 
-    public Schedule createSchedule (HttpServletRequest request, CreateScheduleDto dto) {
+    public Schedule createSchedule (HttpServletRequest request, String travelPlace) {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
 
@@ -45,44 +45,70 @@ public class ScheduleService {
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
         Schedule schedule = Schedule.builder()
-                .scheduleName(dto.getScheduleName())
+                .scheduleName(travelPlace + " 여행")
                 .startAt(LocalDate.now())
                 .endAt(LocalDate.now())
-                .travelPlace(dto.getTravelPlace())
+                .travelPlace(travelPlace)
                 .member(member)
                 .build();
 
         return scheduleRepository.save(schedule);
     }
 
+    public void editScheduleName (HttpServletRequest request, EditScheduleNameDto dto) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
+
+        Schedule schedule = scheduleRepository.findById(dto.getScheduleId()).get();
+
+        if (schedule.getMember().equals(member)) {
+            schedule.editScheduleName(dto.getScheduleName());
+        } else {
+            throw new ScheduleException(UNAUTHORIZED_REQUEST);
+        }
+    }
+
     @Transactional
-    public Schedule setDate(SetDateDto setDateDto) { // 선택 여행지 페이지의 날짜 입력 API
+    public Schedule setDate(HttpServletRequest request, SetDateDto setDateDto) { // 선택 여행지 페이지의 날짜 입력 API
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
+
         Schedule schedule = scheduleRepository.findById(setDateDto.getScheduleId())
                 .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (schedule.getMember().equals(member)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        LocalDate startDate = setDateDto.getStartAt();
-        String formatStart = startDate.format(formatter);
-        LocalDate endDate = setDateDto.getEndAt();
-        String formatEnd = endDate.format(formatter);
+            LocalDate startDate = setDateDto.getStartAt();
+            String formatStart = startDate.format(formatter);
+            LocalDate endDate = setDateDto.getEndAt();
+            String formatEnd = endDate.format(formatter);
 
-        LocalDate parseStart = LocalDate.parse(formatStart, formatter);
-        LocalDate parseEnd = LocalDate.parse(formatEnd, formatter);
-        schedule.updateDate(parseStart, parseEnd);
+            LocalDate parseStart = LocalDate.parse(formatStart, formatter);
+            LocalDate parseEnd = LocalDate.parse(formatEnd, formatter);
+            schedule.updateDate(parseStart, parseEnd);
 
+            int days = (int) ChronoUnit.DAYS.between(startDate, endDate);
+            schedule.insertDays(days);
+            List<DaySchedule> dayScheduleList = new ArrayList<>();
+          
         schedule.updateDate(setDateDto.getStartAt(), setDateDto.getEndAt());
-     
-        int days = (int) ChronoUnit.DAYS.between(startDate, endDate);
-        schedule.insertDays(days);
-        List<DaySchedule> dayScheduleList = new ArrayList<>();
 
-        for (int j = 0; j < days; j++) {
-            DaySchedule daySchedule = new DaySchedule();
-            dayScheduleList.add(daySchedule);
+            for (int j = 0; j < days; j++) {
+                DaySchedule daySchedule = new DaySchedule();
+                dayScheduleList.add(daySchedule);
+            }
+
+            schedule.changeDayScheduleList(dayScheduleList);
+        } else {
+            throw new ScheduleException(UNAUTHORIZED_REQUEST);
         }
-
-        schedule.changeDayScheduleList(dayScheduleList);
 
         return schedule;
     }
@@ -93,52 +119,62 @@ public class ScheduleService {
      *  길이가 같거나 길 경우에는 차례대로 옮겨 담는 로직을 구현한다.
      */
     @Transactional
-    public Schedule changeTravelDate(SetDateDto dto) { // 여행 계획 날짜 변경
+    public Schedule changeTravelDate(HttpServletRequest request, SetDateDto dto) { // 여행 계획 날짜 변경
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
+
         Schedule schedule = scheduleRepository.findById(dto.getScheduleId())
                 .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
 
-        List<DaySchedule> oldDayScheduleList = schedule.getDayScheduleList();
-        List<DaySchedule> newDayScheduleList = new ArrayList<>();
+        if (schedule.getMember().equals(member)) {
+            List<DaySchedule> oldDayScheduleList = schedule.getDayScheduleList();
+            List<DaySchedule> newDayScheduleList = new ArrayList<>();
 
-        LocalDate startDate = dto.getStartAt();
-        LocalDate endDate = dto.getEndAt();
-        int days = (int) ChronoUnit.DAYS.between(startDate, endDate);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate startDate = dto.getStartAt();
+            LocalDate endDate = dto.getEndAt();
+            int days = (int) ChronoUnit.DAYS.between(startDate, endDate);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        String formatStart = startDate.format(formatter);
-        String formatEnd = endDate.format(formatter);
+            String formatStart = startDate.format(formatter);
+            String formatEnd = endDate.format(formatter);
 
-        LocalDate parseStart = LocalDate.parse(formatStart, formatter);
-        LocalDate parseEnd = LocalDate.parse(formatEnd, formatter);
-        schedule.updateDate(parseStart, parseEnd);
+            LocalDate parseStart = LocalDate.parse(formatStart, formatter);
+            LocalDate parseEnd = LocalDate.parse(formatEnd, formatter);
+            schedule.updateDate(parseStart, parseEnd);
 
-        if(oldDayScheduleList.size() > days) { // 변경 후 기간이 더 짧다
-            for (int i = 0; i < days; i++) {
-                if (i == days - 1) {
-                    // 변경 후 일정의 마지막 날
-                    for (int j = days - 1; j < oldDayScheduleList.size(); j++) {
-                        newDayScheduleList.add(oldDayScheduleList.get(j));
+            if (oldDayScheduleList.size() > days) { // 변경 후 기간이 더 짧다
+                for (int i = 0; i < days; i++) {
+                    if (i == days - 1) {
+                        // 변경 후 일정의 마지막 날
+                        for (int j = days - 1; j < oldDayScheduleList.size(); j++) {
+                            newDayScheduleList.add(oldDayScheduleList.get(j));
+                        }
+                    } else {
+                        newDayScheduleList.add(oldDayScheduleList.get(i));
                     }
-                } else {
+                }
+            } else if (oldDayScheduleList.size() < days) { // 변경 후 기간이 더 길다
+                for (int i = 0; i < days; i++) {
+                    if (i < oldDayScheduleList.size()) {
+                        newDayScheduleList.add(oldDayScheduleList.get(i));
+                    } else {
+                        DaySchedule daySchedule = new DaySchedule();
+                        newDayScheduleList.add(daySchedule);
+                    }
+                }
+            } else { // 기간이 같다
+                for (int i = 0; i < days; i++) {
                     newDayScheduleList.add(oldDayScheduleList.get(i));
                 }
             }
-        } else if (oldDayScheduleList.size() < days) { // 변경 후 기간이 더 길다
-            for (int i = 0; i < days; i++) {
-                if(i < oldDayScheduleList.size()) {
-                    newDayScheduleList.add(oldDayScheduleList.get(i));
-                } else {
-                    DaySchedule daySchedule = new DaySchedule();
-                    newDayScheduleList.add(daySchedule);
-                }
-            }
-        } else { // 기간이 같다
-            for (int i = 0; i < days; i++) {
-                newDayScheduleList.add(oldDayScheduleList.get(i));
-            }
-        }
 
-        schedule.changeDayScheduleList(newDayScheduleList);
+            schedule.changeDayScheduleList(newDayScheduleList);
+        } else {
+            throw new ScheduleException(UNAUTHORIZED_REQUEST);
+        }
 
 
         return schedule;

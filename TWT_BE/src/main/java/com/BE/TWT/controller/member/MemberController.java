@@ -83,4 +83,11 @@ public class MemberController {
     public String checkEmail(@RequestParam @Valid String email) {
         return emailVerification.sendMail(email);
     }
+
+    @ApiOperation(value = "닉네임 중복 확인")
+    @Operation(description = "닉네임 중복 검사 API")
+    @GetMapping("/nick")
+    public String checkNickName(@RequestParam @Valid String nickName) {
+        return memberService.checkDuplicateNickName(nickName);
+    }
 }

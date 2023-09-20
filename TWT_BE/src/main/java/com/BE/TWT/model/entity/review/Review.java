@@ -31,10 +31,9 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "place_id", referencedColumnName = "id")
     private Place place;
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "placeReview_id")
-    private List<ReviewImage> reviewImageList;
+    @ElementCollection
+    @CollectionTable(name = "review_image_list", joinColumns = @JoinColumn(name = "review_id", referencedColumnName = "id"))
+    private List<String> reviewImageList;
     @Column(nullable = false)
     private Long memberId;
     @Column(nullable = false)

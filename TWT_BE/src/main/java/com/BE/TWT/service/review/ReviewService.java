@@ -19,17 +19,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.BE.TWT.exception.message.MemberErrorMessage.USER_NOT_FOUND;
+import static com.BE.TWT.exception.message.PlaceErrorMessage.UNDEFINED_REVIEW;
+import static com.BE.TWT.exception.message.PlaceErrorMessage.WRONG_ADDRESS;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
     private final PlaceRepository placeRepository;
-    private final ReviewRepository placeReviewRepository;
+    private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
     private final JwtTokenProvider jwtTokenProvider;
@@ -46,19 +48,48 @@ public class ReviewService {
                 .orElseThrow(() -> new PlaceException(PlaceErrorMessage.WRONG_ADDRESS));
 
         List<ReviewImage> reviewImages = s3Service.uploadFiles(multipartFile);
+        List<String> listToSave = new ArrayList<>();
+
+        for (ReviewImage image : reviewImages) {
+            listToSave.add(image.getUploadFileUrl());
+        }
 
         Review review = Review.builder()
                 .place(place)
                 .createAt(LocalDateTime.now())
                 .memberId(member.getId())
-                .reviewImageList(reviewImages)
+                .reviewImageList(listToSave)
                 .star(reviewDto.getStar())
                 .reviewComment(reviewDto.getReviewComment())
                 .build();
 
-        place.addReview(review);
+        place.addReview();
         place.updateAverageRating(place.getStar());
 
-        return placeReviewRepository.save(review);
+        return reviewRepository.save(review);
+    }
+
+    public Review viewReview(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new PlaceException(UNDEFINED_REVIEW));
+    }
+
+    public List<Review> viewAllReviewByMember(HttpServletRequest request) { // 유저가 작성한 리뷰 전체보기
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
+
+        Long memberId = member.getId();
+
+        return reviewRepository.findAllByMemberId(memberId);
+    }
+
+    public List<Review> viewAllReviewByPlace(Long placeId) { // 특정 Place 에 대한 리뷰 전체보기
+        Place place = placeRepository.findById(placeId)
+                .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
+
+        return reviewRepository.findAllByPlace(place);
     }
 }
