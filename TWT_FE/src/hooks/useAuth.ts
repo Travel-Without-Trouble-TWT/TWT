@@ -24,6 +24,8 @@ export const useUserInfo = () => {
     data: userInfo,
     isLoading: userInfoLoading,
     isError: userInfoError,
-  } = useQuery(['userInfo'], () => getUserInfoFn());
+  } = useQuery(['userInfo'], () => getUserInfoFn(), {
+    staleTime: 6 * 60 * 60 * 1000,
+  });
   return { userInfo, userInfoLoading, userInfoError };
 };
