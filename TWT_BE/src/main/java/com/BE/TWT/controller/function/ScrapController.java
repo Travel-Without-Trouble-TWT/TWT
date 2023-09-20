@@ -36,7 +36,7 @@ public class ScrapController {
     public void scrapRestaurant(@RequestParam @Valid String keyword) throws MapException {
        scrapRestaurant.getRestaurant(keyword);
     }
-
+  
     @GetMapping("/place")
     public void scrapPlace(@RequestParam @Valid String keyword) {
         dataGoKr.saveHotPlaceByKeyword(keyword);

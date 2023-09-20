@@ -26,8 +26,9 @@ public class ScheduleController {
     @Operation(description = "최초 스케줄 추가 API")
     @PostMapping("/create")
     public ResponseEntity<Schedule> createSchedule(HttpServletRequest request,
-                                                   @RequestParam @Valid String travelPlace) {
-        return ResponseEntity.ok(scheduleService.createSchedule(request, travelPlace));
+                                                  @RequestBody @Valid CreateScheduleDto createScheduleDto) {
+
+        return ResponseEntity.ok(scheduleService.createSchedule(request, createScheduleDto));
     }
 
     @ApiOperation(value = "스케줄 날짜 설정")
