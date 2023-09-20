@@ -2,6 +2,11 @@ import { useState } from 'react';
 import { Map, CustomOverlayMap, Polyline } from 'react-kakao-maps-sdk';
 
 function CustomMap({ data }: { data: any }) {
+  const paths = data.courseList.map((item) => ({
+    lat: item.latitude,
+    lng: item.longitude,
+  }));
+
   const [isPolylineHovered, setIsPolylineHovered] = useState<number | null>(0);
   return (
     <>
@@ -14,22 +19,7 @@ function CustomMap({ data }: { data: any }) {
         level={3}
       >
         <Polyline
-          path={[
-            [
-              {
-                lat: 33.452344169439975,
-                lng: 126.56878163224233,
-              },
-              {
-                lat: 33.452739313807456,
-                lng: 126.5709308145358,
-              },
-              {
-                lat: 33.45178067090639,
-                lng: 126.572688693875,
-              },
-            ],
-          ]}
+          path={[paths]}
           strokeWeight={5}
           strokeColor={'#90DCE1'}
           strokeOpacity={1}
@@ -40,7 +30,6 @@ function CustomMap({ data }: { data: any }) {
         {data.courseList.length > 0 &&
           data.courseList.map((item, idx) => (
             <>
-              {item.map((arr) => {})}
               <CustomOverlayMap
                 key={idx}
                 position={{
