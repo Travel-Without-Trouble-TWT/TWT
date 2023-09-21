@@ -130,10 +130,10 @@ export const deleteScheduleFn = async (scheduleId: Number) => {
   return response.data;
 };
 
-export const deleteDailyScheduleFn = async (
-  dayScheduleId: number,
-  index: number
-) => {
-  const response = await authApi.delete(`/daily/del`);
+export const deleteDailyScheduleFn = async (data: {
+  dayScheduleId: number;
+  index: number;
+}) => {
+  const response = await authApi.delete(`/daily/del`, { data });
   return response.data;
 };
