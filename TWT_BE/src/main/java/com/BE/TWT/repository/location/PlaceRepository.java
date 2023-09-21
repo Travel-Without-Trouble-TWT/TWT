@@ -2,6 +2,8 @@ package com.BE.TWT.repository.location;
 
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.type.PlaceType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,10 +18,11 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
 
     List<Place> findByPlaceLocationContaining(String placeLocation);
 
-    @Query("SELECT p FROM Place p WHERE p.placeType = :placeType AND p.placeName LIKE %:placeName%")
-    List<Place> findByPlaceTypeAndPlaceNameContaining(@Param("placeType") PlaceType placeType, @Param("placeName")String placeName);
-
+    List<Place> findTop10ByOrderByPlaceHeartDesc();
     @Query("SELECT p FROM Place p WHERE p.placeType = :placeType AND p.placeLocation LIKE %:placeLocation%")
-    List<Place> findByPlaceTypeAndPlaceLocationContaining(@Param("placeType") PlaceType placeType, @Param("placeLocation") String placeLocation);
+    Page<Place> findAllByPlaceTypeAndPlaceLocationContaining(@Param("placeType") PlaceType placeType, @Param("placeLocation") String placeLocation, Pageable pageable);
+
+    Page<Place> findByPlaceLocationContaining(String placeLocation, Pageable pageable);
+    Page<Place> findByPlaceNameContaining(String placeName, Pageable pageable);
 
 }

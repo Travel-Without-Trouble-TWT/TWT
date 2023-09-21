@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PlaceType {
-    HOT_PLACE("명소"), STAY("숙소"), RESTAURANT("맛집");
+    HOT_PLACE("HOT_PLACE"), STAY("STAY"), RESTAURANT("RESTAURANT"), ALL("ALL");
 
     private final String place;
 }
