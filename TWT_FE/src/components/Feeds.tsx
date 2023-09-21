@@ -1,18 +1,34 @@
+import { useUserContext } from '../context';
+
 import { MdOutlineFoodBank, MdOutlineAttractions } from 'react-icons/md';
 import { AiOutlineHome } from 'react-icons/ai';
-import CustomMap from './CustomMap';
+import { useState } from 'react';
 
 function Feeds({
   setIsShowTimeModal,
   setIsShowAlert,
+  dayScheduleId,
+  setDeleteData,
   data,
   placeLocation,
 }: {
   setIsShowTimeModal: (isShowTimeModal: boolean) => void;
   setIsShowAlert: (isShowAlert: string) => void;
+  dayScheduleId: number;
+  setDeleteData: any;
   data: any;
   placeLocation: string;
 }) {
+  const { isLogin } = useUserContext();
+
+  const handleClickDeleteButton = (idx: number) => {
+    setIsShowAlert('장소삭제');
+    setDeleteData({
+      dayScheduleId: dayScheduleId,
+      index: idx,
+    });
+  };
+
   return (
     <>
       <ul
@@ -40,22 +56,30 @@ function Feeds({
                     <h4 className="text-base font-semibold">
                       {item.placeName}
                     </h4>
-                    <p className="text-sm text-gray">10:00</p>
+                    <p className="text-sm text-gray">
+                      {item.arriveAt.split('T')[1] === '23:59:00'
+                        ? null
+                        : item.arriveAt.split('T')[1]}
+                    </p>
                   </div>
-                  <div className="flex flex-col mr-5">
-                    <button
-                      className="hover:font-semibold text-sm"
-                      onClick={() => setIsShowAlert('장소삭제')}
-                    >
-                      장소 삭제
-                    </button>
-                    <button
-                      className="hover:font-semibold text-sm"
-                      onClick={() => setIsShowTimeModal(true)}
-                    >
-                      시간 입력
-                    </button>
-                  </div>
+                  {isLogin && (
+                    <div className="flex flex-col mr-5">
+                      <button
+                        className="hover:font-semibold text-sm"
+                        onClick={(idx) => {
+                          handleClickDeleteButton(idx);
+                        }}
+                      >
+                        장소 삭제
+                      </button>
+                      <button
+                        className="hover:font-semibold text-sm"
+                        onClick={() => setIsShowTimeModal(true)}
+                      >
+                        시간 입력
+                      </button>
+                    </div>
+                  )}
                 </div>
               </li>
               {idx !== data.length - 1 && (
