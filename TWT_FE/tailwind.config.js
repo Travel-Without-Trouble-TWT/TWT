@@ -16,6 +16,21 @@ module.exports = {
         hoverLink: 'rgba(0, 0, 0, 0.6)',
         unActive: 'rgba(0, 0, 0, 0.3)',
       },
+      keyframes: {
+        fadeInRight: {
+          '0%': {
+            opacity: 0,
+            transform: 'translateX(100%)',
+          },
+          to: {
+            opacity: 1,
+            transform: 'translateX(0)',
+          },
+        },
+      },
+      animation: {
+        fadeInRight: 'fadeInRight 0.2s ease-in-out',
+      },
     },
     screens: {
       mobile: '360px', // @media (min-width: 360px)
