@@ -20,6 +20,7 @@ import {
   addScheduleFn,
   addLikeFn,
   getNearPlaces,
+  deleteDailyScheduleFn,
 } from '../api';
 
 import { calculateCenter } from '../utils/calculate';
@@ -230,14 +231,44 @@ export const usePostReivews = () => {
   });
 };
 
+//일정 삭제
 export const useDeleteSchedule = (scheduleId: number) => {
   const queryClient = useQueryClient();
-  const { isLoading, isSuccess, isError } = useMutation(
-    (data) => deleteScheduleFn(scheduleId),
-    {
-      onSuccess: (schedule) => queryClient.invalidateQueries(schedule),
-    }
-  );
+  const {
+    mutate: deleteSchedule,
+    isLoading: scheduleDeleting,
+    isSuccess: scheduleDeletingSuccess,
+    isError: scheduleDeletingError,
+  } = useMutation(() => deleteScheduleFn(scheduleId), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['schedule']);
+    },
+  });
+  return {
+    deleteSchedule,
+    scheduleDeleting,
+    scheduleDeletingSuccess,
+    scheduleDeletingError,
+  };
+};
+//일정 장소 삭제
+export const useDeletePlace = (data: {
+  dayScheduleId: number;
+  index: number;
+}) => {
+  const queryClient = useQueryClient();
+  const {
+    mutate: deletePlace,
+    isLoading: placeDeleting,
+    isSuccess: placeDeleteSuccess,
+    isError: placeDeleteError,
+  } = useMutation(() => deleteDailyScheduleFn(data), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['schedule']);
+    },
+    onError: (error) => console.log(error),
+  });
+  return { deletePlace, placeDeleting, placeDeleteSuccess, placeDeleteError };
 };
 
 //새로운 일정 추가
