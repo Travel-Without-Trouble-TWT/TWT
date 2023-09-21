@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useUserContext } from '../context';
-import { useUserInfo } from '../hooks/useAuth';
 
 import logo from '../assets/logo.png';
 
@@ -11,9 +10,6 @@ function Header() {
   const [currentItem, setCurrentItem] = useState(null);
 
   const alertItems = [{ content: '알람1' }, { content: '알람2' }];
-
-  const { userInfo, userInfoLoading, userInfoError } = useUserInfo();
-
   return (
     <header className="border-b-1 relative sticky z-50 w-full border-b border-slate-200 shadow-lg shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full  lg:border-slate-200 lg:backdrop-blur-sm lg:after:hidden to-sky-50 bg-gradient-to-b from-[#A5E0F8]">
       <div className="relative mx-auto max-w-full px-6 lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[96rem]">
