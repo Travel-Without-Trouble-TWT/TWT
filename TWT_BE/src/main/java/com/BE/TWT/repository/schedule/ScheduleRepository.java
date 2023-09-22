@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Page<Schedule> findAllByEndAtBeforeOrderByIdDesc(LocalDate date, Pageable pageable);
+
     List<Schedule> findAllByStartAt(LocalDate startAt);
     List<Schedule> findALlByEndAt(LocalDate endAt);
 

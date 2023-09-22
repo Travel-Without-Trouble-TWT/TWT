@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +76,7 @@ public class ScheduleService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
         int days = (int) ChronoUnit.DAYS.between(startAt, endAt) + 1;
+
 
         Schedule schedule = Schedule.builder()
                 .scheduleName(travelPlace + " 여행")
@@ -146,6 +148,8 @@ public class ScheduleService {
             int days = (int) ChronoUnit.DAYS.between(parseStart, parseEnd);
             schedule.insertDays(days);
             List<DaySchedule> dayScheduleList = new ArrayList<>();
+          
+        schedule.updateDate(setDateDto.getStartAt(), setDateDto.getEndAt());
 
             for (int j = 0; j < days; j++) {
                 DaySchedule daySchedule = new DaySchedule();
@@ -246,3 +250,4 @@ public class ScheduleService {
         return schedule;
     }
 }
+
