@@ -14,6 +14,9 @@ import com.BE.TWT.repository.member.MemberRepository;
 import com.BE.TWT.repository.review.ReviewRepository;
 import com.BE.TWT.service.function.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +47,7 @@ public class ReviewService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
-        Place place = placeRepository.findByPlaceName(reviewDto.getPlaceName())
+        Place place = placeRepository.findById(reviewDto.getPlaceId())
                 .orElseThrow(() -> new PlaceException(PlaceErrorMessage.WRONG_ADDRESS));
 
         List<ReviewImage> reviewImages = s3Service.uploadFiles(multipartFile);
@@ -57,10 +60,11 @@ public class ReviewService {
         Review review = Review.builder()
                 .place(place)
                 .createAt(LocalDateTime.now())
-                .memberId(member.getId())
+                .nickName(member.getNickName())
                 .reviewImageList(listToSave)
                 .star(reviewDto.getStar())
                 .reviewComment(reviewDto.getReviewComment())
+                .memberProfileUrl(member.getProfileUrl())
                 .build();
 
         place.addReview();
@@ -74,7 +78,7 @@ public class ReviewService {
                 .orElseThrow(() -> new PlaceException(UNDEFINED_REVIEW));
     }
 
-    public List<Review> viewAllReviewByMember(HttpServletRequest request) { // 유저가 작성한 리뷰 전체보기
+    public Page<Review> viewAllReviewByMember(HttpServletRequest request, int pageNum) { // 유저가 작성한 리뷰 전체보기
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
 
@@ -82,14 +86,17 @@ public class ReviewService {
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
         Long memberId = member.getId();
+        Pageable pageable = PageRequest.of(pageNum, 10);
 
-        return reviewRepository.findAllByMemberId(memberId);
+        return reviewRepository.findAllByMemberId(memberId, pageable);
     }
 
-    public List<Review> viewAllReviewByPlace(Long placeId) { // 특정 Place 에 대한 리뷰 전체보기
+    public Page<Review> viewAllReviewByPlace(Long placeId, int pageNum) { // 특정 Place 에 대한 리뷰 전체보기
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
-        return reviewRepository.findAllByPlace(place);
+        Pageable pageable = PageRequest.of(pageNum, 5);
+
+        return reviewRepository.findAllByPlace(place, pageable);
     }
 }

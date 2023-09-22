@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.text.DecimalFormat;
 import java.util.List;
 
 @Getter
@@ -51,7 +52,11 @@ public class Place {
 
     public void updateAverageRating(double newStar) {
         this.totalStar += newStar;
-        star = totalStar / this.reviewNum;
+        double average = totalStar / this.reviewNum;
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        String formattedAverage = decimalFormat.format(average);
+        this.star = Double.parseDouble(formattedAverage);
     }
 
     public void addReview() {

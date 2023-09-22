@@ -35,7 +35,8 @@ public class Review {
     @CollectionTable(name = "review_image_list", joinColumns = @JoinColumn(name = "review_id", referencedColumnName = "id"))
     private List<String> reviewImageList;
     @Column(nullable = false)
-    private Long memberId;
-    @Column(nullable = false)
     private String reviewComment;
+    @Column(nullable = false)
+    private String nickName; // 작성자
+    private String memberProfileUrl; // 작성자 프사
 }

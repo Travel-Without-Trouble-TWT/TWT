@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DeleteCourse {
     private Long dayScheduleId;
-    private Long placeId;
+    private int index;
 }

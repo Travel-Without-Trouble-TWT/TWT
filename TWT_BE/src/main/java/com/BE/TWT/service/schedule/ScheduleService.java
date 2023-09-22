@@ -3,12 +3,15 @@ package com.BE.TWT.service.schedule;
 import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.exception.error.ScheduleException;
+import com.BE.TWT.model.dto.schedule.AddNewCourse;
+import com.BE.TWT.model.dto.schedule.CreateScheduleDto;
 import com.BE.TWT.model.dto.schedule.EditScheduleNameDto;
 import com.BE.TWT.model.dto.schedule.SetDateDto;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.model.entity.schedule.DaySchedule;
 import com.BE.TWT.model.entity.schedule.Schedule;
 import com.BE.TWT.repository.member.MemberRepository;
+import com.BE.TWT.repository.schedule.DayScheduleRepository;
 import com.BE.TWT.repository.schedule.ScheduleRepository;
 import com.BE.TWT.service.function.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -36,23 +39,73 @@ public class ScheduleService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
+    private final DayScheduleService dayScheduleService;
+    private final DayScheduleRepository dayScheduleRepository;
 
-    public Schedule createSchedule (HttpServletRequest request, String travelPlace) {
+    public Schedule addNewSchedule(HttpServletRequest request, CreateScheduleDto dto) {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
+        LocalDate startAt = LocalDate.parse(dto.getStartAt());
+        LocalDate endAt = LocalDate.parse(dto.getEndAt());
+        // TODO 프론트에서 받는 날짜 값이 String, Object, Date 어느 것으로 받는지 볼 것
+
+        if (scheduleRepository.findByMemberAndScheduleNameAndTravelPlaceAndStartAtAndEndAt
+                (member, dto.getScheduleName(), dto.getPlaceLocation(), startAt, endAt).isEmpty()) {
+          return createSchedule(request, dto.getPlaceLocation(), startAt, endAt);
+        } else {
+            Schedule schedule = scheduleRepository.findByMemberAndScheduleNameAndTravelPlaceAndStartAtAndEndAt
+                    (member, dto.getScheduleName(), dto.getPlaceLocation(), startAt, endAt).get();
+
+            AddNewCourse course = AddNewCourse.builder()
+                    .day(dto.getWhen())
+                    .scheduleId(schedule.getId())
+                    .placeId(dto.getPlaceId())
+                    .build();
+            return dayScheduleService.addNewCourse(course);
+        }
+    }
+
+    public Schedule createSchedule (HttpServletRequest request, String travelPlace, LocalDate startAt, LocalDate endAt) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
+        int days = (int) ChronoUnit.DAYS.between(startAt, endAt) + 1;
+
+
         Schedule schedule = Schedule.builder()
                 .scheduleName(travelPlace + " 여행")
-                .startAt(LocalDate.now())
-                .endAt(LocalDate.now())
+                .startAt(startAt)
+                .endAt(endAt)
                 .travelPlace(travelPlace)
+                .days(days)
                 .member(member)
                 .build();
 
-        return scheduleRepository.save(schedule);
+        Schedule schedule1 = scheduleRepository.save(schedule);
+
+        List<DaySchedule> dayScheduleList = new ArrayList<>();
+
+        for (int i = 0; i < days; i++) {
+            LocalDate date = startAt.plusDays(i);
+            DaySchedule daySchedule = DaySchedule.builder()
+                    .schedule(schedule)
+                    .dateNumber(i + 1)
+                    .day(date)
+                    .build();
+
+            dayScheduleRepository.save(daySchedule);
+            dayScheduleList.add(daySchedule);
+        }
+
+        schedule1.insertDays(days);
+        schedule1.changeDayScheduleList(dayScheduleList);
+        return schedule1;
     }
 
     public void editScheduleName (HttpServletRequest request, EditScheduleNameDto dto) {
@@ -85,16 +138,14 @@ public class ScheduleService {
         if (schedule.getMember().equals(member)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-            LocalDate startDate = setDateDto.getStartAt();
-            String formatStart = startDate.format(formatter);
-            LocalDate endDate = setDateDto.getEndAt();
-            String formatEnd = endDate.format(formatter);
+            String startDate = setDateDto.getStartAt();
+            String endDate = setDateDto.getEndAt();
 
-            LocalDate parseStart = LocalDate.parse(formatStart, formatter);
-            LocalDate parseEnd = LocalDate.parse(formatEnd, formatter);
+            LocalDate parseStart = LocalDate.parse(startDate, formatter);
+            LocalDate parseEnd = LocalDate.parse(endDate, formatter);
             schedule.updateDate(parseStart, parseEnd);
 
-            int days = (int) ChronoUnit.DAYS.between(startDate, endDate);
+            int days = (int) ChronoUnit.DAYS.between(parseStart, parseEnd);
             schedule.insertDays(days);
             List<DaySchedule> dayScheduleList = new ArrayList<>();
           
@@ -104,20 +155,13 @@ public class ScheduleService {
                 DaySchedule daySchedule = new DaySchedule();
                 dayScheduleList.add(daySchedule);
             }
-
             schedule.changeDayScheduleList(dayScheduleList);
         } else {
             throw new ScheduleException(UNAUTHORIZED_REQUEST);
         }
-
         return schedule;
     }
 
-    /** 여행 계획 날짜 변경 로직 개념
-     *  기존의 리스트를 불러와서 가지고 있는 채로 이후의 날짜로 리스트를 새로 생성한다.
-     *  수정한 리스트의 길이가 짧을 경우에 마지막 날에 몰아넣는 구조로 구현하고
-     *  길이가 같거나 길 경우에는 차례대로 옮겨 담는 로직을 구현한다.
-     */
     @Transactional
     public Schedule changeTravelDate(HttpServletRequest request, SetDateDto dto) { // 여행 계획 날짜 변경
         String token = request.getHeader("Authorization").replace("Bearer ", "");
@@ -129,21 +173,20 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(dto.getScheduleId())
                 .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
 
+        String startDate = dto.getStartAt().toString();
+        String endDate = dto.getEndAt().toString();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+
+        LocalDate parseStart = LocalDate.parse(startDate, formatter);
+        LocalDate parseEnd = LocalDate.parse(endDate, formatter);
+        int days = (int) ChronoUnit.DAYS.between(parseStart, parseEnd);
+
+        schedule.updateDate(parseStart, parseEnd);
+
         if (schedule.getMember().equals(member)) {
             List<DaySchedule> oldDayScheduleList = schedule.getDayScheduleList();
             List<DaySchedule> newDayScheduleList = new ArrayList<>();
 
-            LocalDate startDate = dto.getStartAt();
-            LocalDate endDate = dto.getEndAt();
-            int days = (int) ChronoUnit.DAYS.between(startDate, endDate);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-            String formatStart = startDate.format(formatter);
-            String formatEnd = endDate.format(formatter);
-
-            LocalDate parseStart = LocalDate.parse(formatStart, formatter);
-            LocalDate parseEnd = LocalDate.parse(formatEnd, formatter);
-            schedule.updateDate(parseStart, parseEnd);
 
             if (oldDayScheduleList.size() > days) { // 변경 후 기간이 더 짧다
                 for (int i = 0; i < days; i++) {

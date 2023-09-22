@@ -3,9 +3,12 @@ package com.BE.TWT.controller.function;
 import com.BE.TWT.exception.error.MapException;
 import com.BE.TWT.model.dto.function.Point;
 import com.BE.TWT.model.entity.location.Place;
+import com.BE.TWT.model.entity.review.Review;
 import com.BE.TWT.model.entity.schedule.Schedule;
+import com.BE.TWT.service.function.HeartService;
 import com.BE.TWT.service.function.SearchService;
 import com.BE.TWT.service.point.PointService;
+import com.BE.TWT.service.review.ReviewService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -25,6 +29,8 @@ import java.util.List;
 public class SearchController {
     private final SearchService searchService;
     private final PointService pointService;
+    private final ReviewService reviewService;
+    private final HeartService heartService;
 
     @ApiOperation(value = "방문지 TOP 10 검색")
     @Operation(description = "여행지 중에 좋아요 높은 순 검색 API")
@@ -55,8 +61,10 @@ public class SearchController {
     @ApiOperation(value = "특정 장소 상세 보기")
     @Operation(description = "장소 상세보기")
     @GetMapping("/detail")
-    public ResponseEntity<Place> filterByPlaceTypeAndPlaceName(@RequestParam @Valid String placeName) {
-        return ResponseEntity.ok(searchService.detailPlace(placeName));
+    public ResponseEntity<Place> filterByPlaceTypeAndPlaceName(HttpServletRequest request,
+                                                               HttpServletResponse response,
+                                                               @RequestParam @Valid Long placeId) {
+        return ResponseEntity.ok(searchService.detailPlace(request, response, placeId));
     }
 
     @ApiOperation(value = "좌표 검색 API")
@@ -75,17 +83,25 @@ public class SearchController {
 
     @ApiOperation(value = "나의 여행 계획표 리스트")
     @Operation(description = "내가 작성한 여행 계획표 리스트들")
-    @GetMapping("/member")
-    public ResponseEntity<List<Schedule>> searchAllScheduleByMember(HttpServletRequest request) {
-        return ResponseEntity.ok(searchService.searchScheduleByMember(request));
+    @GetMapping("/member/schedule")
+    public ResponseEntity<Page<Schedule>> searchAllScheduleByMember(HttpServletRequest request,
+                                                                    @RequestParam @Valid int pageNum) {
+        return ResponseEntity.ok(searchService.searchScheduleByMember(request, pageNum));
     }
 
-    @ApiOperation(value = "무한 스크롤 여행지 페이징")
-    @Operation(description = "무한 스크롤 여행지 페이징 검색 API")
-    @GetMapping("/page")
-    public ResponseEntity<Page<Place>> searchAllPlaceByPlaceLocation(
-            @RequestParam @Valid int pageNum,
-            @RequestParam @Valid String placeLocation) {
-        return ResponseEntity.ok(searchService.searchPlaceByPlaceLocation(pageNum, placeLocation));
+    @ApiOperation(value = "유저 리뷰 불러오기")
+    @Operation(description = "유저가 작성한 리뷰 전체 불러오기")
+    @GetMapping("/member/review")
+    public ResponseEntity<Page<Review>> searchAllReviewByMember(HttpServletRequest request,
+                                                              @RequestParam @Valid int pageNum) {
+        return ResponseEntity.ok(reviewService.viewAllReviewByMember(request, pageNum));
+    }
+
+    @ApiOperation(value = "유저 좋아요 불러오기")
+    @Operation(description = "유저가 누른 좋아요 장소 전체 불러오기")
+    @GetMapping("/member/heart")
+    public ResponseEntity<Page<Place>> searchAllHeartByMember(HttpServletRequest request,
+                                                             @RequestParam @Valid int pageNum) {
+        return ResponseEntity.ok(heartService.searchAllHeartByMember(request, pageNum));
     }
 }

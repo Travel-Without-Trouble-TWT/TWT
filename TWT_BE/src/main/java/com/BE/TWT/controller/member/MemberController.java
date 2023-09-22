@@ -59,7 +59,7 @@ public class MemberController {
     @ApiOperation(value = "유저 조회")
     @Operation(description = "마이 프로필 클릭했을 때 필요로 하는 값")
     @GetMapping("/info")
-    public ResponseEntity<InfoResponseDto> searchMember (HttpServletRequest request) {
+    public ResponseEntity<InfoResponseDto> searchMember(HttpServletRequest request) {
         return ResponseEntity.ok(memberService.searchMemberInfo(request));
     }
 
@@ -72,7 +72,7 @@ public class MemberController {
 
     @ApiOperation(value = "토큰 재발급")
     @Operation(description = "쿠키 내에 Refresh Token 을 입력해주세요")
-    @GetMapping("/logout")
+    @GetMapping("/refresh")
     public String logOut(@RequestParam @Valid String refreshToken) {
         return memberService.getAccessTokenByRefreshToken(refreshToken);
     }

@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class UpdateCourse {
-    private Long dayScheduleId;
-    private int index;
-    private LocalDateTime arriveAt;
+public class AddNewCourse {
+    private Long scheduleId;
+    private Long placeId;
+    private int day;
 }

@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReviewDto {
     private String reviewComment;
-    private String placeName;
+    private Long placeId;
     private double star;
 }
