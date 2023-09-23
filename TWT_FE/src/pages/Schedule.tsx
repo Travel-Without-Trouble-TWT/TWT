@@ -67,13 +67,13 @@ function Schedule() {
       {!schedule || scheduleLoading ? (
         <Spinner size={'30px'} />
       ) : (
-        <section className="bg-lightgray dark:bg-gray-900 h-full flex justify-center flex-col lg:px-40 mobile:px-10 py-6">
-          <div className="bg-white rounded-lg shadow-xl pb-8">
+        <section className="bg-lightgray dark:bg-slate-950 h-full flex justify-center flex-col lg:px-40 mobile:px-10 py-6">
+          <div className="bg-white rounded-lg shadow-xl pb-8 dark:bg-slate-900">
             <div className="relative w-full h-[300px] bg-darkgray rounded-tl-lg rounded-tr-lg">
               <img
                 alt="일정 배경"
                 src={schedule?.scheduleImageUrl}
-                className="w-full h-full rounded-tl-lg rounded-tr-lg opacity-50 blur-sm"
+                className="w-full h-full rounded-tl-lg rounded-tr-lg opacity-50 blur-xs"
               />
             </div>
             <div className="absolute gap-2 flex flex-col -mt-60 justify-center ml-10">
@@ -112,7 +112,7 @@ function Schedule() {
               {isLogin && (
                 <button
                   onClick={() => setIsShowAlert('일정삭제')}
-                  className="flex self-end mr-4 mt-2 text-gray text-sm z-20"
+                  className="flex self-end mr-4 mt-2 text-gray text-sm z-20 dark:text-white"
                 >
                   일정 삭제
                 </button>
@@ -120,7 +120,7 @@ function Schedule() {
               <img
                 alt="일정 이미지"
                 src={schedule?.scheduleImageUrl}
-                className="w-64 h-64 border-8 border-white rounded-full -mt-40 z-20"
+                className="w-64 h-64 border-8 border-white rounded-full -mt-40 z-20  dark:border-slate-900"
               />
             </div>
 
@@ -130,10 +130,14 @@ function Schedule() {
                 schedule.dayScheduleList.map((item, idx) => (
                   <div className="grid grid-cols-4 gap-3 tablet:grid-cols-8 lg:grid-cols-12">
                     <div className="flex flex-col items-center justify-center col-span-1 lg:col-span-1">
-                      <p className="text-xl font-semibold">Day{idx + 1}</p>
-                      <p className="text-xs text-gray">{item.day}</p>
+                      <p className="text-xl font-semibold dark:text-white">
+                        Day{idx + 1}
+                      </p>
+                      <p className="text-xs text-gray dark:text-skyblue">
+                        {item.day}
+                      </p>
                     </div>
-                    <div className="col-span-7 lg:col-span-11 shadow-md shadow-gray rounded-md px-5 py-5">
+                    <div className="col-span-7 lg:col-span-11 shadow-md shadow-gray rounded-md px-5 py-5 dark:bg-slate-800 dark:shadow-slate-700">
                       {item.courseList && (
                         <>
                           <Feeds
@@ -155,7 +159,7 @@ function Schedule() {
                           {item.courseList.length > 0 && (
                             <div className="flex justify-center mb-1 mt-2">
                               <button
-                                className="text-sm"
+                                className="text-sm dark:text-white"
                                 onClick={() => setIsMoreOpen(item.id)}
                               >
                                 {isMoreOpen === item.id ? '닫기' : '더보기'}
