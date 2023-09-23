@@ -2,21 +2,38 @@ import { useState, useRef } from 'react';
 import { TiDelete } from 'react-icons/ti';
 import { AiOutlineClose } from 'react-icons/ai';
 import Score from './Score';
+import { usePostReivews } from '../hooks/useProducts';
 
 function ReviewModal({
   setShowModal,
+  placeId,
 }: {
   setShowModal: (showModal: string | '') => void;
+  placeId: number;
 }) {
   const [img, setImg] = useState<string[]>([]); //file data
+  const [imgFile, setImgFile] = useState<File | null>(null);
   const [reviewText, setReviewText] = useState('');
   const [score, setScore] = useState<number | null>(null); //별점
+  const uploadData = {
+    reviewComment: reviewText,
+    placeId: placeId,
+    star: score,
+  };
+  const {
+    postReviews,
+    reviewPosting,
+    reviewPostingSuccess,
+    reviewPostingError,
+  } = usePostReivews(uploadData, imgFile);
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleUploadImgs = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imgLists: FileList | null = e.target.files;
+    setImgFile(imgLists);
+
     if (!imgLists) return;
 
     let imgUrlLists = [...img];
@@ -29,11 +46,17 @@ function ReviewModal({
     if (imgUrlLists.length > 9) {
       imgUrlLists = imgUrlLists.slice(0, 9); //최대 9장만 허용
     }
+
     setImg(imgUrlLists);
+    console.log(imgLists);
   };
 
   const handleDeleteImg = (id: number) => {
     setImg(img.filter((_, index) => index !== id));
+  };
+
+  const handleUploadReview = () => {
+    postReviews(uploadData, imgFile);
   };
 
   return (
@@ -63,7 +86,7 @@ function ReviewModal({
               className="hidden"
               type="file"
               id="input-file"
-              accept="image/*"
+              accept="image/*, multipart/form-data"
               multiple
               onChange={handleUploadImgs}
               ref={fileRef}
@@ -107,6 +130,7 @@ function ReviewModal({
           </div>
           <div className="flex justify-end">
             <button
+              onClick={handleUploadReview}
               disabled={!img.length || !reviewText || !score}
               className={`inline-flex items-center justify-center flex-1 h-10 gap-2 px-5 text-sm font-semibold tracking-wide duration-300 rounded whitespace-nowrap ${
                 !img.length || !reviewText || !score
