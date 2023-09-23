@@ -29,15 +29,15 @@ function Mypage() {
   }, [category, currentPage]);
   return (
     <>
-      <section className="bg-lightgray dark:bg-gray-900 min-w-full min-h-screen flex justify-center flex-col lg:px-48 tablet:px-10 py-6">
-        <div className="bg-white rounded-lg shadow-xl pb-8 mb-2">
-          <div className="w-full h-[150px] bg-lightgray"></div>
+      <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen flex justify-center flex-col lg:px-48 tablet:px-10 py-6">
+        <div className="bg-white rounded-lg shadow-xl pb-8 mb-2 dark:bg-slate-900">
+          <div className="w-full h-[150px] bg-lightgray dark:bg-slate-800 rounded-lg"></div>
           <div className="flex flex-col items-center -mt-20">
             <img
               src="https://mblogthumb-phinf.pstatic.net/20150427_73/ninevincent_1430122793329pvryW_JPEG/kakao_7.jpg?type=w420"
-              className="w-[120px] h-[120px] border-4 border-white rounded-full"
+              className="w-[120px] h-[120px] border-4 border-white rounded-full dark:border-slate-900"
             />
-            <p className="text-2xl mt-2">{user?.nickName}</p>
+            <p className="text-2xl mt-2 dark:text-white">{user?.nickName}</p>
             <p className="mt-2 text-gray mb-5">
               <a href="/profile">프로필 수정</a>
             </p>
@@ -76,7 +76,7 @@ function Mypage() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-xl pb-8">
+        <div className="bg-white rounded-lg shadow-xl pb-8 dark:bg-slate-800 ">
           <div className="flex justify-center lg:p-10 tablet:p-4">
             {category === 'schedule' && (
               <>
@@ -85,12 +85,7 @@ function Mypage() {
                   setIsListOpen={setIsListOpen}
                 />
                 {isListOpen && !userDataLoading && (
-                  <div>
-                    <ScheduleList
-                      userDatas={userDatas}
-                      isListOpen={isListOpen}
-                    />
-                  </div>
+                  <ScheduleList userDatas={userDatas} isListOpen={isListOpen} />
                 )}
               </>
             )}
