@@ -117,7 +117,9 @@ function Detail() {
       {showModal === 'schedule' && (
         <ScheduleModal setShowModal={setShowModal} selectedPlace={placeId} />
       )}
-      {showModal === 'review' && <ReviewModal setShowModal={setShowModal} />}
+      {showModal === 'review' && (
+        <ReviewModal setShowModal={setShowModal} placeId={placeId} />
+      )}
     </section>
   );
 }
