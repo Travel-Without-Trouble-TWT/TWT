@@ -82,7 +82,7 @@ export const getNearPlaces = async (placeId: number) => {
 };
 
 //post
-export const postReviewFn = async (data, files) => {
+export const postReviewFn = async (data: any, files: File) => {
   const formData = new FormData();
 
   const requestObj = {
@@ -96,7 +96,9 @@ export const postReviewFn = async (data, files) => {
   });
 
   formData.append('request', requestBlob);
-  formData.append('files', files);
+  for (let i = 0; i < files.length; i++) {
+    formData.append('files', files[i]);
+  }
 
   const response = authApi.post('/review/place', formData, {
     headers: {
