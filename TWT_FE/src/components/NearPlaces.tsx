@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useNearPlaces } from '../hooks/useProducts';
 
 import Glide from '@glidejs/glide';
@@ -9,7 +9,7 @@ function NearPlaces({ placeId }: { placeId: number }) {
 
   useEffect(() => {
     if (nearPlaces && nearPlaces.length > 0) {
-      const slider = new Glide('#glide-03', {
+      const slider = new Glide('glide-03', {
         type: 'carousel',
         focusAt: 'center',
         perView: 3,
@@ -23,7 +23,7 @@ function NearPlaces({ placeId }: { placeId: number }) {
     }
   }, []);
   return (
-    <div id="glide-03" className="w-full flex relative">
+    <div className="glide-03 w-full flex relative">
       <div className="w-full flex overflow-hidden" data-glide-el="track">
         <div className="whitespace-no-wrap flex-no-wrap [backface-visibility: hidden] [transform-style: preserve-3d] touch-pan-y will-change-transform w-full overflow-hidden p-0 shadow">
           {nearPlaces &&
