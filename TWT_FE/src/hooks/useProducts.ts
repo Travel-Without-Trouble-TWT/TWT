@@ -219,16 +219,26 @@ export const useExistedSchedules = (placeLocation: string) => {
   };
 };
 
-//useMutation
-export const usePostReivews = () => {
+//리뷰쓰기
+export const usePostReivews = (reviewPost: any, file: File) => {
   const queryClient = useQueryClient();
   const {
+    mutate: postReviews,
     isLoading: reviewPosting,
-    isSuccess,
-    isError,
-  } = useMutation((data) => postReviewFn(reviewPost, file), {
-    onSuccess: () => queryClient.invalidateQueries(reviews),
+    isSuccess: reviewPostingSuccess,
+    isError: reviewPostingError,
+  } = useMutation(() => postReviewFn(reviewPost, file), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['reviews']);
+    },
+    onError: (error) => console.log('업로드 중 오류 발생. 다시 시도해주세요.'),
   });
+  return {
+    postReviews,
+    reviewPosting,
+    reviewPostingSuccess,
+    reviewPostingError,
+  };
 };
 
 //일정 삭제
