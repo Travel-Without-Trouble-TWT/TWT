@@ -53,7 +53,7 @@ function Feeds({
                 </div>
                 <div className="flex flex-1 gap-0 justify-between items-center">
                   <div>
-                    <h4 className="text-base font-semibold">
+                    <h4 className="text-base font-semibold dark:text-white">
                       {item.placeName}
                     </h4>
                     <p className="text-sm text-gray">
@@ -63,7 +63,7 @@ function Feeds({
                     </p>
                   </div>
                   {isLogin && (
-                    <div className="flex flex-col mr-5">
+                    <div className="flex flex-col mr-5 dark:text-gray">
                       <button
                         className="hover:font-semibold text-sm"
                         onClick={(idx) => {
@@ -92,7 +92,7 @@ function Feeds({
         ) : (
           <a
             href={`/search/${placeLocation}`}
-            className="flex justify-center mr-10 text-gray text-sm"
+            className="flex justify-center mr-10 text-gray text-sm dark:text-lightgray"
           >
             장소를 추가해주세요.
           </a>
