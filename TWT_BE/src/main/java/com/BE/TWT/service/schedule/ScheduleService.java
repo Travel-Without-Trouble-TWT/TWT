@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,7 @@ public class ScheduleService {
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
         int days = (int) ChronoUnit.DAYS.between(startAt, endAt) + 1;
 
+
         Schedule schedule = Schedule.builder()
                 .scheduleName(travelPlace + " 여행")
                 .startAt(startAt)
@@ -118,6 +120,44 @@ public class ScheduleService {
         } else {
             throw new ScheduleException(UNAUTHORIZED_REQUEST);
         }
+    }
+
+    @Transactional
+    public Schedule setDate(HttpServletRequest request, SetDateDto setDateDto) { // 선택 여행지 페이지의 날짜 입력 API
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
+
+        Schedule schedule = scheduleRepository.findById(setDateDto.getScheduleId())
+                .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
+
+        if (schedule.getMember().equals(member)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            String startDate = setDateDto.getStartAt();
+            String endDate = setDateDto.getEndAt();
+
+            LocalDate parseStart = LocalDate.parse(startDate, formatter);
+            LocalDate parseEnd = LocalDate.parse(endDate, formatter);
+            schedule.updateDate(parseStart, parseEnd);
+
+            int days = (int) ChronoUnit.DAYS.between(parseStart, parseEnd);
+            schedule.insertDays(days);
+            List<DaySchedule> dayScheduleList = new ArrayList<>();
+          
+        schedule.updateDate(setDateDto.getStartAt(), setDateDto.getEndAt());
+
+            for (int j = 0; j < days; j++) {
+                DaySchedule daySchedule = new DaySchedule();
+                dayScheduleList.add(daySchedule);
+            }
+            schedule.changeDayScheduleList(dayScheduleList);
+        } else {
+            throw new ScheduleException(UNAUTHORIZED_REQUEST);
+        }
+        return schedule;
     }
 
     @Transactional
@@ -226,3 +266,4 @@ public class ScheduleService {
                 .build();
     }
 }
+
