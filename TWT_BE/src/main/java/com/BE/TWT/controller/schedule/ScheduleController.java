@@ -2,6 +2,7 @@ package com.BE.TWT.controller.schedule;
 
 import com.BE.TWT.model.dto.schedule.CreateScheduleDto;
 import com.BE.TWT.model.dto.schedule.EditScheduleNameDto;
+import com.BE.TWT.model.dto.schedule.ScheduleDetail;
 import com.BE.TWT.model.dto.schedule.SetDateDto;
 import com.BE.TWT.model.entity.schedule.Schedule;
 import com.BE.TWT.service.function.SearchService;
@@ -78,5 +79,11 @@ public class ScheduleController {
         return ResponseEntity.ok(searchService.
                 findSamePlaceLocationSchedule(request, placeLocation));
     }
-}
 
+    @ApiOperation(value = "특정 스케줄 전체 일정 상세 조회")
+    @Operation(description = "스케줄에 포함된 DaySchedule 리스트도 모두 조회")
+    @GetMapping("/info")
+    public ResponseEntity<ScheduleDetail> readScheduleInfo(@RequestParam @Valid Long scheduleId) {
+        return ResponseEntity.ok(scheduleService.readScheduleDetail(scheduleId));
+    }
+}

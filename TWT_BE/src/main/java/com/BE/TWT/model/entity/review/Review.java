@@ -29,7 +29,7 @@ public class Review {
     private double star;
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "place_id", referencedColumnName = "id")
+    @JoinColumn(name = "place_id")
     private Place place;
     @ElementCollection
     @CollectionTable(name = "review_image_list", joinColumns = @JoinColumn(name = "review_id", referencedColumnName = "id"))
