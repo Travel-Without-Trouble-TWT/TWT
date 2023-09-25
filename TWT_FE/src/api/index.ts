@@ -1,5 +1,5 @@
 import { authApi } from './auth';
-import { ReviewProps, ScheduleProps, PageProps } from './type';
+import { PageProps } from './type';
 
 //방문지 top10
 export const getTop10Fn = async () => {
@@ -9,9 +9,7 @@ export const getTop10Fn = async () => {
 
 //스케쥴들
 export const getSchedulesFn = async (page: number) => {
-  const response = await authApi.get<ScheduleProps>(
-    `/search/recent/pageNum=${page + 1}`
-  );
+  const response = await authApi.get(`/search/schedule?pageNum=${page}`);
   return response.data;
 };
 
@@ -82,7 +80,7 @@ export const getNearPlaces = async (placeId: number) => {
 };
 
 //post
-export const postReviewFn = async (data: any, files: File) => {
+export const postReviewFn = async (data: any, files: File | null) => {
   const formData = new FormData();
 
   const requestObj = {
