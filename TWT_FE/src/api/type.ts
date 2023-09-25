@@ -1,5 +1,5 @@
 export interface PageProps {
-  content: DataProps[];
+  content: any;
   empty: boolean;
   first: boolean;
   last: boolean;
