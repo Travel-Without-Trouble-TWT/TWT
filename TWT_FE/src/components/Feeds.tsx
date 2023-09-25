@@ -2,7 +2,6 @@ import { useUserContext } from '../context';
 
 import { MdOutlineFoodBank, MdOutlineAttractions } from 'react-icons/md';
 import { AiOutlineHome } from 'react-icons/ai';
-import { useState } from 'react';
 
 function Feeds({
   setIsShowTimeModal,
@@ -10,6 +9,7 @@ function Feeds({
   dayScheduleId,
   setDeleteData,
   data,
+  memberId,
   placeLocation,
 }: {
   setIsShowTimeModal: (isShowTimeModal: boolean) => void;
@@ -17,9 +17,10 @@ function Feeds({
   dayScheduleId: number;
   setDeleteData: any;
   data: any;
+  memberId: number;
   placeLocation: string;
 }) {
-  const { isLogin } = useUserContext();
+  const { isLogin, user } = useUserContext();
 
   const handleClickDeleteButton = (idx: number) => {
     setIsShowAlert('장소삭제');
@@ -62,7 +63,7 @@ function Feeds({
                         : item.arriveAt.split('T')[1]}
                     </p>
                   </div>
-                  {isLogin && (
+                  {isLogin && user && user.memberId === memberId && (
                     <div className="flex flex-col mr-5 dark:text-gray">
                       <button
                         className="hover:font-semibold text-sm"
