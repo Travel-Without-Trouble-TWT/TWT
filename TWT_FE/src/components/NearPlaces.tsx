@@ -20,10 +20,10 @@ function NearPlaces({ placeId }: { placeId: number }) {
         gap: 24,
         breakpoints: {
           1024: {
-            perView: 3,
+            perView: 2,
           },
           640: {
-            perView: 2,
+            perView: 3,
           },
         },
       }).mount();
@@ -31,16 +31,17 @@ function NearPlaces({ placeId }: { placeId: number }) {
         slider.destroy();
       };
     }
-  }, []);
+  }, [nearPlaces]);
   return (
     <>
       <div className="glide-01 w-full relative">
         <div className="overflow-hidden" data-glide-el="track">
-          <div className="flex whitespace-no-wrap flex-no-wrap [backface-visibility: hidden] [transform-style: preserve-3d] touch-pan-y will-change-transform w-full overflow-hidden p-0 shadow">
+          <div className="flex whitespace-no-wrap flex-no-wrap [backface-visibility: hidden] [transform-style: preserve-3d] touch-pan-y will-change-transform w-full h-full overflow-hidden p-0 shadow">
             {nearPlaces &&
+              nearPlaces.length > 0 &&
               nearPlaces.map((place) => (
                 <div
-                  className="relative shadow rounded m-auto max-h-full w-full max-w-full"
+                  className="relative shadow rounded w-full max-w-full min-h-full"
                   key={place.id}
                 >
                   <figure>
@@ -52,14 +53,14 @@ function NearPlaces({ placeId }: { placeId: number }) {
                   </figure>
                   <div className="p-6">
                     <header className="mb-4">
-                      <h3 className="text-xl text-black font-semibold">
+                      <h3 className="text-xl text-black font-semibold hover:underline">
                         <a href={`/detail/${place.id}`}>{place.placeName}</a>
                       </h3>
                       <p className="text-sm text-gray">
                         {place.placeType} | {place.placeLocation}
                       </p>
                     </header>
-                    <p className="h-[200px] text-slate-500">
+                    <p className="text-slate-500 text-sm">
                       {place.placeDescription}
                     </p>
                   </div>
