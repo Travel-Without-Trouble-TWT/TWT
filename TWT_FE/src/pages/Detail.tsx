@@ -101,11 +101,9 @@ function Detail() {
             </div>
           </div>
           <div className="bg-white rounded-lg shadow-xl p-8 mb-2 dark:bg-slate-800 absoulte">
-            <div className="flex gap-2">
-              <h2 className="text-2xl font-bold dark:text-white">
-                주변 플레이스
-              </h2>
-            </div>
+            <h2 className="text-2xl font-bold dark:text-white mb-4">
+              주변 플레이스
+            </h2>
             <NearPlaces placeId={placeId} />
           </div>
         </>
