@@ -1,9 +1,4 @@
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   getSchedulesFn,
@@ -26,32 +21,14 @@ import {
 import { calculateCenter } from '../utils/calculate';
 
 //메인페이지 스케쥴들
-export const useSchedules = () => {
+export const useSchedules = (pageParam: number) => {
   const {
     data: schedules,
-    fetchNextPage,
-    hasNextPage,
     isLoading: schedulesLoading,
     isError: schedulesError,
-  } = useInfiniteQuery(
-    ['schedules'],
-    ({ pageParam = 0 }) => getSchedulesFn(pageParam),
-    {
-      getNextPageParam: (lastPage, allPosts) => {
-        return lastPage.page !== allPosts[0].totalPage
-          ? lastPage.page + 1
-          : undefined;
-      },
-      select: (data) => ({
-        pages: data?.pages.flatMap((page) => page.data),
-        pageParams: data.pageParams,
-      }),
-    }
-  );
+  } = useQuery(['schedules'], () => getSchedulesFn(pageParam));
   return {
     schedules,
-    fetchNextPage,
-    hasNextPage,
     schedulesLoading,
     schedulesError,
   };
@@ -91,12 +68,8 @@ export const useTop10 = () => {
   } = useQuery(['top10'], getTop10Fn, {
     enabled: true,
     retry: 1,
-    onSuccess: (data) => {
-      // id,placeName,placeType,placeLocation,star,placeHeart,placeImageUrl,
-    },
-    onError: (error) => {
-      //alert
-    },
+    onSuccess: (data) => {},
+    onError: (error) => {},
   });
   return { top10, top10Loading, top10Error };
 };
@@ -220,7 +193,7 @@ export const useExistedSchedules = (placeLocation: string) => {
 };
 
 //리뷰쓰기
-export const usePostReivews = (reviewPost: any, file: File) => {
+export const usePostReivews = (reviewPost: any, file: File | null) => {
   const queryClient = useQueryClient();
   const {
     mutate: postReviews,
