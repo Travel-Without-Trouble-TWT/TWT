@@ -6,12 +6,12 @@ interface ReviewCardProps {
 
 function ReviewCard({ data }: ReviewCardProps) {
   return (
-    <div className="flex">
+    <div className="flex gap-2">
       {data &&
         data.content.length > 0 &&
         data?.content.map((item) => (
           <div
-            className="relative flex flex-col rounded-xl w-[400px] mx-auto p-4 bg-white bg-clip-border shadow-3xl dark:bg-gray-800 dark:text-white dark:!shadow-none"
+            className="relative flex flex-col rounded-xl w-[400px] mx-auto p-4 bg-white bg-clip-border shadow dark:bg-gray-800 dark:text-white dark:!shadow-none"
             key={item.id}
           >
             <div className="relative flex h-32 w-full rounded-xl bg-cover">
@@ -32,16 +32,11 @@ function ReviewCard({ data }: ReviewCardProps) {
                 />
               </div>
             </div>
-            <div className="mt-16 flex ml-1">
-              <span className="text-base text-gray dark:text-white">
-                {item.member.nickName}님의 일정
+            <div className="mt-14 ml-2">
+              <span className="text-sm text-gray dark:text-white">
+                {item.member.nickName}님의 일정 | {item.startAt} ~ {item.endAt}
               </span>
-              <p className="ml-1 text-base text-gray dark:text-white">
-                | {item.startAt} ~ {item.endAt}
-              </p>
-            </div>
-            <div className="mt-5 mb-3">
-              <a href="/id">
+              <a href={`/schedule/${item.id}`}>
                 <p className="hover:underline text-lg font-bold dark:text-white">
                   {item.scheduleName}
                 </p>
