@@ -24,7 +24,7 @@ function Main() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center bg-white p-10 rounded dark:bg-slate-900">
+        <div className="flex flex-col items-center bg-white p-7 rounded dark:bg-slate-900">
           <div className="flex self-start items-center gap-2">
             <p className="font-bold text-xl self-start dark:text-white">
               여기가 그렇게 HOT 하다며? 😎
