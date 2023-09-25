@@ -1,24 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TfiWrite } from 'react-icons/tfi';
 import { AiTwotoneCalendar } from 'react-icons/ai';
+import { BiSolidPencil } from 'react-icons/bi';
 
 import SouthKoreaMap from '../components/SouthKoreaMap';
 
 import { useUserDatas } from '../hooks/useProducts';
 import { useUserContext } from '../context';
-import ReviewList from '../components/ReviewList';
 import ScheduleList from '../components/ScheduleList';
 import ListItem from '../components/ListItem';
 import ReviewsAccordion from '../components/ReviewsAccordion';
+import { useEditProfileImg } from '../hooks/useAuth';
 
 function Mypage() {
   const { isLogin, user } = useUserContext();
   const [isListOpen, setIsListOpen] = useState<string | null>(null);
   const [category, setCategory] = useState<string>('schedule');
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [editImg, setEditImg] = useState<File | null>(null);
   const { userDatas, userDataLoading, userDataError, userDataRefetch } =
     useUserDatas(category, currentPage - 1, isListOpen);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const { editProfileImg } = useEditProfileImg(editImg);
 
+  const handleUploadProfileImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setEditImg(e.target.files[0]);
+    }
+    editProfileImg(editImg);
+  };
   useEffect(() => {
     if (isListOpen !== null) {
       userDataRefetch();
@@ -34,10 +44,31 @@ function Mypage() {
         <div className="bg-white rounded-lg shadow-xl pb-8 mb-2 dark:bg-slate-900">
           <div className="w-full h-[150px] bg-lightgray dark:bg-slate-800 rounded-lg"></div>
           <div className="flex flex-col items-center -mt-20">
-            <img
-              src="https://mblogthumb-phinf.pstatic.net/20150427_73/ninevincent_1430122793329pvryW_JPEG/kakao_7.jpg?type=w420"
-              className="w-[120px] h-[120px] border-4 border-white rounded-full dark:border-slate-900"
-            />
+            <div className="relative">
+              <img
+                alt="profile image"
+                src={
+                  user?.profileUrl
+                    ? user?.profileUrl
+                    : 'https://mblogthumb-phinf.pstatic.net/20150427_73/ninevincent_1430122793329pvryW_JPEG/kakao_7.jpg?type=w420'
+                }
+                className="w-[120px] h-[120px] border-4 border-white rounded-full dark:border-slate-900"
+              />
+              <input
+                ref={fileRef}
+                className="hidden"
+                type="file"
+                id="input-file"
+                accept="image/*, multipart/form-data"
+                onChange={handleUploadProfileImg}
+              />
+              <BiSolidPencil
+                onClick={() => fileRef.current?.click()}
+                role="button"
+                className="absolute top-24 right-2 w-[30px] h-[30px] p-1 rounded-full bg-white text-skyblue"
+              />
+            </div>
+
             <p className="text-2xl mt-2 dark:text-white">{user?.nickName}</p>
             <p className="mt-2 text-gray mb-5">
               <a href="/profile">프로필 수정</a>
