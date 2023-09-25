@@ -56,6 +56,25 @@ export const nicknameFn = async (nickname: string) => {
   return response.data;
 };
 
+export const editNickNameFn = async (nickname: string) => {
+  const response = await authApi.put(
+    `/member/edit?nickName=${nickname}`,
+    nickname
+  );
+  return response.data;
+};
+
+export const editProfileImgFn = async (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await authApi.put('/member/profile', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
 export const loginFn = async (user: LoginProps) => {
   const response = await authApi.post<LoginProps>('/member/login', user);
   return response.data;
@@ -69,7 +88,7 @@ export const verifyFn = async (email: string) => {
 };
 
 export const logoutFn = async () => {
-  const response = await authApi.get<BasicResponse>('/member/logout');
+  const response = await authApi.post('/member/logout');
   return response.data;
 };
 
@@ -81,5 +100,10 @@ export const getUserFn = async () => {
 //알람
 export const subscribeFn = async () => {
   const response = await authApi.get('/emitter/sub');
+  return response.data;
+};
+//전체알람
+export const getEmitterFn = async () => {
+  const response = await authApi.get('/emitter/all');
   return response.data;
 };
