@@ -9,6 +9,7 @@ import { useUserContext } from '../context';
 import ReviewList from '../components/ReviewList';
 import ScheduleList from '../components/ScheduleList';
 import ListItem from '../components/ListItem';
+import ReviewsAccordion from '../components/ReviewsAccordion';
 
 function Mypage() {
   const { isLogin, user } = useUserContext();
@@ -89,7 +90,9 @@ function Mypage() {
                 )}
               </>
             )}
-            {category === 'review' && <ReviewList data={userDatas.content} />}
+            {category === 'review' && (
+              <ReviewsAccordion data={userDatas.content} />
+            )}
             {category === 'heart' && (
               <div className="grid grid-cols-1 gap-8 mt-8 tablet:mt-16 tablet:grid-cols-2">
                 <ListItem data={userDatas.content} />
