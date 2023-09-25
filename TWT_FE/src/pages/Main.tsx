@@ -1,19 +1,15 @@
-import InfiniteScroll from 'react-infinite-scroller';
 import Carousel from '../components/Carousel';
 import Searchbar from '../components/Searchbar';
 import ReviewCard from '../components/ReviewCard';
 import Spinner from '../components/Spinner';
 import ListItem from '../components/ListItem';
 import { useSchedules, useTop10 } from '../hooks/useProducts';
+import { useState } from 'react';
 
 function Main() {
-  const {
-    schedules,
-    fetchNextPage,
-    hasNextPage,
-    schedulesLoading,
-    schedulesError,
-  } = useSchedules();
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const { schedules, schedulesLoading, schedulesError } =
+    useSchedules(currentPage);
   const { top10, top10Loading, top10Error } = useTop10();
 
   return (
@@ -57,18 +53,11 @@ function Main() {
             </p>
             <p className="dark:text-slate-200"> 여행 일정과 팁 알아가기</p>
           </div>
-
-          <InfiniteScroll
-            loadMore={fetchNextPage}
-            hasMore={hasNextPage}
-            loader={<Spinner size={'40'} />}
-          >
-            {schedules?.pages.map((page: any) =>
-              page.map((review: any) => (
-                <ReviewCard key={review.id} data={review} />
-              ))
-            )}
-          </InfiniteScroll>
+          {schedulesLoading ? (
+            <Spinner size={'20px'} />
+          ) : (
+            <ReviewCard data={schedules} />
+          )}
         </div>
       </div>
     </div>
