@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { LoginProps } from '../api/type';
 import { loginFn } from '../api/auth';
 import { getUserInfoFn } from '../api';
+import { subscribeFn } from '../api/auth';
 
 //로그인 로직
 export const useLogin = () => {
@@ -11,6 +12,7 @@ export const useLogin = () => {
     {
       onSuccess: (data) => {
         localStorage.setItem('accessToken', data.accessToken);
+        subscribeFn();
       },
       onError: (error: any) => {},
     }
