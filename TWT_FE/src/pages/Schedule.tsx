@@ -145,6 +145,7 @@ function Schedule() {
                             setIsShowAlert={setIsShowAlert}
                             dayScheduleId={schedule.dayScheduleList.id}
                             setDeleteData={setDeleteData}
+                            memberId={schedule.memberId}
                             data={
                               isMoreOpen === item.id
                                 ? item.courseList
