@@ -5,6 +5,7 @@ type User = {
   email: string;
   nickName: string;
   profileUrl: string;
+  memberId: number;
 };
 
 export const UserContext = createContext<{
