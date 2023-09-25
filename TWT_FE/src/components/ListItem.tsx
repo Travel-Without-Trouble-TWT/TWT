@@ -9,7 +9,7 @@ function ListItem({ data }: { data: any }) {
             alt={item.placeName}
           />
 
-          <div className="flex flex-col justify-between py-4 lg:mx-6">
+          <div className="flex flex-col justify-between py-4 lg:mx-3">
             <a
               href={`/detail/${item.id}`}
               className="text-xl font-semibold hover:underline dark:text-white"
