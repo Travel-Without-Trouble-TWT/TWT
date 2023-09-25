@@ -77,3 +77,9 @@ export const getUserFn = async () => {
   const response = await authApi.get<IUserResponse>('/member/info');
   return response.data;
 };
+
+//알람
+export const subscribeFn = async () => {
+  const response = await authApi.get('/emitter/sub');
+  return response.data;
+};
