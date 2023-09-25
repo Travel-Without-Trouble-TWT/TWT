@@ -1,8 +1,5 @@
 package com.BE.TWT.controller.function;
 
-import com.BE.TWT.exception.error.MapException;
-import com.BE.TWT.model.dto.function.Point;
-import com.BE.TWT.model.entity.function.Heart;
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.review.Review;
 import com.BE.TWT.model.entity.schedule.Schedule;
@@ -79,8 +76,9 @@ public class SearchController {
     @Operation(description = "내가 작성한 여행 계획표 리스트들")
     @GetMapping("/member/schedule")
     public ResponseEntity<Page<Schedule>> searchAllScheduleByMember(HttpServletRequest request,
-                                                                    @RequestParam @Valid int pageNum) {
-        return ResponseEntity.ok(searchService.searchScheduleByMember(request, pageNum));
+                                                                    @RequestParam @Valid int pageNum,
+                                                                    @RequestParam @Valid String placeLocation) {
+        return ResponseEntity.ok(searchService.searchScheduleByMember(request, placeLocation, pageNum));
     }
 
     @ApiOperation(value = "유저 리뷰 불러오기")
@@ -97,5 +95,12 @@ public class SearchController {
     public ResponseEntity<Page<Place>> searchAllHeartByMember(HttpServletRequest request,
                                                              @RequestParam @Valid int pageNum) {
         return ResponseEntity.ok(heartService.searchAllHeartByMember(request, pageNum));
+    }
+
+    @ApiOperation(value = "주변 추천 플레이스")
+    @Operation(description = "고른 장소에 주변에서 가까운 순 리스트 정렬")
+    @GetMapping("/near")
+    public ResponseEntity<List<Place>> searchNearestPlaceList(@RequestParam @Valid Long placeId) {
+        return ResponseEntity.ok(searchService.findNearestPlace(placeId));
     }
 }

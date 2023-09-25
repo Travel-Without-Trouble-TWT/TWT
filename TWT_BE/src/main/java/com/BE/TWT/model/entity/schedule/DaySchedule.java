@@ -26,6 +26,10 @@ public class DaySchedule { // 당일 일정
     private List<Course> courseList;
     private int dateNumber;
     private LocalDate day;
+    private double totalLatitude;
+    private double totalLongitude; // 총 좌표값
+    private double averageLatitude;
+    private double averageLongitude; // 평균 좌표값
 
     public void addCourse(Course course) {
         this.courseList.add(course);
@@ -35,17 +39,14 @@ public class DaySchedule { // 당일 일정
         this.courseList.remove(course);
     }
 
-    @PrePersist
-    public void setDistance() {
-        for (int i = 0; i < this.courseList.size() - 1; i++) {
-            double x1 = this.courseList.get(i).getLatitude();
-            double y1 = this.courseList.get(i).getLongitude();
-            double x2 = this.courseList.get(i + 1).getLatitude();
-            double y2 = this.courseList.get(i + 1).getLongitude();
+    public void calculateLatitude(double latitude, double longitude) {
+        this.totalLatitude += latitude;
+        this.totalLongitude += longitude;
+        this.averageLatitude = totalLatitude / courseList.size();
+        this.averageLongitude = totalLongitude / courseList.size();
+    }
 
-            Course course = this.courseList.get(i);
-
-            course.calculateDistance(x1, y1, x2, y2);
-        }
+    public void changeDate(LocalDate date) {
+        this.day = date;
     }
 }

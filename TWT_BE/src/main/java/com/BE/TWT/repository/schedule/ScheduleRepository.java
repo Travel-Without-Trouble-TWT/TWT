@@ -17,7 +17,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByStartAt(LocalDate startAt);
     List<Schedule> findALlByEndAt(LocalDate endAt);
 
-    Page<Schedule> findAllByMemberOrderByIdDesc(Member member, Pageable pageable);
+    Page<Schedule> findAllByMemberAndTravelPlaceOrderByIdDesc(Member member, String travelPlace, Pageable pageable);
 
     Optional<Schedule> findByMemberAndScheduleNameAndTravelPlaceAndStartAtAndEndAt(
                                                 Member member,
@@ -26,5 +26,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                                                 LocalDate startAt,
                                                 LocalDate endAt);
 
-    List<Schedule> findAllByMemberAndTravelPlaceAndEndAtBefore(Member member, String travelPlace, LocalDate date);
+    List<Schedule> findAllByMemberAndTravelPlaceAndEndAtAfter(Member member, String travelPlace, LocalDate date);
 }

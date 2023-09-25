@@ -35,9 +35,10 @@ public class Schedule {
     private List<DaySchedule> dayScheduleList;
     private String scheduleImageUrl;
 
-    public void updateDate(LocalDate start, LocalDate end) {
+    public void updateDate(LocalDate start, LocalDate end, int day) {
         this.startAt = start;
         this.endAt = end;
+        this.days = day;
     }
 
     public void uploadPhoto(String url) {

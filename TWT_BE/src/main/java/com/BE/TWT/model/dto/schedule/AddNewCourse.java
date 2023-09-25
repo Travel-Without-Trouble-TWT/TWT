@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class AddNewCourse {
     private Long scheduleId;
     private Long placeId;
-    private int day;
+    private int when;
 }
