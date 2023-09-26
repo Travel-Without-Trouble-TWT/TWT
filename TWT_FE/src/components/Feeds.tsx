@@ -40,7 +40,7 @@ function Feeds({
         {data.length > 0 ? (
           data.map((item, idx) => (
             <>
-              <li className="relative pl-8" role="feed">
+              <li key={idx} className="relative pl-8" role="feed">
                 <div
                   className={`absolute text-2xl left-0 z-10 flex items-center justify-center w-10 h-10 text-white -translate-x-1/2 rounded-full ring-2 ring-white ${
                     item.placeType === 'STAY' && 'bg-pink-500'
