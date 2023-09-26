@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Map, CustomOverlayMap, Polyline } from 'react-kakao-maps-sdk';
+import NotificationDistance from '../components/NotificationDistance';
 
 function CustomMap({ data }: { data: any }) {
   const paths = data.courseList.map((item) => ({
@@ -7,7 +8,10 @@ function CustomMap({ data }: { data: any }) {
     lng: item.longitude,
   }));
 
-  const [isPolylineHovered, setIsPolylineHovered] = useState<number | null>(0);
+  const [hoveredPolylineIndex, setHoveredPolylineIndex] = useState<
+    number | null
+  >(null);
+
   return (
     <>
       <Map
@@ -16,17 +20,37 @@ function CustomMap({ data }: { data: any }) {
           lng: data.averageLongitude,
         }}
         style={{ width: '100%', height: '450px' }}
-        level={3}
+        level={6}
       >
         <Polyline
           path={[paths]}
           strokeWeight={5}
-          strokeColor={'#90DCE1'}
+          strokeColor="#90DCE1"
           strokeOpacity={1}
           strokeStyle={'solid'}
-          onMouseover={() => setIsPolylineHovered(true)}
-          onMouseout={() => setIsPolylineHovered(false)}
         />
+        {data.courseList.map((item, idx) => (
+          <React.Fragment key={idx}>
+            <Polyline
+              path={[paths[idx]]}
+              strokeWeight={5}
+              strokeColor={hoveredPolylineIndex === idx ? 'red' : '#90DCE1'}
+              strokeOpacity={1}
+              strokeStyle={'solid'}
+              onClick={() => {
+                setHoveredPolylineIndex(idx);
+                console.log(hoveredPolylineIndex);
+              }}
+              // onMouseout={() => setHoveredPolylineIndex(null)}
+            />
+            {hoveredPolylineIndex === idx && (
+              <CustomOverlayMap position={paths[idx]}>
+                <NotificationDistance distance={item.distance} />
+              </CustomOverlayMap>
+            )}
+          </React.Fragment>
+        ))}
+
         {data.courseList.length > 0 &&
           data.courseList.map((item, idx) => (
             <>
