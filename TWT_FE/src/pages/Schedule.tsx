@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useUserContext } from '../context';
+import { useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import html2canvas from 'html2canvas';
+import saveAs from 'file-saver';
 //components
 import TimeModal from '../components/TimeModal';
 import Feeds from '../components/Feeds';
-import Distance from '../components/Distance';
 import Alerts from '../components/Alerts';
 import DateModal from '../components/DateModal';
 import Spinner from '../components/Spinner';
@@ -16,8 +16,10 @@ import {
   useDeleteSchedule,
   useSchedule,
 } from '../hooks/useProducts';
+import { useUserContext } from '../context';
 //icons
 import { FaShareSquare } from 'react-icons/fa';
+import { FiDownload } from 'react-icons/fi';
 
 function Schedule() {
   const [isMoreOpen, setIsMoreOpen] = useState<string | null>(null);
@@ -62,13 +64,35 @@ function Schedule() {
     );
   }
 
+  const divRef = useRef<HTMLDivElement>(null);
+  const handleDownload = async () => {
+    if (!divRef.current) return;
+    try {
+      console.log('다운로드');
+      const canvas = await html2canvas(divRef.current, { scale: 2 });
+      canvas.toBlob((blob) => {
+        if (blob !== null) {
+          saveAs(blob, 'travelschedule.png');
+        }
+      });
+    } catch (error) {
+      <Alerts
+        title="다운로드 오류"
+        message="이미지 다운로드 중 오류가 발생하였습니다. 다시 시도해주세요."
+      />;
+    }
+  };
+
   return (
     <>
       {!schedule || scheduleLoading ? (
         <Spinner size={'30px'} />
       ) : (
         <section className="bg-lightgray dark:bg-slate-950 h-full flex justify-center flex-col lg:px-40 mobile:px-10 py-6">
-          <div className="bg-white rounded-lg shadow-xl pb-8 dark:bg-slate-900">
+          <div
+            ref={divRef}
+            className="bg-white rounded-lg shadow-xl pb-8 dark:bg-slate-900"
+          >
             <div className="relative w-full h-[300px] bg-darkgray rounded-tl-lg rounded-tr-lg">
               <img
                 alt="일정 배경"
@@ -108,6 +132,12 @@ function Schedule() {
             <div className="absoulte flex flex-col items-center">
               <button className="flex self-end mr-3 text-white -mt-6 z-20 text-xl">
                 <FaShareSquare />
+              </button>
+              <button
+                onClick={handleDownload}
+                className="flex self-end mr-10 text-white -mt-5 z-20 text-xl"
+              >
+                <FiDownload />
               </button>
               {isLogin && (
                 <button
@@ -182,7 +212,10 @@ function Schedule() {
           title="일정 삭제"
           message="정말로 일정을 삭제하시겠습니까?"
           type="error"
-          onConfirm={() => deleteSchedule(scheduleId)}
+          onConfirm={() => {
+            deleteSchedule(scheduleId);
+            setIsShowAlert('');
+          }}
         />
       )}
       {isShowAlert === '장소삭제' && (
@@ -190,7 +223,10 @@ function Schedule() {
           title="장소 삭제"
           message="정말로 장소를 삭제하시겠습니까?"
           type="error"
-          onConfirm={() => deletePlace(deleteData)}
+          onConfirm={() => {
+            deletePlace(deleteData);
+            setIsShowAlert('');
+          }}
         />
       )}
       {isShowTimeModal && <TimeModal setIsShowModal={setIsShowTimeModal} />}
