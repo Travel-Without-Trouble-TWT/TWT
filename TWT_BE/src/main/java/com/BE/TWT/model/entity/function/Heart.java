@@ -6,8 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @NoArgsConstructor
@@ -22,8 +25,9 @@ public class Heart {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     private Member member;
-    @Enumerated(EnumType.STRING)
-    private PlaceType placeType;
     @Column(nullable = false)
-    private String placeName;
+    private Long placeId;
+    @CreatedDate
+    @Column(nullable = false)
+    private Date likedDate;
 }

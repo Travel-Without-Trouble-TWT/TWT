@@ -7,7 +7,6 @@ import com.BE.TWT.exception.message.MemberErrorMessage;
 import com.BE.TWT.model.entity.function.Heart;
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.member.Member;
-import com.BE.TWT.model.type.PlaceType;
 import com.BE.TWT.repository.function.HeartRepository;
 import com.BE.TWT.repository.location.PlaceRepository;
 import com.BE.TWT.repository.member.MemberRepository;
@@ -45,13 +44,9 @@ public class HeartService {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
-        PlaceType placeType = place.getPlaceType();
+        if (heartRepository.findByMemberAndPlaceId(member, place.getId()).isPresent()) {
 
-        if (heartRepository.findByMemberAndPlaceTypeAndPlaceId
-                (member, placeType, place.getPlaceName()).isPresent()) {
-
-            Heart heart = heartRepository.findByMemberAndPlaceTypeAndPlaceId
-                            (member, placeType, place.getPlaceName())
+            Heart heart = heartRepository.findByMemberAndPlaceId(member, place.getId())
                     .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
             heartRepository.deleteById(heart.getId());
@@ -60,8 +55,7 @@ public class HeartService {
             return "좋아요 취소";
         } else {
             Heart heart = Heart.builder()
-                    .placeName(place.getPlaceName())
-                    .placeType(place.getPlaceType())
+                    .placeId(place.getId())
                     .member(member)
                     .build();
             heartRepository.save(heart);
@@ -82,7 +76,7 @@ public class HeartService {
         List<Place> placeList = new ArrayList<>();
 
         for (Heart heart : heartList) {
-            Place place = placeRepository.findByPlaceName(heart.getPlaceName()).get();
+            Place place = placeRepository.findById(heart.getPlaceId()).get();
             placeList.add(place);
         }
 
@@ -99,4 +93,6 @@ public class HeartService {
 
         return new PageImpl<>(subList, pageable, list.size());
     }
+
+
 }

@@ -14,13 +14,6 @@ public class EmailVerification{
     private static final String senderEmail = "trsoo24@naver.com";
     private String code;
 
-    public String verificationCode(String verificationCode) {
-        if (code.equals(verificationCode)) {
-            return "인증이 완료되었습니다.";
-        } else {
-            return "인증 번호가 올바르지 않습니다.";
-        }
-    }
 
     public String sendMail(String mail){
 

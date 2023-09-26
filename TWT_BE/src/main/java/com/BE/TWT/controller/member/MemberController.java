@@ -6,6 +6,7 @@ import com.BE.TWT.model.dto.member.SignUpDto;
 import com.BE.TWT.model.dto.member.UpdateDto;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.service.function.EmailVerification;
+import com.BE.TWT.service.function.HeartService;
 import com.BE.TWT.service.member.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +27,7 @@ import javax.validation.Valid;
 public class MemberController {
     private final MemberService memberService;
     private final EmailVerification emailVerification;
+    private final HeartService heartService;
 
     @ApiOperation(value = "회원가입")
     @Operation(description = "이메일, 닉네임은 중복이 불가합니다.")
@@ -89,5 +91,12 @@ public class MemberController {
     @GetMapping("/nick")
     public String checkNickName(@RequestParam @Valid String nickName) {
         return memberService.checkDuplicateNickName(nickName);
+    }
+
+    @ApiOperation(value = "좋아요 버튼")
+    @Operation(description = "좋아요를 이미 눌렀었던 유저 & 게시글은 좋아요 취소가 됩니다.")
+    @PostMapping
+    public ResponseEntity<?> likeIt(HttpServletRequest request, @RequestParam @Valid Long placeId) {
+        return ResponseEntity.ok(heartService.likeIt(request, placeId));
     }
 }
