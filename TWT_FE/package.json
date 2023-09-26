@@ -17,6 +17,7 @@
     "@types/react-dom": "^18.2.7",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
+    "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",
     "react": "^18.2.0",
     "react-datepicker": "^4.16.0",
