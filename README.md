@@ -68,9 +68,10 @@ $ npm run start:dev
 |:---:|:---:|
 |||
 
-|로그인|회원가입|
+|로그인 페이지|회원가입 페이지|
 |:---:|:---:|
-|||
+|![로그인 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/1d937209-f25d-435b-97f8-eff36198dfc7)|![회원가입 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/9abdd1bb-af7a-45cc-a8ac-8253893bf0d9)|
+
 ## 주요 기능
 ### ⭐️ 주요 명소 소개
 - 관광명소, 맛집, 숙소 3 타입 장소 구분
