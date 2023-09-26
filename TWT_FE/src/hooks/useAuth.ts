@@ -13,12 +13,14 @@ import { subscribeFn } from '../api/auth';
 
 //로그인
 export const useLogin = () => {
+  const queryClient = useQueryClient();
   const { mutate: loginUser, isLoading: logining } = useMutation(
     (userData: LoginProps) => loginFn(userData),
     {
       onSuccess: (data) => {
         localStorage.setItem('accessToken', data.accessToken);
         subscribeFn();
+        queryClient.invalidateQueries(['userInfo']);
       },
       onError: (error: any) => {},
     }
