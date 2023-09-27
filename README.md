@@ -56,13 +56,14 @@ $ npm run start:dev
 <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> <img src="https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 
 ## 화면 구성 🖥️
-|메인페이지|선택한 지역 페이지|
+|메인페이지|선택 지역 페이지|
 |:---:|:---:|
-||![선택한 지역 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/248c7d60-8fb2-4c25-abf0-ebd43cc3359b)|
+||![선택 지역 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/248c7d60-8fb2-4c25-abf0-ebd43cc3359b)|
 
 |상세페이지|일정페이지|
 |:---:|:---:|
-||![일정페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/74d3a97a-f6c2-4ad0-b630-329c39460f73)|
+||![일정페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/97c88e1e-ac85-4749-a630-21da0e692ed6)|
+
 
 |마이페이지|프로필수정 페이지|
 |:---:|:---:|
