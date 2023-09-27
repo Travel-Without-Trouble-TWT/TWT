@@ -66,8 +66,7 @@ $ npm run start:dev
 
 |마이페이지|프로필수정 페이지|
 |:---:|:---:|
-|![마이페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/2f49a129-d290-4acf-a45e-d148b765254f)
-|![프로필수정 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/9fb49cef-644e-4211-a802-5ec1fab64267)|
+|![마이페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/2f49a129-d290-4acf-a45e-d148b765254f)|![프로필수정 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/9fb49cef-644e-4211-a802-5ec1fab64267)|
 
 
 |로그인 페이지|회원가입 페이지|
