@@ -106,6 +106,8 @@ $ npm run start:dev
 - 다크모드 지원
 - 반응형 UI 제공
 ## 아키텍쳐
+![image](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/122004333/c89dfe8d-628b-4656-ab63-45ba82498c00)
+
 ### 디렉토리 구조
 ### ERD
 ## 기타 
