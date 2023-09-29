@@ -75,3 +75,11 @@ export interface LoginProps {
   email: string;
   password: string;
 }
+
+export interface JoinProps {
+  nickName: string;
+  email: string;
+  verificationCode?: string;
+  password: string;
+  confirmPw?: string;
+}
