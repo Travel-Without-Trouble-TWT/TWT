@@ -28,7 +28,7 @@ function Schedule() {
   const [isShowDateModal, setIsShowDateModal] = useState<boolean>(false);
   const { id } = useParams();
   const scheduleId = Number(id);
-  const { isLogin } = useUserContext();
+  const { isLogin, user } = useUserContext();
   const navigate = useNavigate();
 
   const { schedule, scheduleLoading, scheduleError } = useSchedule(scheduleId);
@@ -108,7 +108,7 @@ function Schedule() {
                 <span className="text-white underline">
                   {schedule.startAt}~{schedule.endAt}
                 </span>
-                {isLogin && (
+                {isLogin && schedule.memberId === user?.memberId && (
                   <button
                     className="text-gray text-sm"
                     onClick={() => setIsShowDateModal(true)}
@@ -139,7 +139,7 @@ function Schedule() {
               >
                 <FiDownload />
               </button>
-              {isLogin && (
+              {isLogin && schedule.memberId === user?.memberId && (
                 <button
                   onClick={() => setIsShowAlert('일정삭제')}
                   className="flex self-end mr-4 mt-2 text-gray text-sm z-20 dark:text-white"
@@ -226,6 +226,7 @@ function Schedule() {
           onConfirm={() => {
             deletePlace(deleteData);
             setIsShowAlert('');
+            navigate('/');
           }}
         />
       )}
