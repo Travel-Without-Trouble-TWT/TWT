@@ -12,8 +12,21 @@ function Main() {
     useSchedules(currentPage);
   const { top10, top10Loading, top10Error } = useTop10();
 
+  if (schedulesError || top10Error) {
+    return (
+      <div className="min-w-full min-h-screen flex justify-center items-center xl:px-48 tablet:px-3 foldable:px-3 py-6 dark:bg-slate-950">
+        <div className="tablet:w-2/3 w-full flex flex-col space-y-20 py-1 bg-lightgray dark:bg-slate-800">
+          <p className="text-red-500 font-bold text-xl">
+            데이터를 불러오는 중 오류가 발생했습니다.
+          </p>
+          <p className="text-gray-500">나중에 다시 시도해주세요.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-w-full min-h-screen flex justify-center items-center lg:px-48 tablet:px-10 py-6 dark:bg-slate-950">
+    <div className="min-w-full min-h-screen flex justify-center items-center xl:px-48 tablet:px-3 foldable:px-3 py-6 dark:bg-slate-950">
       <div className="tablet:w-2/3 w-full flex flex-col space-y-20 py-1 bg-lightgray dark:bg-slate-800">
         <div>
           <div className="relative">
@@ -46,13 +59,16 @@ function Main() {
           </section>
         </div>
 
-        <div className="flex flex-col items-center bg-white p-10 rounded dark:bg-slate-900">
-          <div className="flex self-start items-center gap-2">
+        <div className="flex flex-col items-center bg-white p-7 rounded dark:bg-slate-900">
+          <div className="flex absolute gap-2 items-center self-start">
             <p className="font-bold text-xl dark:text-white">
               너.. P야?🤦 그래서 준비했어!
             </p>
             <p className="dark:text-slate-200"> 여행 일정과 팁 알아가기</p>
           </div>
+          <button className="flex relative text-sm text-gray self-end mt-1">
+            더보기
+          </button>
           {schedulesLoading ? (
             <Spinner size={'20px'} />
           ) : (
