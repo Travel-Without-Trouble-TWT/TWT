@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNearPlaces } from '../hooks/useProducts';
 
 import Glide from '@glidejs/glide';
@@ -8,6 +8,8 @@ import { FaArrowCircleLeft, FaArrowCircleRight } from 'react-icons/fa';
 function NearPlaces({ placeId }: { placeId: number }) {
   const { nearPlaces, nearPlacesLoading, nearPlacesError } =
     useNearPlaces(placeId);
+
+  const glideRef = useRef<null | Glide>(null);
 
   useEffect(() => {
     if (nearPlaces && nearPlaces.length > 0) {
@@ -27,11 +29,21 @@ function NearPlaces({ placeId }: { placeId: number }) {
           },
         },
       }).mount();
+
+      glideRef.current = slider;
       return () => {
         slider.destroy();
       };
     }
   }, [nearPlaces]);
+
+  const goToPrev = () => {
+    glideRef.current && glideRef.current.go('<');
+  };
+
+  const goToNext = () => {
+    glideRef.current && glideRef.current.go('>');
+  };
   return (
     <>
       <div className="glide-01 w-full relative">
@@ -67,11 +79,11 @@ function NearPlaces({ placeId }: { placeId: number }) {
                 </div>
               ))}
           </div>
-          <div>
-            <button aria-label="이전슬라이드">
+          <div className="flex justify-center gap-5 mt-3">
+            <button aria-label="이전슬라이드" onClick={goToPrev}>
               <FaArrowCircleLeft className="text-skyblue" />
             </button>
-            <button aria-label="이후슬라이드">
+            <button aria-label="이후슬라이드" onClick={goToNext}>
               <FaArrowCircleRight className="text-skyblue" />
             </button>
           </div>
