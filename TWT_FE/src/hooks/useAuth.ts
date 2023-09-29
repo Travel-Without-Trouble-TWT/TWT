@@ -1,15 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { LoginProps } from '../api/type';
+import { LoginProps, JoinProps } from '../api/type';
 import {
   editNickNameFn,
   editProfileImgFn,
   getEmitterFn,
   loginFn,
   logoutFn,
+  joinFn,
 } from '../api/auth';
 import { getUserInfoFn } from '../api';
 import { subscribeFn } from '../api/auth';
+
+import Alerts from '../components/Alerts';
 
 //로그인
 export const useLogin = () => {
@@ -86,4 +89,16 @@ export const useGetEmitters = () => {
     isError: emittersError,
   } = useQuery(['emitters'], () => getEmitterFn(), {});
   return { emitters, emittersGetting, emittersError };
+};
+
+//회원가입
+export const useJoin = () => {
+  const { mutate: joinUser, isLoading: joining } = useMutation(
+    (userData: JoinProps) => joinFn(userData),
+    {
+      onSuccess: () => {},
+      onError: (error: any) => {},
+    }
+  );
+  return { joinUser, joining };
 };
