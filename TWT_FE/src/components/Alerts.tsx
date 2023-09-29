@@ -59,7 +59,6 @@ function Alerts({
             if (onConfirm) {
               return onConfirm();
             }
-            handleDismiss();
           }}
           className={`inline-flex h-8 items-center justify-center gap-2 whitespace-nowrap rounded ${buttonColor} px-4 text-xs font-medium tracking-wide text-white transition duration-300 hover:${buttonHoverColor}`}
         >
