@@ -60,7 +60,11 @@ function Feeds({
                     <p className="text-sm text-gray">
                       {item.arriveAt.split('T')[1] === '23:59:00'
                         ? null
-                        : item.arriveAt.split('T')[1]}
+                        : item.arriveAt
+                            .split('T')[1]
+                            .split(':')
+                            .slice(0, 2)
+                            .join(':')}
                     </p>
                   </div>
                   {isLogin && user && user.memberId === memberId && (
