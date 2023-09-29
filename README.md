@@ -15,7 +15,13 @@
 
 ## 프로젝트 소개
 ### 소개
-여행 계획은 잘 세우고 계신가요? 여행을 즐기고 싶지만 계획하는 것이 힘든 여러분에게 보다 즐거운 추억을 쌓을 수 있는 특별하고 알찬 계획과 정보를 제공해드립니다. TWT을 통해 이전에 알지 못했던 더 많은 명소를 발견하고 여행 계획을 효율적으로 관리하세요. 다른 사람들의 계획과 실제 리뷰를 제공하면서 그들의 조언에 따라 여행 계획을 세워보고 걱정 없는 여행을 적극 추진합니다.
+여행 계획은 잘 세우고 계신가요? 
+
+여행을 즐기고 싶지만 계획하는 것이 힘든 여러분에게 보다 즐거운 추억을 쌓을 수 있는 특별하고 알찬 계획과 정보를 제공해드립니다. TWT을 통해 이전에 경험하지 못했던 명소를 발견하고 여행 계획을 효율적으로 관리해보세요. 다른 사람들의 계획과 실제 리뷰를 통해 그들의 조언에 따라 여행 계획을 세워보고 걱정 없는 여행을 적극 추진합니다.
+
+Are you planning your trip well? 
+
+For those of you who want to enjoy your trip but are unable to plan, we provide you with special and fruitful plans and information to make more enjoyable memories. Discover attractions you've never experienced before with TWT and manage your travel plans efficiently. Make travel plans based on other people's plans and actual reviews, and actively promote a trip without worries.
 ### 개발 기간
 > 2023.07 ~ 2023.10
 ### 팀원 소개
