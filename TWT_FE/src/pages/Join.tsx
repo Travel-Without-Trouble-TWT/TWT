@@ -1,20 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { JoinProps } from '../api/type';
 
 import logo from '../assets/logo.png';
-import { joinFn, nicknameFn, verifyFn } from '../api/auth';
+import { nicknameFn, verifyFn } from '../api/auth';
 import Spinner from '../components/Spinner';
 import Alerts from '../components/Alerts';
-
-export interface JoinProps {
-  nickName: string;
-  email: string;
-  verificationCode?: string;
-  password: string;
-  confirmPw?: string;
-}
+import { useJoin } from '../hooks/useAuth';
 
 function Join() {
   const {
@@ -27,7 +21,6 @@ function Join() {
   } = useForm<JoinProps>({ mode: 'onBlur' });
   const navigate = useNavigate();
   const [isDuplicated, setIsDuplicated] = useState<string | null>(null);
-
   const [returnCode, setReturnCode] = useState<string | null>(null);
   const [isVerifyingCode, setIsVerifyingCode] = useState<boolean>(false);
   const [stepStates, setStepStates] = useState({
@@ -35,6 +28,7 @@ function Join() {
     email: false,
     verificationCode: false,
   });
+  const { joinUser, joining } = useJoin();
 
   //닉네임 유효성 검사
   const isNickNameValid =
@@ -45,46 +39,6 @@ function Join() {
   );
   //인증코드 유효성 검사
   const isCodeValid = watch('verificationCode')?.length === 6;
-
-  //const {joinUser, joining} =
-
-  //회원가입 mutation
-  const { mutate: joinUser, isLoading: joining } = useMutation(
-    (userData: JoinProps) => joinFn(userData),
-    {
-      onSuccess: () => {
-        return (
-          <>
-            <Alerts
-              type="success"
-              title="🎉 회원가입"
-              message="회원가입이 완료되었습니다!"
-            />
-            {navigate('/login')}
-          </>
-        );
-      },
-      onError: (error: any) => {
-        if (Array.isArray((error as any).response.data.error)) {
-          (error as any).response.data.error.forEach((element: any) => {
-            return (
-              <>
-                <Alerts
-                  type="error"
-                  title="회원가입"
-                  message="회원가입에 실패하였습니다. 다시 시도해주세요."
-                />
-
-                {navigate('/join')}
-              </>
-            );
-          });
-        } else {
-          //alert
-        }
-      },
-    }
-  );
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -129,49 +83,6 @@ function Join() {
     action();
     handleStepValidation(stepName, true);
   };
-
-  //닉네임 중복검사 요청
-  const { mutate: checkNickname, isLoading: isCheckingNickname } = useMutation(
-    (nickname: string) => nicknameFn(nickname),
-    {
-      onSuccess: (data) => {
-        handleStepValidation('nickName', true);
-        setIsDuplicated(data.message);
-      },
-      onError: (error: any) => {
-        setIsDuplicated(error.message);
-        handleStepValidation('nickName', false);
-        setError('nickName', error.message);
-      },
-    }
-  );
-
-  //인증 코드 요청
-  const { mutate: verifyEmail, isLoading: isVerifyingEmail } = useMutation(
-    (email: string) => verifyFn(email),
-    {
-      onSuccess: (data) => {
-        setReturnCode(data.verificationCode); //코드 저장
-        setIsVerifyingCode(true);
-        return (
-          <Alerts
-            type="success"
-            title="인증 요청"
-            message="인증 코드가 발송되었습니다."
-          />
-        );
-      },
-      onError: (error: any) => {
-        return (
-          <Alerts
-            type="error"
-            title="인증 요청 실패"
-            message="이메일 인증 요청에 실패하였습니다. 다시 시도해주세요."
-          />
-        );
-      },
-    }
-  );
 
   return (
     <>
@@ -238,18 +149,26 @@ function Join() {
                     })
                   }
                 >
-                  {isCheckingNickname ? <Spinner /> : '중복확인'}
+                  {isCheckingNickname ? <Spinner size={'10px'} /> : '중복확인'}
                 </button>
               </div>
-              {isDuplicated ||
-                (errors.nickName && (
+              {isDuplicated !== '사용 가능한 닉네임입니다.' ? (
+                errors.nickName && (
                   <small
                     className="text-rose-500 text-xs px-1 mt-[-3px]"
                     role="alert"
                   >
-                    {errors.nickName.message || isDuplicated}
+                    {errors.nickName.message}
                   </small>
-                ))}
+                )
+              ) : (
+                <small
+                  className="text-skyblue text-xs px-1 mt-[-3px]"
+                  role="alert"
+                >
+                  사용 가능한 닉네임입니다.
+                </small>
+              )}
               {/* 이메일 입력 */}
               <div className="flex justify-between relative">
                 <input
