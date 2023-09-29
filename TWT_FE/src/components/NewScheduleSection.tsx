@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import ko from 'date-fns/locale/ko';
 
 type NewScheduleSectionProps = {
@@ -39,7 +40,7 @@ function NewScheduleSection({
       <span className="text-sm text-slate-700">
         ✓ 여행 날짜를 입력해주세요.
       </span>
-      <div className="flex justify-center gap-2">
+      <div className="flex justify-center gap-2 z-50">
         <DatePicker
           className="border-b border-skyblue px-2 py-1 text-sm cursor-pointer"
           onChange={(date) => setStartAt(date)}
