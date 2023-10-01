@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BasicResponse, IUserResponse, VerifyResponse } from './type';
-import { LoginProps } from '../pages/Login';
-import { JoinProps } from '../pages/Join';
+import { LoginProps, JoinProps } from './type';
+import googleRedirect from '../utils/googleRedirect';
 
 const BASE_URL = 'http://13.124.68.229:8080';
 
@@ -77,6 +77,11 @@ export const editProfileImgFn = async (file: File) => {
 
 export const loginFn = async (user: LoginProps) => {
   const response = await authApi.post<LoginProps>('/member/login', user);
+  return response.data;
+};
+
+export const getGoogleTokenFn = async (accessToken: string) => {
+  const response = await axios.get(`/oauth/google?token=${accessToken}`);
   return response.data;
 };
 
