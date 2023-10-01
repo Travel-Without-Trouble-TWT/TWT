@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Map, CustomOverlayMap } from 'react-kakao-maps-sdk';
 
 //component
-import Spinner from '../components/Spinner';
+import Loader from '../components/Loader';
 import PlaceLists from '../components/PlaceLists';
 //icons
 import { MdOutlineFoodBank, MdOutlineAttractions } from 'react-icons/md';
@@ -75,7 +75,7 @@ function Selected() {
             />
             <div className="grid flex-grow lg:w-full lg:h-full h-[590px] z-0">
               {placeLoading ? (
-                <Spinner size={'30px'} />
+                <Loader size={'30px'} />
               ) : (
                 <>
                   <Map

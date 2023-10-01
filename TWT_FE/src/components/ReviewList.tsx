@@ -4,7 +4,7 @@ import Pagination from './Pagination';
 import ZoomModal from './ZoomModal';
 
 import { useReviews } from '../hooks/useProducts';
-import Spinner from './Spinner';
+import Loader from './Loader';
 
 function ReviewList({ placeId }: { placeId: number }) {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
@@ -41,7 +41,7 @@ function ReviewList({ placeId }: { placeId: number }) {
           </span>
         ))}
       {!reviews && reviewLoading ? (
-        <Spinner size={'20px'} />
+        <Loader size={'20px'} />
       ) : (
         reviews.content.map((review) => (
           <div

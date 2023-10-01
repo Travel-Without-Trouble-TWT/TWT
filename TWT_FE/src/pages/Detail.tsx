@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 //컴포넌트
-import Spinner from '../components/Spinner';
+import Loader from '../components/Loader';
 import ReviewList from '../components/ReviewList';
 import Stars from '../components/Stars';
 import ScheduleModal from '../components/ScheduleModal';
@@ -109,7 +109,7 @@ function Detail() {
         </>
       ) : (
         <div className="min-h-full flex justify-center items-center">
-          <Spinner size={'40'} />
+          <Loader size={'40'} />
         </div>
       )}
       {showModal === 'schedule' && (

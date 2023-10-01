@@ -8,7 +8,7 @@ import TimeModal from '../components/TimeModal';
 import Feeds from '../components/Feeds';
 import Alerts from '../components/Alerts';
 import DateModal from '../components/DateModal';
-import Spinner from '../components/Spinner';
+import Loader from '../components/Loader';
 import CustomMap from '../components/CustomMap';
 //hooks
 import {
@@ -86,7 +86,7 @@ function Schedule() {
   return (
     <>
       {!schedule || scheduleLoading ? (
-        <Spinner size={'30px'} />
+        <Loader size={'30px'} />
       ) : (
         <section className="bg-lightgray dark:bg-slate-950 h-full flex justify-center flex-col lg:px-40 mobile:px-10 py-6">
           <div

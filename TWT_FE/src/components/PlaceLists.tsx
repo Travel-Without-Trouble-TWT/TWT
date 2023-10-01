@@ -3,7 +3,7 @@ import { useState } from 'react';
 //components
 import { PageProps } from '../api/type';
 import Pagination from './Pagination';
-import Spinner from './Spinner';
+import Loader from './Loader';
 import ScheduleModal from './ScheduleModal';
 import { useExistedSchedules } from '../hooks/useProducts';
 
@@ -45,7 +45,7 @@ function PlaceLists({
   return (
     <div>
       {placeLoading ? (
-        <Spinner size={'30px'} />
+        <Loader size={'30px'} />
       ) : (
         <>
           {places ? (
