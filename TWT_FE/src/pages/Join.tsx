@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
 import { JoinProps } from '../api/type';
 
 import logo from '../assets/logo.png';
-import { nicknameFn, verifyFn } from '../api/auth';
 import Spinner from '../components/Spinner';
 import Alerts from '../components/Alerts';
-import { useJoin } from '../hooks/useAuth';
+import { useCheckNickname, useJoin, useVerifyCode } from '../hooks/useAuth';
 
 function Join() {
   const {
@@ -20,15 +18,31 @@ function Join() {
     reset,
   } = useForm<JoinProps>({ mode: 'onBlur' });
   const navigate = useNavigate();
-  const [isDuplicated, setIsDuplicated] = useState<string | null>(null);
-  const [returnCode, setReturnCode] = useState<string | null>(null);
-  const [isVerifyingCode, setIsVerifyingCode] = useState<boolean>(false);
+  const [verifyCodeMessage, setVerifyCodeMessage] = useState<string | null>(
+    null
+  );
   const [stepStates, setStepStates] = useState({
     nickName: false,
     email: false,
     verificationCode: false,
   });
-  const { joinUser, joining } = useJoin();
+
+  const handleStepValidation = (stepName: string, isValid: boolean) => {
+    setStepStates((prevState) => ({
+      ...prevState,
+      [stepName]: isValid,
+    }));
+  };
+  const handleStepAction = async (stepName: string, action: Function) => {
+    action();
+    handleStepValidation(stepName, true);
+  };
+
+  const { joinUser, joining, joinSuccess, joinError } = useJoin();
+  const { checkNickname, isCheckingNickname, checkingNicknameSuccess } =
+    useCheckNickname(handleStepValidation, setError);
+  const { verifyEmail, isVerifyingEmail, verifyingEmailSuccess, returnCode } =
+    useVerifyCode(handleStepValidation, setError);
 
   //닉네임 유효성 검사
   const isNickNameValid =
@@ -54,35 +68,36 @@ function Join() {
   };
 
   const handleCheckCode = () => {
-    if (watch('verificationCode') === returnCode) {
-      return (
-        <Alerts
-          type="success"
-          title="인증 완료"
-          message="인증이 완료되었습니다!"
-        />
-      );
+    if (watch('verificationCode') === String(returnCode)) {
+      handleStepValidation('verificationCode', true);
+      setVerifyCodeMessage('인증 코드가 일치합니다.');
     } else {
-      return (
-        <Alerts
-          type="error"
-          title="인증 실패"
-          message="인증코드가 맞지 않습니다. 다시 시도해주세요."
-        />
-      );
+      setError('verificationCode', {
+        type: 'manual',
+        message: '인증 코드가 일치하지 않습니다. 다시 입력해주세요.',
+      });
     }
   };
 
-  const handleStepValidation = (stepName: string, isValid: boolean) => {
-    setStepStates((prevState) => ({
-      ...prevState,
-      [stepName]: isValid,
-    }));
-  };
-  const handleStepAction = async (stepName: string, action: Function) => {
-    action();
-    handleStepValidation(stepName, true);
-  };
+  if (joinSuccess) {
+    return (
+      <Alerts
+        type="success"
+        title="🎉 회원가입 완료"
+        message="회원가입이 완료되었습니다. 로그인 페이지로 이동하시겠습니까?"
+        onConfirm={() => navigate('/login')}
+      />
+    );
+  } else if (joinError) {
+    return (
+      <Alerts
+        type="error"
+        title="회원가입 실패"
+        message="이미 존재하는 계정이 존재합니다. 로그인 페이지로 이동하시겠습니까?"
+        onConfirm={() => navigate('/login')}
+      />
+    );
+  }
 
   return (
     <>
@@ -149,19 +164,10 @@ function Join() {
                     })
                   }
                 >
-                  {isCheckingNickname ? <Spinner size={'10px'} /> : '중복확인'}
+                  {isCheckingNickname ? <Spinner /> : '중복확인'}
                 </button>
               </div>
-              {isDuplicated !== '사용 가능한 닉네임입니다.' ? (
-                errors.nickName && (
-                  <small
-                    className="text-rose-500 text-xs px-1 mt-[-3px]"
-                    role="alert"
-                  >
-                    {errors.nickName.message}
-                  </small>
-                )
-              ) : (
+              {checkingNicknameSuccess && (
                 <small
                   className="text-skyblue text-xs px-1 mt-[-3px]"
                   role="alert"
@@ -169,6 +175,15 @@ function Join() {
                   사용 가능한 닉네임입니다.
                 </small>
               )}
+              {errors.nickName && (
+                <small
+                  className="text-rose-500 text-xs px-1 mt-[-3px]"
+                  role="alert"
+                >
+                  {errors.nickName.message}
+                </small>
+              )}
+
               {/* 이메일 입력 */}
               <div className="flex justify-between relative">
                 <input
@@ -203,7 +218,7 @@ function Join() {
                   className="text-sm bg-skyblue px-3 rounded-lg shadow disabled:cursor-not-allowed disabled:bg-lightgray"
                   disabled={!isEmailValid || isVerifyingEmail}
                 >
-                  {isVerifyingEmail ? '로딩 중' : '인증하기'}
+                  {isVerifyingEmail ? <Spinner /> : '인증하기'}
                 </button>
               </div>
               {errors.email && (
@@ -212,7 +227,7 @@ function Join() {
                 </small>
               )}
               {/* 인증코드 입력 */}
-              {isVerifyingCode && (
+              {verifyingEmailSuccess && (
                 <>
                   <div className="flex relative justify-between">
                     <input
@@ -242,12 +257,17 @@ function Join() {
                         !isCodeValid
                       }
                     >
-                      {isVerifyingEmail ? '로딩 중' : '확인'}
+                      {isVerifyingEmail ? <Spinner /> : '확인'}
                     </button>
                   </div>
                   {errors.verificationCode && (
                     <small className="text-rose-500 text-xs px-1" role="alert">
                       {errors.verificationCode.message}
+                    </small>
+                  )}
+                  {verifyCodeMessage && (
+                    <small className="text-skyblue text-xs px-1" role="alert">
+                      {verifyCodeMessage}
                     </small>
                   )}
                 </>
@@ -326,7 +346,7 @@ function Join() {
                   !Object.values(stepStates).every((state) => state)
                 }
               >
-                {joining ? '로딩 중' : '회원가입'}
+                {joining ? <Spinner /> : '회원가입'}
               </button>
             </form>
           </div>
