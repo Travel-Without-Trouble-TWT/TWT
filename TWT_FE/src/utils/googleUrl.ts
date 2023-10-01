@@ -2,11 +2,11 @@ function googleUrl(from: string) {
   const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
 
   const options = {
-    redirect_uri: process.env.REACT_APP_GOOGLE_OAUTH_REDIRECT as string,
-    client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID as string,
+    redirect_uri: process.env.REACT_APP_GOOGLE_OAUTH_REDIRECT,
+    client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
     access_type: 'offline',
     response_type: 'code',
-    prompt: 'conset',
+    prompt: 'consent',
     scope: [
       'https://www.googleapis.com/auth/userinfo.profile',
       'https://www.googleapis.com/auth/userinfo.email',
