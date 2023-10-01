@@ -11,6 +11,7 @@ import Detail from './pages/Detail';
 import Profile from './pages/Profile';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import GoogleRedirect from './pages/GoogleRedirect';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/search/:location" element={<Selected />} />
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/oauth/google" element={<GoogleRedirect />} />
         </Routes>
         <Footer />
       </BrowserRouter>
