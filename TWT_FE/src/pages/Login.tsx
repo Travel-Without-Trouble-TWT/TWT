@@ -10,14 +10,13 @@ import GoogleLogo from '../assets/google.png';
 import { UserContext } from '../context';
 import googleUrl from '../utils/googleUrl';
 //컴포넌트
-import Spinner from '../components/Spinner';
+import Spinner from '../components/Loader';
 
 function Login() {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitSuccessful },
-    setError,
     reset,
   } = useForm<LoginProps>({ mode: 'onBlur' });
 
