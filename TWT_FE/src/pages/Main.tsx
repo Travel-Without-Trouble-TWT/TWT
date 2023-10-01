@@ -1,7 +1,7 @@
 import Carousel from '../components/Carousel';
 import Searchbar from '../components/Searchbar';
 import ReviewCard from '../components/ReviewCard';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/Loader';
 import ListItem from '../components/ListItem';
 import { useSchedules, useTop10 } from '../hooks/useProducts';
 import { useState } from 'react';
@@ -15,9 +15,9 @@ function Main() {
   if (schedulesError || top10Error) {
     return (
       <div className="min-w-full min-h-screen flex justify-center items-center xl:px-48 tablet:px-3 foldable:px-3 py-6 dark:bg-slate-950">
-        <div className="tablet:w-2/3 w-full flex flex-col space-y-20 py-1 bg-lightgray dark:bg-slate-800">
+        <div className="tablet:w-2/3 w-full flex flex-col py-1 justify-center items-center">
           <p className="text-red-500 font-bold text-xl">
-            데이터를 불러오는 중 오류가 발생했습니다.
+            ⚠️ 데이터를 불러오는 중 오류가 발생했습니다.
           </p>
           <p className="text-gray-500">나중에 다시 시도해주세요.</p>
         </div>
