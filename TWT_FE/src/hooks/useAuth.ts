@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { LoginProps, JoinProps } from '../api/type';
@@ -8,11 +9,11 @@ import {
   loginFn,
   logoutFn,
   joinFn,
+  nicknameFn,
+  verifyFn,
 } from '../api/auth';
 import { getUserInfoFn } from '../api';
 import { subscribeFn } from '../api/auth';
-
-import Alerts from '../components/Alerts';
 
 //로그인
 export const useLogin = () => {
@@ -45,6 +46,7 @@ export const useLogout = () => {
   return { logout, logouting, logoutError };
 };
 
+//닉네임 변경
 export const useEditNickName = (nickname: string) => {
   const {
     mutate: editNickName,
@@ -54,6 +56,7 @@ export const useEditNickName = (nickname: string) => {
   return { editNickName, nickNameEditing, nickNameError };
 };
 
+//프로필 변경
 export const useEditProfileImg = (file: File) => {
   const queryClient = useQueryClient();
   const {
@@ -93,12 +96,70 @@ export const useGetEmitters = () => {
 
 //회원가입
 export const useJoin = () => {
-  const { mutate: joinUser, isLoading: joining } = useMutation(
-    (userData: JoinProps) => joinFn(userData),
-    {
-      onSuccess: () => {},
-      onError: (error: any) => {},
-    }
-  );
-  return { joinUser, joining };
+  const {
+    mutate: joinUser,
+    isLoading: joining,
+    isSuccess: joinSuccess,
+    isError: joinError,
+  } = useMutation((userData: JoinProps) => joinFn(userData));
+  return { joinUser, joining, joinSuccess, joinError };
+};
+
+type HandleStepValidationFunction = (
+  stepName: string,
+  isValid: boolean
+) => void;
+
+// setError 함수의 타입 정의
+type SetErrorFunction = <FieldName extends keyof JoinProps>(
+  field: FieldName,
+  error: { type: string; message: string }
+) => void;
+//닉네임 중복검사 요청
+export const useCheckNickname = (
+  handleStepValidation: HandleStepValidationFunction,
+  setError: SetErrorFunction
+) => {
+  const {
+    mutate: checkNickname,
+    isLoading: isCheckingNickname,
+    isSuccess: checkingNicknameSuccess,
+  } = useMutation((nickname: string) => nicknameFn(nickname), {
+    onSuccess: (data) => {
+      handleStepValidation('nickName', true);
+    },
+    onError: (error: any) => {
+      handleStepValidation('nickName', false);
+      setError('nickName', {
+        type: 'manual',
+        message: '이미 사용 중인 닉네임입니다.',
+      });
+    },
+  });
+  return { checkNickname, isCheckingNickname, checkingNicknameSuccess };
+};
+
+//인증 코드 요청
+export const useVerifyCode = (
+  handleStepValidation: HandleStepValidationFunction,
+  setError: SetErrorFunction
+) => {
+  const [returnCode, setReturnCode] = useState<number | null>(null);
+  const {
+    mutate: verifyEmail,
+    isLoading: isVerifyingEmail,
+    isSuccess: verifyingEmailSuccess,
+  } = useMutation((email: string) => verifyFn(email), {
+    onSuccess: (data) => {
+      handleStepValidation('email', true);
+      setReturnCode(data);
+    },
+    onError: (error: any) => {
+      setError('email', {
+        type: 'manual',
+        message: '인증 요청 에러! 다시 시도해주세요.',
+      });
+    },
+  });
+  return { verifyEmail, isVerifyingEmail, verifyingEmailSuccess, returnCode };
 };
