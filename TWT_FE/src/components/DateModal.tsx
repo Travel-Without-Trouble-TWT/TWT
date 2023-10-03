@@ -1,15 +1,31 @@
 import { useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import ko from 'date-fns/locale/ko';
+import { useEditDate } from '../hooks/useProducts';
+import dateFormat from '../utils/toStringByFormat';
+import Spinner from './Spinner';
 
 function DateModal({
   setIsShowDateModal,
+  id,
 }: {
   setIsShowDateModal: (showModal: boolean) => void;
+  id: number;
 }) {
   const [startAt, setStartAt] = useState<Date | null>(null);
   const [endAt, setEndAt] = useState<Date | null>(null);
+  const data = {
+    startAt: dateFormat(startAt),
+    endAt: dateFormat(endAt),
+    scheduleId: id,
+  };
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const { editDate, dateEditing, dateEditSuccess, dateEditError } =
+    useEditDate(data);
+
+  if (dateEditSuccess) {
+    setIsShowDateModal(false);
+  }
   return (
     <div
       className="fixed top-0 left-0 z-20 flex items-center justify-center w-screen h-screen bg-lightgray/20 backdrop-blur-sm"
@@ -28,37 +44,46 @@ function DateModal({
           <h3 className="flex-1 text-xl font-bold">🗓️ 날짜 선택</h3>
         </header>
         <div className="flex justify-center gap-2">
-          <DatePicker
-            className="border-b border-skyblue px-2 py-1 text-sm cursor-pointer"
-            onChange={(date) => {
-              setStartAt(date);
-            }}
-            selected={startAt}
-            selectsStart
-            locale={ko}
-            minDate={new Date()}
-            monthsShown={1}
-            placeholderText="YY.MM.dd"
-            dateFormat="yy.MM.dd"
-          ></DatePicker>
-          <span>~</span>
-          <DatePicker
-            className="border-b border-skyblue px-2 py-1 text-sm cursor-pointer"
-            onChange={(date) => {
-              setEndAt(date);
-            }}
-            selected={endAt}
-            selectsEnd
-            locale={ko}
-            minDate={startAt}
-            monthsShown={1}
-            placeholderText="YY.MM.dd"
-            dateFormat="yy.MM.dd"
-          ></DatePicker>
+          {dateEditing ? (
+            <Spinner size={'[10px]'} />
+          ) : (
+            <>
+              <DatePicker
+                className="border-b border-skyblue px-2 py-1 text-sm cursor-pointer"
+                onChange={(date) => {
+                  setStartAt(date);
+                }}
+                selected={startAt}
+                selectsStart
+                locale={ko}
+                minDate={new Date()}
+                monthsShown={1}
+                placeholderText="YYYY-MM-dd"
+                dateFormat="yyyy-MM-dd"
+              ></DatePicker>
+              <span>~</span>
+              <DatePicker
+                className="border-b border-skyblue px-2 py-1 text-sm cursor-pointer"
+                onChange={(date) => {
+                  setEndAt(date);
+                }}
+                selected={endAt}
+                selectsEnd
+                locale={ko}
+                minDate={startAt}
+                monthsShown={1}
+                placeholderText="YYYY.MM.dd"
+                dateFormat="yyyy-MM-dd"
+              ></DatePicker>
+            </>
+          )}
         </div>
 
         <div className="flex justify-end gap-2">
-          <button className="inline-flex items-center justify-center flex-1 h-10 px-5 text-sm font-semibold tracking-wide duration-300 rounded whitespace-nowrap bg-skyblue/80 hover:bg-skyblue">
+          <button
+            onClick={() => editDate(data)}
+            className="inline-flex items-center justify-center flex-1 h-10 px-5 text-sm font-semibold tracking-wide duration-300 rounded whitespace-nowrap bg-skyblue/80 hover:bg-skyblue"
+          >
             완료
           </button>
           <button
