@@ -16,5 +16,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Page<Review> findAllByNickName(String nickName, Pageable pageable);
 
-    Page<Review> findAllByPlace(Place place, Pageable pageable);
+    Page<Review> findAllByPlaceOrderByIdDesc(Place place, Pageable pageable);
+
+    List<Review> findAllByNickName(String nickName);
 }

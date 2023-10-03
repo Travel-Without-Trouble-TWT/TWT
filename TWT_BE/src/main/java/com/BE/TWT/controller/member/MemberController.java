@@ -7,6 +7,7 @@ import com.BE.TWT.model.dto.member.UpdateDto;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.service.function.EmailVerification;
 import com.BE.TWT.service.function.HeartService;
+import com.BE.TWT.service.function.WithDraw;
 import com.BE.TWT.service.member.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +29,7 @@ public class MemberController {
     private final MemberService memberService;
     private final EmailVerification emailVerification;
     private final HeartService heartService;
+    private final WithDraw withDraw;
 
     @ApiOperation(value = "회원가입")
     @Operation(description = "이메일, 닉네임은 중복이 불가합니다.")
@@ -75,7 +77,7 @@ public class MemberController {
     @ApiOperation(value = "토큰 재발급")
     @Operation(description = "쿠키 내에 Refresh Token 을 입력해주세요")
     @GetMapping("/refresh")
-    public String logOut(@RequestParam @Valid String refreshToken) {
+    public String getAccessToken(@RequestParam @Valid String refreshToken) {
         return memberService.getAccessTokenByRefreshToken(refreshToken);
     }
 
@@ -98,5 +100,19 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<?> likeIt(HttpServletRequest request, @RequestParam @Valid Long placeId) {
         return ResponseEntity.ok(heartService.likeIt(request, placeId));
+    }
+
+    @ApiOperation(value = "비밀번호 변경")
+    @Operation(description = "비밀번호 값만 바꾸는 API")
+    @PutMapping("/password")
+    public String changePassword(HttpServletRequest request, @RequestParam @Valid String password) {
+        return memberService.changePassword(request, password);
+    }
+
+    @ApiOperation(value = "회원 탈퇴")
+    @Operation(description = "스케줄, 리뷰, 좋아요 모두 삭제됩니다")
+    @DeleteMapping("/bye")
+    public String withDrawMember(HttpServletRequest request, HttpServletResponse response) {
+        return withDraw.withDrawMember(request, response);
     }
 }

@@ -3,10 +3,7 @@ package com.BE.TWT.service.member;
 import com.BE.TWT.config.CookieProvider;
 import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
-import com.BE.TWT.model.dto.member.InfoResponseDto;
-import com.BE.TWT.model.dto.member.SignInDto;
-import com.BE.TWT.model.dto.member.SignUpDto;
-import com.BE.TWT.model.dto.member.UpdateDto;
+import com.BE.TWT.model.dto.member.*;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.repository.member.MemberRepository;
 import com.BE.TWT.service.function.EmailVerification;
@@ -53,6 +50,7 @@ public class MemberService {
                 .email(signUpDto.getEmail())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .nickName(signUpDto.getNickName())
+                .isGoogleLogin(1)
                 .build();
         return memberRepository.save(member);
     }
@@ -71,7 +69,6 @@ public class MemberService {
         String accessToken = jwtTokenProvider.generateAccessToken(authentication);
         String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
         cookieProvider.setRefreshTokenCookie(refreshToken, response);
-        cookieProvider.setAccessTokenCookie(accessToken, response);
 
         return accessToken;
     }
@@ -118,6 +115,7 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
         return InfoResponseDto.builder()
+                .memberId(member.getId())
                 .email(member.getEmail())
                 .nickName(member.getNickName())
                 .profileUrl(member.getProfileUrl())
@@ -142,7 +140,6 @@ public class MemberService {
             throw new MemberException(INVALID_TOKEN);
         }
 
-        cookieProvider.deleteAccessTokenCookie(response);
         cookieProvider.deleteRefreshTokenCookie(response);
     }
 
@@ -161,4 +158,16 @@ public class MemberService {
         return jwtTokenProvider.generateAccessToken(authentication);
     }
 
+    public String changePassword(HttpServletRequest request, String password) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
+
+        member.setPassword(passwordEncoder.encode(password));
+
+        memberRepository.save(member);
+        return "비밀번호가 변경되었습니다.";
+    }
 }
