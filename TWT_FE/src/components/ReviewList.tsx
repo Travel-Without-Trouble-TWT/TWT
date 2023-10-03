@@ -40,7 +40,7 @@ function ReviewList({ placeId }: { placeId: number }) {
             장소에 대한 리뷰가 아직 없습니다.
           </span>
         ))}
-      {!reviews && reviewLoading ? (
+      {!reviews || reviewLoading ? (
         <Loader size={'20px'} />
       ) : (
         reviews.content.map((review) => (
@@ -53,7 +53,11 @@ function ReviewList({ placeId }: { placeId: number }) {
                 <div className="w-0 flex-1 flex gap-2 items-center">
                   <img
                     className="w-8 h-8 rounded-full"
-                    src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2Fa8%2F75%2F12%2Fa87512767cddbb9a609dc7c7171dde91.jpg&type=sc960_832"
+                    src={
+                      review.memberProfileUrl
+                        ? review.memberProfileUrl
+                        : 'https://mblogthumb-phinf.pstatic.net/20150427_73/ninevincent_1430122793329pvryW_JPEG/kakao_7.jpg?type=w420'
+                    }
                   />
                   <div className="flex flex-col">
                     <span className="truncate text-sm font-semibold text-slate-700 dark:text-white">
