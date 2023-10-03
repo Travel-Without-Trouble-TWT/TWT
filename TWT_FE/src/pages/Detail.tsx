@@ -50,7 +50,7 @@ function Detail() {
                 onClick={handleLike}
               >
                 좋아요
-                {placeInfos.placeHeart ? (
+                {placeInfos.likeIt ? (
                   <AiFillHeart className="text-red ml-1" />
                 ) : (
                   <AiOutlineHeart className="text-red ml-1" />
