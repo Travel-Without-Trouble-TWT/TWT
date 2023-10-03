@@ -28,7 +28,7 @@ function ZoomModal({
         role="document"
       >
         <header className="flex gap-4">
-          <h3 className="flex-1 text-xl font-bold">이미지 보기</h3>
+          <h3 className="flex-1 text-xl font-bold">📷 이미지 보기</h3>
           <button aria-label="close" onClick={() => setShowModal()}>
             <AiOutlineClose />
           </button>
