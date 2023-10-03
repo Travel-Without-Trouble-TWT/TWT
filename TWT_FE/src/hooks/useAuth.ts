@@ -22,9 +22,9 @@ export const useLogin = () => {
     (userData: LoginProps) => loginFn(userData),
     {
       onSuccess: (data) => {
-        localStorage.setItem('accessToken', data.accessToken);
-        subscribeFn();
+        localStorage.setItem('accessToken', data);
         queryClient.invalidateQueries(['userInfo']);
+        subscribeFn();
       },
       onError: (error: any) => {},
     }
@@ -79,7 +79,7 @@ export const useUserInfo = () => {
     isLoading: userInfoLoading,
     isError: userInfoError,
   } = useQuery(['userInfo'], () => getUserInfoFn(), {
-    staleTime: 6 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
   return { userInfo, userInfoLoading, userInfoError };
 };
@@ -90,7 +90,9 @@ export const useGetEmitters = () => {
     data: emitters,
     isLoading: emittersGetting,
     isError: emittersError,
-  } = useQuery(['emitters'], () => getEmitterFn(), {});
+  } = useQuery(['emitters'], () => getEmitterFn(), {
+    refetchOnWindowFocus: true,
+  });
   return { emitters, emittersGetting, emittersError };
 };
 
