@@ -150,7 +150,7 @@ function Header() {
                     isDropdownOpen ? 'flex' : 'hidden'
                   } absolute right-0 top-full z-50 mt-1 flex flex-col w-72 list-none rounded bg-white py-2 shadow-md`}
                 >
-                  {emitters ? (
+                  {emitters && emitters.length > 0 ? (
                     emitters.map((item, index) => {
                       return (
                         <li
