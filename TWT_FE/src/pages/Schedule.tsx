@@ -36,6 +36,11 @@ function Schedule() {
     dayScheduleId: null,
     index: null,
   });
+  const [timeData, setTimeData] = useState({
+    dayScheduleId: null,
+    index: null,
+    arriveAt: null,
+  });
   const {
     deleteSchedule,
     scheduleDeleting,
@@ -68,7 +73,6 @@ function Schedule() {
   const handleDownload = async () => {
     if (!divRef.current) return;
     try {
-      console.log('다운로드');
       const canvas = await html2canvas(divRef.current, { scale: 2 });
       canvas.toBlob((blob) => {
         if (blob !== null) {
@@ -175,6 +179,7 @@ function Schedule() {
                             setIsShowAlert={setIsShowAlert}
                             dayScheduleId={schedule.dayScheduleList.id}
                             setDeleteData={setDeleteData}
+                            setTimeData={setTimeData}
                             memberId={schedule.memberId}
                             data={
                               isMoreOpen === item.id
@@ -230,8 +235,12 @@ function Schedule() {
           }}
         />
       )}
-      {isShowTimeModal && <TimeModal setIsShowModal={setIsShowTimeModal} />}
-      {isShowDateModal && <DateModal setIsShowDateModal={setIsShowDateModal} />}
+      {isShowTimeModal && (
+        <TimeModal setIsShowModal={setIsShowTimeModal} timeData={timeData} />
+      )}
+      {isShowDateModal && (
+        <DateModal setIsShowDateModal={setIsShowDateModal} id={scheduleId} />
+      )}
     </>
   );
 }
