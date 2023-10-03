@@ -8,6 +8,7 @@ function Feeds({
   setIsShowAlert,
   dayScheduleId,
   setDeleteData,
+  setTimeData,
   data,
   memberId,
   placeLocation,
@@ -16,6 +17,7 @@ function Feeds({
   setIsShowAlert: (isShowAlert: string) => void;
   dayScheduleId: number;
   setDeleteData: any;
+  setTimeData: any;
   data: any;
   memberId: number;
   placeLocation: string;
@@ -25,6 +27,14 @@ function Feeds({
   const handleClickDeleteButton = (idx: number) => {
     setIsShowAlert('장소삭제');
     setDeleteData({
+      dayScheduleId: dayScheduleId,
+      index: idx,
+    });
+  };
+
+  const handleInputTimeButton = (idx: number) => {
+    setIsShowTimeModal(true);
+    setTimeData({
       dayScheduleId: dayScheduleId,
       index: idx,
     });
@@ -58,13 +68,15 @@ function Feeds({
                       {item.placeName}
                     </h4>
                     <p className="text-sm text-gray">
-                      {item.arriveAt.split('T')[1] === '23:59:00'
-                        ? null
-                        : item.arriveAt
-                            .split('T')[1]
-                            .split(':')
-                            .slice(0, 2)
-                            .join(':')}
+                      {item.arriveAt.split('T')[1] === '23:59:00' ? (
+                        <div className="h-[20px]"></div>
+                      ) : (
+                        item.arriveAt
+                          .split('T')[1]
+                          .split(':')
+                          .slice(0, 2)
+                          .join(':')
+                      )}
                     </p>
                   </div>
                   {isLogin && user && user.memberId === memberId && (
@@ -79,7 +91,7 @@ function Feeds({
                       </button>
                       <button
                         className="hover:font-semibold text-sm"
-                        onClick={() => setIsShowTimeModal(true)}
+                        onClick={(idx) => handleInputTimeButton(idx)}
                       >
                         시간 입력
                       </button>
