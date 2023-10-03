@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Spinner from '../components/Spinner';
 import axios from 'axios';
 import { getGoogleTokenFn } from '../api/auth';
@@ -19,14 +20,18 @@ function GoogleRedirect() {
     );
     return response.data;
   };
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (code) {
       getToken(code).then((res) => {
-        getGoogleTokenFn(res.access_token);
+        getGoogleTokenFn(res.id_token).then((res) => {
+          localStorage.setItem('accessToken', res);
+          navigate('/');
+        });
       });
     }
-  }, [code]);
+  }, []);
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center">
