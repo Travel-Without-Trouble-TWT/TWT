@@ -1,11 +1,22 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { useEditTime } from '../hooks/useProducts';
 
 function TimeModal({
   setIsShowModal,
+  timeData,
 }: {
   setIsShowModal: (showModal: boolean) => void;
+  timeData: any;
 }) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const { editTime, timeEditing, timeEditSuccess, timeEditError } = useEditTime(
+    { ...timeData, arriveAt }
+  );
+  const [arriveAt, setArriveAt] = useState<string | null>(null);
+
+  const handleAddTime = () => {
+    editTime(...timeData, arriveAt);
+  };
   return (
     <div
       className="fixed top-0 left-0 z-20 flex items-center justify-center w-screen h-screen bg-lightgray/20 backdrop-blur-sm"
@@ -23,9 +34,12 @@ function TimeModal({
         <header id="header-5a" className="flex gap-4">
           <h3 className="flex-1 text-xl font-bold">⏰ 시간 추가</h3>
         </header>
-        <input type="time" />
+        <input type="time" onChange={(e) => setArriveAt(e.target.value)} />
         <div className="flex justify-end gap-2">
-          <button className="inline-flex items-center justify-center flex-1 h-10 px-5 text-sm font-semibold tracking-wide duration-300 rounded whitespace-nowrap bg-skyblue/80 hover:bg-skyblue">
+          <button
+            onClick={handleAddTime}
+            className="inline-flex items-center justify-center flex-1 h-10 px-5 text-sm font-semibold tracking-wide duration-300 rounded whitespace-nowrap bg-skyblue/80 hover:bg-skyblue"
+          >
             추가
           </button>
           <button
