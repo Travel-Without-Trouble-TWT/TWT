@@ -116,11 +116,20 @@ export const addScheduleFn = async (data: any) => {
   return response.data;
 };
 
+export const changeScheduleFn = async (data: any) => {
+  const response = await authApi.put(`/schedule/change`, data);
+  return response.data;
+};
+
+export const fixScheduleTimeFn = async (data: any) => {
+  const response = await authApi.put(`/daily/fix`, data);
+  return response.data;
+};
+
 export const addLikeFn = async (placeId: number) => {
   const response = await authApi.post(`/member?placeId=${placeId}`);
   return response.data;
 };
-//
 
 //delete
 export const deleteScheduleFn = async (scheduleId: Number) => {
