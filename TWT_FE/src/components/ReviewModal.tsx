@@ -3,6 +3,7 @@ import { TiDelete } from 'react-icons/ti';
 import { AiOutlineClose } from 'react-icons/ai';
 import Score from './Score';
 import { usePostReivews } from '../hooks/useProducts';
+import Spinner from './Spinner';
 
 function ReviewModal({
   setShowModal,
@@ -58,6 +59,10 @@ function ReviewModal({
   const handleUploadReview = () => {
     postReviews(uploadData, imgFile);
   };
+
+  if (reviewPostingSuccess) {
+    setShowModal('');
+  }
 
   return (
     <>
@@ -138,7 +143,7 @@ function ReviewModal({
                   : 'bg-skyblue'
               }`}
             >
-              등록
+              {reviewPosting ? <Spinner size={'[10px]'} /> : '등록'}
             </button>
           </div>
         </div>
