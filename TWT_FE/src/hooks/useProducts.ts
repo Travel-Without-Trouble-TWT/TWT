@@ -16,9 +16,12 @@ import {
   addLikeFn,
   getNearPlaces,
   deleteDailyScheduleFn,
+  changeScheduleFn,
+  fixScheduleTimeFn,
 } from '../api';
 
 import { calculateCenter } from '../utils/calculate';
+import { useState } from 'react';
 
 //메인페이지 스케쥴들
 export const useSchedules = (pageParam: number) => {
@@ -46,7 +49,6 @@ export const usePlaces = (
     isError: placeError,
     refetch: placeRefetch,
   } = useQuery(['places'], () => getPlaceFn(type, location, pageParam), {
-    keepPreviousData: true,
     refetchOnWindowFocus: true,
   });
   const center = calculateCenter(places);
@@ -109,7 +111,6 @@ export const useReviews = (placeId: number, pageParam: number) => {
     isError: reviewError,
     refetch: reviewRefetch,
   } = useQuery(['reviews'], () => getPlaceReviewsFn(placeId, pageParam), {
-    keepPreviousData: true,
     refetchOnWindowFocus: true,
   });
   return { reviews, reviewLoading, reviewError, reviewRefetch };
@@ -122,11 +123,7 @@ export const usePlaceInfo = (placeId: number) => {
     isLoading: placeInfoLoading,
     isError: placeInfoError,
   } = useQuery(['placeInfos', placeId], () => getPlaceInfoFn(placeId), {
-    enabled: true,
-    retry: 1,
-    onSuccess: (data) => {
-      // id,placeName,placeType,placeLocation,star,placeHeart,placeImageUrl,
-    },
+    onSuccess: (response) => {},
     onError: (error) => {
       //alert
     },
@@ -311,4 +308,36 @@ export const useAddLike = (postId: number) => {
     },
   });
   return { addLike, likeAdding, likeAddingSuccess, likeAddingError };
+};
+
+//날짜 편집
+export const useEditDate = (data: any) => {
+  const queryClient = useQueryClient();
+  const {
+    mutate: editDate,
+    isLoading: dateEditing,
+    isSuccess: dateEditSuccess,
+    isError: dateEditError,
+  } = useMutation(() => changeScheduleFn(data), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['schedule']);
+    },
+  });
+  return { editDate, dateEditing, dateEditSuccess, dateEditError };
+};
+
+//시간편집
+export const useEditTime = (data: any) => {
+  const queryClient = useQueryClient();
+  const {
+    mutate: editTime,
+    isLoading: timeEditing,
+    isSuccess: timeEditSuccess,
+    isError: timeEditError,
+  } = useMutation(() => fixScheduleTimeFn(data), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['schedule']);
+    },
+  });
+  return { editTime, timeEditing, timeEditSuccess, timeEditError };
 };
