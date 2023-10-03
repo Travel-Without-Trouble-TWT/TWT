@@ -141,14 +141,16 @@ function Header() {
                       setIsDropdownOpen(!isDropdownOpen);
                     }}
                   />
-                  <span className="absolute bottom-0 right-0 inline-flex items-center justify-center gap-1 rounded-full border-2 border-white bg-pink-500 p-1 text-sm text-white"></span>
+                  {emitters.length > 0 && (
+                    <span className="absolute bottom-0 right-0 inline-flex items-center justify-center gap-1 rounded-full border-2 border-white bg-pink-500 p-1 text-sm text-white"></span>
+                  )}
                 </div>
                 <ul
                   className={`${
                     isDropdownOpen ? 'flex' : 'hidden'
                   } absolute right-0 top-full z-50 mt-1 flex flex-col w-72 list-none rounded bg-white py-2 shadow-md`}
                 >
-                  {emitters &&
+                  {emitters ? (
                     emitters.map((item, index) => {
                       return (
                         <li
@@ -166,7 +168,16 @@ function Header() {
                           </span>
                         </li>
                       );
-                    })}
+                    })
+                  ) : (
+                    <li className="text-gray flex items-start justify-start gap-2 p-2 px-5">
+                      <span className="flex flex-col gap-1 overflow-hidden  whitespace-wrap">
+                        <span className="leading-5 text-sm">
+                          알림을 모두 확인하였습니다.
+                        </span>
+                      </span>
+                    </li>
+                  )}
                 </ul>
               </>
             ) : (
