@@ -33,12 +33,16 @@ module.exports = {
       },
     },
     screens: {
-      mobile: '360px', // @media (min-width: 360px)
-      foldable: '523px', // @media (min-width: 523px)
-      tablet: '768px', // @media (min-width: 768px)
-      lg: '1060px', // @media (min-width: 1060px)
-      xl: '1260px', // @media (min-width: 1260px)
-      '2xl': '1460px', // @media (min-width: 1460px)
+      xs: { min: '375px', max: '639px' },
+      // => @media (min-width: 375px and max-width: 639px)
+      sm: { min: '640px', max: '767px' },
+      // => @media (min-width: 640px and max-width: 767px)
+      md: { min: '768px', max: '1023px' },
+      // => @media (min-width: 768px and max-width: 1023px)
+      lg: { min: '1024px', max: '1279px' },
+      // => @media (min-width: 1024px and max-width: 1279px)
+      xl: { min: '1280px' },
+      // => @media (min-width: 1280px and max-width: 1535px)
     },
   },
   plugins: [
