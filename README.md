@@ -64,7 +64,7 @@ $ npm run start:dev
 ## 화면 구성 🖥️
 |메인페이지|선택 지역 페이지|
 |:---:|:---:|
-||![선택 지역 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/248c7d60-8fb2-4c25-abf0-ebd43cc3359b)|
+|![메인페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/886639f0-9f36-4550-98ec-89586b2c963e)|![선택 지역 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/248c7d60-8fb2-4c25-abf0-ebd43cc3359b)|
 
 |상세페이지|일정페이지|
 |:---:|:---:|
