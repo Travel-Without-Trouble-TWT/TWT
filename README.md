@@ -116,4 +116,6 @@ $ npm run start:dev
 
 ### 디렉토리 구조
 ### ERD
+![image](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/122004333/73b44090-9291-4d2a-a393-d4aaed163d4f)
+
 ## 기타 
