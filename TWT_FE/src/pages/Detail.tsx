@@ -26,7 +26,7 @@ function Detail() {
     addLike();
   };
   return (
-    <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen flex justify-center flex-col lg:px-48 tablet:px-10 py-6">
+    <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen flex justify-center flex-col lg:px-48 tablet:px-10 py-3">
       {!placeInfoLoading && placeInfos ? (
         <>
           <img
