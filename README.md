@@ -68,7 +68,7 @@ $ npm run start:dev
 
 |상세페이지|일정페이지|
 |:---:|:---:|
-||![일정페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/066b0625-b56e-4a9c-8b47-1aa5b6447bcc)|
+|![상세페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/9954274a-7155-417f-928e-d3b5afb07f35)|![일정페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/066b0625-b56e-4a9c-8b47-1aa5b6447bcc)|
 
 
 
