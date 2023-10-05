@@ -131,6 +131,11 @@ export const addLikeFn = async (placeId: number) => {
   return response.data;
 };
 
+export const postShareFn = async (data: any) => {
+  const response = await authApi.post(`/schedule/share`, data);
+  return response.data;
+};
+
 //delete
 export const deleteScheduleFn = async (scheduleId: Number) => {
   const response = await authApi.delete(
