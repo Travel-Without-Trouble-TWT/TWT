@@ -14,8 +14,8 @@ function Main() {
 
   if (schedulesError || top10Error) {
     return (
-      <div className="min-w-full min-h-screen flex justify-center items-center xl:px-48 tablet:px-3 foldable:px-3 py-6 dark:bg-slate-950">
-        <div className="tablet:w-2/3 w-full flex flex-col py-1 justify-center items-center">
+      <div className="min-w-full min-h-screen flex justify-center items-center py-3 dark:bg-slate-950">
+        <div className="w-2/3 flex flex-col py-1 justify-center items-center sm:w-full xs:w-full">
           <p className="text-red-500 font-bold text-xl">
             ⚠️ 데이터를 불러오는 중 오류가 발생했습니다.
           </p>
@@ -26,8 +26,8 @@ function Main() {
   }
 
   return (
-    <div className="min-w-full min-h-screen flex justify-center items-center xl:px-48 tablet:px-3 foldable:px-3 py-6 dark:bg-slate-950">
-      <div className="tablet:w-2/3 w-full flex flex-col space-y-20 py-1 bg-lightgray dark:bg-slate-800">
+    <div className="min-w-full min-h-screen flex justify-center items-center py-3 dark:bg-slate-950">
+      <div className="w-2/3 flex flex-col space-y-20 py-1 bg-lightgray dark:bg-slate-800 sm:w-full xs:w-full">
         <div>
           <div className="relative">
             <Carousel />
@@ -38,17 +38,17 @@ function Main() {
         </div>
 
         <div className="flex flex-col items-center bg-white p-7 rounded dark:bg-slate-900">
-          <div className="flex self-start items-center gap-2">
+          <div className="flex self-start items-center gap-2 xs:flex-col">
             <p className="font-bold text-xl self-start dark:text-white">
               여기가 그렇게 HOT 하다며? 😎
             </p>
-            <p className="dark:text-slate-200">
+            <p className="dark:text-slate-200 xs:self-start">
               최근 많이 저장된 관광지・맛집・숙소
             </p>
           </div>
           <section className="dark:bg-gray-900">
-            <div className="container px-6 mx-auto">
-              <div className="grid grid-cols-1 gap-8 mt-8 tablet:mt-16 tablet:grid-cols-2">
+            <div className="container px-6 mx-auto xs:px-3">
+              <div className="grid grid-cols-2 gap-10 md:gap-5 mt-8 sm:grid-cols-1 xs:grid-cols-1">
                 {top10Loading ? (
                   <Spinner size={'20px'} />
                 ) : (
@@ -59,16 +59,19 @@ function Main() {
           </section>
         </div>
 
-        <div className="flex flex-col items-center bg-white p-7 rounded dark:bg-slate-900">
-          <div className="flex absolute gap-2 items-center self-start">
+        <div className="flex flex-col items-center bg-white p-6 rounded dark:bg-slate-900">
+          <div className="flex absolute gap-2 items-center self-start xs:flex-col">
             <p className="font-bold text-xl dark:text-white">
               너.. P야?🤦 그래서 준비했어!
             </p>
-            <p className="dark:text-slate-200"> 여행 일정과 팁 알아가기</p>
+            <p className="dark:text-slate-200 xs:self-start">
+              여행 일정과 팁 알아가기
+            </p>
           </div>
           <button className="flex relative text-sm text-gray self-end mt-1">
             더보기
           </button>
+
           {schedulesLoading ? (
             <Spinner size={'20px'} />
           ) : (
