@@ -18,6 +18,7 @@ import {
   deleteDailyScheduleFn,
   changeScheduleFn,
   fixScheduleTimeFn,
+  postShareFn,
 } from '../api';
 
 import { calculateCenter } from '../utils/calculate';
@@ -340,4 +341,25 @@ export const useEditTime = (data: any) => {
     },
   });
   return { editTime, timeEditing, timeEditSuccess, timeEditError };
+};
+
+//일정공유
+export const useShareSchedule = (data: any) => {
+  const queryClient = useQueryClient();
+  const {
+    mutate: shareSchedule,
+    isLoading: scheduleSharing,
+    isSuccess: scheduleSharingSuccess,
+    isError: scheduleSharingError,
+  } = useMutation(() => postShareFn(data), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['schedule']);
+    },
+  });
+  return {
+    shareSchedule,
+    scheduleSharing,
+    scheduleSharingSuccess,
+    scheduleSharingError,
+  };
 };
