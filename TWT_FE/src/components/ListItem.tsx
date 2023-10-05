@@ -4,12 +4,12 @@ function ListItem({ data }: { data: any }) {
       {data.map((item: any) => (
         <div className="flex flex-col dark:bg-slate-900">
           <img
-            className="object-cover w-full h-56 rounded-lg lg:w-64"
+            className="object-cover w-full h-56 rounded-lg"
             src={item.placeImageUrl}
             alt={item.placeName}
           />
 
-          <div className="flex flex-col justify-between py-4 lg:mx-3">
+          <div className="flex flex-col justify-between py-4 md:mx-3">
             <a
               href={`/detail/${item.id}`}
               className="text-xl font-semibold hover:underline dark:text-white"
