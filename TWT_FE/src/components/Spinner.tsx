@@ -1,4 +1,5 @@
 export default function Spinner({ size }: { size: string }) {
+  const spinnerClassName = `w-${size} h-${size} animate-spin`;
   return (
     <>
       <svg
@@ -8,7 +9,7 @@ export default function Spinner({ size }: { size: string }) {
         aria-live="polite"
         aria-busy="true"
         aria-labelledby="title-01b desc-01b"
-        className={`w-${size} h-${size} animate animate-spin`}
+        className={spinnerClassName}
       >
         <title id="title-01b">Icon title</title>
         <desc id="desc-01b">Some desc</desc>
