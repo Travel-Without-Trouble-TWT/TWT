@@ -1,15 +1,17 @@
 import { useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import ko from 'date-fns/locale/ko';
-import { useEditDate } from '../hooks/useProducts';
+import { useEditDate, useShareSchedule } from '../hooks/useProducts';
 import dateFormat from '../utils/toStringByFormat';
 import Spinner from './Spinner';
 
 function DateModal({
   setIsShowDateModal,
+  isShowModal,
   id,
 }: {
-  setIsShowDateModal: (showModal: boolean) => void;
+  setIsShowDateModal: (isShowModal: string | null) => void;
+  isShowModal: string | null;
   id: number;
 }) {
   const [startAt, setStartAt] = useState<Date | null>(null);
@@ -22,9 +24,18 @@ function DateModal({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const { editDate, dateEditing, dateEditSuccess, dateEditError } =
     useEditDate(data);
+  const {
+    shareSchedule,
+    scheduleSharing,
+    scheduleSharingSuccess,
+    scheduleSharingError,
+  } = useShareSchedule(data);
 
   if (dateEditSuccess) {
-    setIsShowDateModal(false);
+    setIsShowDateModal(null);
+  }
+  if (scheduleSharingSuccess) {
+    setIsShowDateModal(null);
   }
   return (
     <div
@@ -44,8 +55,10 @@ function DateModal({
           <h3 className="flex-1 text-xl font-bold">🗓️ 날짜 선택</h3>
         </header>
         <div className="flex justify-center gap-2">
-          {dateEditing ? (
-            <Spinner size={'[10px]'} />
+          {dateEditing || scheduleSharing ? (
+            <>
+              <Spinner size={'5'} />
+            </>
           ) : (
             <>
               <DatePicker
@@ -81,14 +94,17 @@ function DateModal({
 
         <div className="flex justify-end gap-2">
           <button
-            onClick={() => editDate(data)}
+            onClick={() => {
+              isShowModal === '일정편집' && editDate(data);
+              isShowModal === '일정공유' && shareSchedule(data);
+            }}
             className="inline-flex items-center justify-center flex-1 h-10 px-5 text-sm font-semibold tracking-wide duration-300 rounded whitespace-nowrap bg-skyblue/80 hover:bg-skyblue"
           >
             완료
           </button>
           <button
             className="inline-flex items-center justify-center flex-1 h-10 px-5 text-sm font-semibold tracking-wide duration-300 rounded whitespace-nowrap bg-lightgray hover:bg-gray/40"
-            onClick={() => setIsShowDateModal(false)}
+            onClick={() => setIsShowDateModal(null)}
           >
             취소
           </button>
