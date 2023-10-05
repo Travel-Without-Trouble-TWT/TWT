@@ -15,6 +15,7 @@ import {
   useDeletePlace,
   useDeleteSchedule,
   useSchedule,
+  useShareSchedule,
 } from '../hooks/useProducts';
 import { useUserContext } from '../context';
 //icons
@@ -25,7 +26,7 @@ function Schedule() {
   const [isMoreOpen, setIsMoreOpen] = useState<string | null>(null);
   const [isShowTimeModal, setIsShowTimeModal] = useState<boolean>(false);
   const [isShowAlert, setIsShowAlert] = useState<string | number>('');
-  const [isShowDateModal, setIsShowDateModal] = useState<boolean>(false);
+  const [isShowDateModal, setIsShowDateModal] = useState<string | null>(null);
   const { id } = useParams();
   const scheduleId = Number(id);
   const { isLogin, user } = useUserContext();
@@ -67,6 +68,14 @@ function Schedule() {
         message="해당 장소가 삭제되었습니다."
       />
     );
+  } else if (placeDeleteError) {
+    return (
+      <Alerts
+        type="error"
+        title="삭제 실패"
+        message="해당 장소 삭제에 실패하였습니다. 다시 시도해주세요."
+      />
+    );
   }
 
   const divRef = useRef<HTMLDivElement>(null);
@@ -89,13 +98,13 @@ function Schedule() {
 
   return (
     <>
-      {!schedule || scheduleLoading ? (
-        <Loader size={'30px'} />
-      ) : (
-        <section className="bg-lightgray dark:bg-slate-950 h-full flex justify-center flex-col lg:px-40 mobile:px-10 py-6">
+      <section className="min-w-full min-h-screen bg-lightgray dark:bg-slate-950 flex justify-center items-center flex-col py-3">
+        {!schedule || scheduleLoading ? (
+          <Loader size={'30px'} />
+        ) : (
           <div
             ref={divRef}
-            className="bg-white rounded-lg shadow-xl pb-8 dark:bg-slate-900"
+            className="w-2/3 bg-white rounded-lg shadow-xl pb-8 dark:bg-slate-900 md:w-full sm:w-full xs:w-full"
           >
             <div className="relative w-full h-[300px] bg-darkgray rounded-tl-lg rounded-tr-lg">
               <img
@@ -115,7 +124,7 @@ function Schedule() {
                 {isLogin && schedule.memberId === user?.memberId && (
                   <button
                     className="text-gray text-sm"
-                    onClick={() => setIsShowDateModal(true)}
+                    onClick={() => setIsShowDateModal('일정편집')}
                   >
                     편집
                   </button>
@@ -134,10 +143,15 @@ function Schedule() {
               </span>
             </div>
             <div className="absoulte flex flex-col items-center">
-              <button className="flex self-end mr-3 text-white -mt-6 z-20 text-xl">
+              <button
+                onClick={() => setIsShowDateModal('일정공유')}
+                aria-label="share"
+                className="flex self-end mr-3 text-white -mt-6 z-20 text-xl"
+              >
                 <FaShareSquare />
               </button>
               <button
+                aria-label="download"
                 onClick={handleDownload}
                 className="flex self-end mr-10 text-white -mt-5 z-20 text-xl"
               >
@@ -154,7 +168,7 @@ function Schedule() {
               <img
                 alt="일정 이미지"
                 src={schedule?.scheduleImageUrl}
-                className="w-64 h-64 border-8 border-white rounded-full -mt-40 z-20  dark:border-slate-900"
+                className="w-64 h-64 border-8 border-white rounded-full -mt-40 z-20  dark:border-slate-900 xs:w-44 xs:h-44 xs:-mt-28"
               />
             </div>
 
@@ -209,8 +223,8 @@ function Schedule() {
                 ))}
             </div>
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {isShowAlert === '일정삭제' && (
         <Alerts
@@ -229,17 +243,20 @@ function Schedule() {
           message="정말로 장소를 삭제하시겠습니까?"
           type="error"
           onConfirm={() => {
-            deletePlace(deleteData);
             setIsShowAlert('');
-            navigate('/');
+            deletePlace(deleteData);
           }}
         />
       )}
       {isShowTimeModal && (
         <TimeModal setIsShowModal={setIsShowTimeModal} timeData={timeData} />
       )}
-      {isShowDateModal && (
-        <DateModal setIsShowDateModal={setIsShowDateModal} id={scheduleId} />
+      {isShowDateModal !== null && (
+        <DateModal
+          setIsShowDateModal={setIsShowDateModal}
+          isShowModal={isShowDateModal}
+          id={scheduleId}
+        />
       )}
     </>
   );
