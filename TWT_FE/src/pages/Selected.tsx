@@ -45,7 +45,7 @@ function Selected() {
   return (
     <>
       <section className="bg-white dark:bg-slate-950 min-h-screen">
-        <div className="container px-6 py-10 mx-auto lg:flex-row">
+        <div className="container px-6 py-10 mx-auto xs:px-1">
           <h1 className="text-3xl font-bold lg:text-4xl dark:text-white">
             {placeLocation} 여행
           </h1>
@@ -54,7 +54,11 @@ function Selected() {
               {buttonData.map((button) => (
                 <button
                   key={button.id}
-                  className="flex text-sm border-2 px-2 py-1 border-lightgray dark:border-skyblue dark:text-white rounded-md mr-2 hover:bg-lightgray dark:hover:bg-skyblue hover:font-semibold transition-colors duration-300 items-center focus:bg-lightgray focus:font-semibold dark:focus:bg-skyblue"
+                  className={`flex text-sm border-2 px-2 py-1 border-lightgray dark:border-skyblue dark:text-white rounded-md mr-2 hover:bg-lightgray dark:hover:bg-skyblue hover:font-semibold transition-colors duration-300 items-center ${
+                    placeType === button.id
+                      ? 'font-semibold bg-lightgray dark:bg-skyblue'
+                      : ''
+                  }`}
                   id={button.id}
                   onClick={() => handleLocationButtonClick(button.id)}
                 >
@@ -64,7 +68,7 @@ function Selected() {
               ))}
             </div>
           </div>
-          <div className="grid lg:grid-cols-2 lg:gap-1 flex-col lg:flex-row w-full dark:bg-slate-800">
+          <div className="grid grid-cols-2 gap-1 sm:grid-cols-1 xs:grid-cols-1 sm:flex-col xs:flex-col flex-row w-full dark:bg-slate-800">
             <PlaceLists
               places={places}
               placeLocation={placeLocation}
@@ -73,7 +77,7 @@ function Selected() {
               setCurrentPage={setCurrentPage}
               currentPage={currentPage}
             />
-            <div className="grid flex-grow lg:w-full lg:h-full h-[590px] z-0">
+            <div className="grid flex-grow w-full h-full xs:h-[590px] sm:h-[590px] z-0">
               {placeLoading ? (
                 <Loader size={'30px'} />
               ) : (
