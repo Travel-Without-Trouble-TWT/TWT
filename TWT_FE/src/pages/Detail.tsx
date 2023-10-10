@@ -26,7 +26,7 @@ function Detail() {
     addLike();
   };
   return (
-    <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen flex justify-center flex-col lg:px-48 tablet:px-10 py-3">
+    <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen flex justify-center flex-col lg:px-48 xl:px-48 px-10 py-3">
       {!placeInfoLoading && placeInfos ? (
         <>
           <img
@@ -113,7 +113,11 @@ function Detail() {
         </div>
       )}
       {showModal === 'schedule' && (
-        <ScheduleModal setShowModal={setShowModal} selectedPlace={placeId} />
+        <ScheduleModal
+          setShowModal={setShowModal}
+          selectedPlace={placeId}
+          placeLocation={placeInfos.placeLocation}
+        />
       )}
       {showModal === 'review' && (
         <ReviewModal setShowModal={setShowModal} placeId={placeId} />
