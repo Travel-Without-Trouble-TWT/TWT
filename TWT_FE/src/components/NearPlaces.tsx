@@ -16,16 +16,19 @@ function NearPlaces({ placeId }: { placeId: number }) {
       const slider = new Glide('.glide-01', {
         type: 'carousel',
         focusAt: 'center',
-        perView: 3,
+        perView: 2,
         autoplay: 3000,
         animationDuration: 1000,
         gap: 24,
         breakpoints: {
           1024: {
+            perView: 3,
+          },
+          760: {
             perView: 2,
           },
           640: {
-            perView: 3,
+            perView: 1,
           },
         },
       }).mount();
@@ -48,7 +51,7 @@ function NearPlaces({ placeId }: { placeId: number }) {
     <>
       <div className="glide-01 w-full relative">
         <div className="overflow-hidden" data-glide-el="track">
-          <div className="flex whitespace-no-wrap flex-no-wrap [backface-visibility: hidden] [transform-style: preserve-3d] touch-pan-y will-change-transform w-full h-full overflow-hidden p-0 shadow">
+          <div className="flex whitespace-no-wrap flex-no-wrap [backface-visibility: hidden] [transform-style: preserve-3d] touch-pan-y will-change-transform w-full h-full overflow-hidden p-2 shadow">
             {nearPlaces &&
               nearPlaces.length > 0 &&
               nearPlaces.map((place) => (
@@ -63,16 +66,16 @@ function NearPlaces({ placeId }: { placeId: number }) {
                       className="aspect-video w-full"
                     />
                   </figure>
-                  <div className="p-6">
+                  <div className="h-full p-6 overflow-hidden">
                     <header className="mb-4">
-                      <h3 className="text-xl text-black font-semibold hover:underline">
+                      <h3 className="text-xl text-black dark:text-white font-semibold hover:underline">
                         <a href={`/detail/${place.id}`}>{place.placeName}</a>
                       </h3>
                       <p className="text-sm text-gray">
                         {place.placeType} | {place.placeLocation}
                       </p>
                     </header>
-                    <p className="text-slate-500 text-sm">
+                    <p className="h-full text-slate-500 text-sm overflow-hidden">
                       {place.placeDescription}
                     </p>
                   </div>
