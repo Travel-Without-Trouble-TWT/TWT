@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LoginProps } from '../api/type';
@@ -7,7 +7,6 @@ import { useLogin } from '../hooks/useAuth';
 import logo from '../assets/logo.png';
 import GoogleLogo from '../assets/google.png';
 
-import { UserContext } from '../context';
 import googleUrl from '../utils/googleUrl';
 //컴포넌트
 import Spinner from '../components/Loader';
@@ -20,7 +19,6 @@ function Login() {
     reset,
   } = useForm<LoginProps>({ mode: 'onBlur' });
 
-  const { setIsLogin } = useContext(UserContext);
   const { loginUser, logining } = useLogin();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,15 +34,14 @@ function Login() {
     try {
       loginUser(values);
       navigate('/');
-      setIsLogin(true);
     } catch (error) {}
   };
 
   return (
     <>
       <div className="flex items-center justify-center min-h-screen">
-        <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 w-2/3 h-2/3 absolute rounded-xl bg-skyblue shadow-lg">
-          <div className="hidden tablet:flex tablet:flex-col tablet:justify-end">
+        <div className="grid xs:grid-cols-1 grid-cols-2 gap-4 w-2/3 h-2/3 absolute rounded-xl bg-skyblue shadow-lg">
+          <div className="xs:hidden flex flex-col justify-end">
             <div className="self-center mb-10">
               <p className="text-lg font-extrabold text-white">TWT</p>
               <p className="text-lg font-semibold text-white">TWT</p>
@@ -137,7 +134,7 @@ function Login() {
                 type="submit"
                 disabled={logining || !isValid}
               >
-                {logining ? <Spinner size={'20px'} /> : '로그인'}
+                {logining ? <Spinner size={'5'} /> : '로그인'}
               </button>
               <hr className="w-full h-1"></hr>
               <a
