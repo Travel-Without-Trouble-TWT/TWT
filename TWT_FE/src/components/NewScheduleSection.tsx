@@ -3,21 +3,19 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ko from 'date-fns/locale/ko';
 
-type NewScheduleSectionProps = {
-  startAt: Date | null;
-  setStartAt: (date: Date | null) => void;
-  endAt: Date | null;
-  setEndAt: (date: Date | null) => void;
-  setSelectedDay: (day: number | null) => void;
-};
-
 function NewScheduleSection({
+  setSelectedDay,
   startAt,
   setStartAt,
   endAt,
   setEndAt,
-  setSelectedDay,
-}: NewScheduleSectionProps) {
+}: {
+  setSelectedDay: (value: number | null) => void;
+  startAt: Date | null;
+  setStartAt: (value: Date | null) => void;
+  endAt: Date | null;
+  setEndAt: (value: Date | null) => void;
+}) {
   const [newScheduleDays, setNewScheduleDays] = useState<number[]>([]);
 
   const getDaysNum = ({ startAt, endAt }: { startAt: Date; endAt: Date }) => {
@@ -31,7 +29,6 @@ function NewScheduleSection({
       const days = getDaysNum({ startAt: startAt, endAt: endAt });
       const arr = Array.from({ length: days + 1 }, (_, i) => i);
       setNewScheduleDays(arr);
-      setSelectedDay(1);
     }
   }, [startAt, endAt]);
 
