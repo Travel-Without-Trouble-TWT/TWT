@@ -1,4 +1,5 @@
 import { PageProps } from '../api/type';
+import Pagination from './Pagination';
 
 function ReviewsAccordion({ data }: { data: PageProps }) {
   return (
@@ -43,6 +44,7 @@ function ReviewsAccordion({ data }: { data: PageProps }) {
             </details>
           </>
         ))}
+      <Pagination />
     </section>
   );
 }
