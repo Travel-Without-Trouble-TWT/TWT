@@ -66,7 +66,7 @@ $ npm run start:dev
 |:---:|:---:|
 |![메인페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/886639f0-9f36-4550-98ec-89586b2c963e)|![선택 지역 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/248c7d60-8fb2-4c25-abf0-ebd43cc3359b)|
 
-|[상세페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-5.-%EB%AA%85%EC%86%8C-%EC%83%81%EC%84%B8-%ED%8E%98%EC%9D%B4%EC%A7%80)|일정페이지|
+|[상세페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-5.-%EB%AA%85%EC%86%8C-%EC%83%81%EC%84%B8-%ED%8E%98%EC%9D%B4%EC%A7%80)|[일정페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-6.-%EC%9D%BC%EC%A0%95-%EC%83%81%EC%84%B8-%ED%8E%98%EC%9D%B4%EC%A7%80)|
 |:---:|:---:|
 |![상세페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/9954274a-7155-417f-928e-d3b5afb07f35)|![일정페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/066b0625-b56e-4a9c-8b47-1aa5b6447bcc)|
 
@@ -125,3 +125,4 @@ $ npm run start:dev
 - [선택 여행지 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-3.-%EC%84%A0%ED%83%9D-%EC%97%AC%ED%96%89%EC%A7%80-%ED%8E%98%EC%9D%B4%EC%A7%80)
 - [마이페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-4.-%EB%A7%88%EC%9D%B4%ED%8E%98%EC%9D%B4%EC%A7%80)
 - [명소 상세 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-5.-%EB%AA%85%EC%86%8C-%EC%83%81%EC%84%B8-%ED%8E%98%EC%9D%B4%EC%A7%80)
+- [일정 상세 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-6.-%EC%9D%BC%EC%A0%95-%EC%83%81%EC%84%B8-%ED%8E%98%EC%9D%B4%EC%A7%80)
