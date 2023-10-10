@@ -119,3 +119,6 @@ $ npm run start:dev
 ![image](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/122004333/73b44090-9291-4d2a-a393-d4aaed163d4f)
 
 ## 기타 
+위키(Wiki)
+- 상세 기능
+[로그인 및 회원가입](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-1.-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85-%EB%B0%8F-%EB%A1%9C%EA%B7%B8%EC%9D%B8)
