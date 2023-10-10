@@ -93,7 +93,9 @@ function Feeds({
                         className="hover:font-semibold text-sm"
                         onClick={(idx) => handleInputTimeButton(idx)}
                       >
-                        시간 입력
+                        {item.arriveAt.split('T')[1] === '23:59:00'
+                          ? '시간 입력'
+                          : '시간 수정'}
                       </button>
                     </div>
                   )}
