@@ -1,79 +1,81 @@
 import { useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 //components
+import Spinner from './Spinner';
 import NewScheduleSection from './NewScheduleSection';
 import ExistingScheduleSection from './ExistingScheduleSection';
 
 import { AiOutlineClose } from 'react-icons/ai';
 import { useAddSchedule, usePostSchedule } from '../hooks/useProducts';
+import dateFormat from '../utils/toStringByFormat';
+import Alerts from './Alerts';
 
 type ScheduleModalProps = {
   setShowModal: (value: string | '') => void;
-  data: any;
   selectedPlace: number | null;
+  placeLocation: string;
 };
 
 function ScheduleModal({
   setShowModal,
-  data,
   selectedPlace,
+  placeLocation,
 }: ScheduleModalProps) {
-  const { location } = useParams();
-  const placeLocation = decodeURIComponent(String(location));
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
   const [accordionType, setAccordionType] = useState<string | null>(null);
+  const [isNewSchedule, setIsNewSchedule] = useState<boolean>(false);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [selectedScheduleId, setSelectedScheduleId] = useState<number | null>(
     null
   );
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [startAt, setStartAt] = useState<Date | null>(null);
   const [endAt, setEndAt] = useState<Date | null>(null);
-  const [isNewSchedule, setIsNewSchedule] = useState<boolean>(false);
+  const newScheduleData = {
+    endAt: endAt ? dateFormat(endAt) : null,
+    placeId: selectedPlace,
+    placeLocation: placeLocation,
+    startAt: startAt ? dateFormat(startAt) : null,
+    when: selectedDay,
+  };
+  const existedScheduleData = {
+    scheduleId: selectedScheduleId,
+    placeId: selectedPlace,
+    when: selectedDay,
+  };
 
   const {
     postSchedule,
     schedulePosting,
     schedulePostingSuccess,
     schedulePostingError,
-  } = usePostSchedule();
+  } = usePostSchedule(newScheduleData);
 
   const {
     addSchedule,
     scheduleAdding,
     scheduleAddingSuccess,
     scheduleAddingError,
-  } = useAddSchedule();
+  } = useAddSchedule(existedScheduleData);
 
-  const getDatetoString = (date: Date) => {
-    const year = date.getFullYear();
-    const month = ('0' + (1 + date.getMonth())).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    return year + '-' + month + '-' + day;
-  };
-
-  const handleAddButtonClick = () => {
+  const handleAddButtonClick = async () => {
     if (isNewSchedule) {
       // 새로운 일정 추가 시
-      if (startAt && endAt && selectedDay) {
-        const newPostData = {
-          startAt: getDatetoString(startAt),
-          endAt: getDatetoString(endAt),
-          placeId: selectedPlace,
-          placeLocation: placeLocation,
-          when: selectedDay,
-        };
-        postSchedule(newPostData);
-      } else {
-        // startAt 또는 endAt, when이 null일 때 오류 처리
-        console.error('모든 정보를 입력하지 않았습니다.');
-      }
+      await postSchedule(newScheduleData);
     } else {
-      addSchedule({
-        scheduleId: selectedScheduleId,
-        placeId: selectedPlace,
-        when: selectedDay,
-      });
+      await addSchedule(existedScheduleData);
+    }
+    if (schedulePostingSuccess || scheduleAddingSuccess) {
+      setShowModal('');
+      return (
+        <Alerts
+          type="success"
+          title="일정 추가 성공"
+          message="해당 장소가 일정에 등록되었습니다. 확인하러 가시겠습니까?"
+          onConfirm={() => navigate('/mypage')}
+        />
+      );
     }
   };
 
@@ -120,11 +122,11 @@ function ScheduleModal({
 
             {accordionType === '새로운일정' && (
               <NewScheduleSection
+                setSelectedDay={setSelectedDay}
                 startAt={startAt}
                 setStartAt={setStartAt}
                 endAt={endAt}
                 setEndAt={setEndAt}
-                setSelectedDay={setSelectedDay}
               />
             )}
           </div>
@@ -151,10 +153,10 @@ function ScheduleModal({
 
             {accordionType === '기존일정' && (
               <ExistingScheduleSection
-                data={data}
+                placeLocation={placeLocation}
+                selectedScheduleId={selectedScheduleId}
                 setSelectedScheduleId={setSelectedScheduleId}
                 setSelectedDay={setSelectedDay}
-                selectedScheduleId={selectedScheduleId}
               />
             )}
           </div>
@@ -163,7 +165,11 @@ function ScheduleModal({
               onClick={handleAddButtonClick}
               className="inline-flex items-center justify-center flex-1 h-10 gap-2 px-5 text-sm font-semibold tracking-wide duration-300 rounded whitespace-nowrap bg-skyblue/80 hover:bg-skyblue"
             >
-              추가
+              {schedulePosting || scheduleAdding ? (
+                <Spinner size={'5'} />
+              ) : (
+                '추가'
+              )}
             </button>
           </div>
         </div>
