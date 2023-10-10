@@ -1,22 +1,26 @@
-import { postScheduleProps } from '../api/type';
-
-type ExistingScheduleSectionProps = {
-  data: postScheduleProps[];
-  setSelectedScheduleId: (id: number | null) => void;
-  setSelectedDay: (day: number | null) => void;
-  selectedScheduleId: number | null;
-};
+import { useExistedSchedules } from '../hooks/useProducts';
 
 function ExistingScheduleSection({
-  data,
-  setSelectedScheduleId,
-  setSelectedDay,
   selectedScheduleId,
-}: ExistingScheduleSectionProps) {
+  setSelectedScheduleId,
+  placeLocation,
+  setSelectedDay,
+}: {
+  selectedScheduleId: number | null;
+  setSelectedScheduleId: (value: number | null) => void;
+  placeLocation: string;
+  setSelectedDay: (value: number | null) => void;
+}) {
+  const {
+    existedSchedules,
+    existedScheduling,
+    existedScheduleError,
+    existedScheduleRefetch,
+  } = useExistedSchedules(placeLocation);
   return (
     <div className="flex flex-col gap-2 px-1">
-      {data.length > 0 ? (
-        data.map((item: postScheduleProps) => (
+      {existedSchedules && existedSchedules.length > 0 ? (
+        existedSchedules.map((item) => (
           <span
             onClick={() => {
               setSelectedScheduleId(item.id);
@@ -29,7 +33,7 @@ function ExistingScheduleSection({
             {selectedScheduleId === item.id && (
               <div className="flex gap-2 overflow-auto p-2">
                 {item.days &&
-                  item.days.map((day, index) => (
+                  item.days.map((day: number, index: number) => (
                     <button
                       key={`day${index}`}
                       onClick={() => setSelectedDay(day)}
@@ -43,7 +47,9 @@ function ExistingScheduleSection({
           </span>
         ))
       ) : (
-        <span>기존 일정이 존재하지 않습니다.</span>
+        <span className="text-sm text-gray flex justify-center">
+          기존 일정이 존재하지 않습니다.
+        </span>
       )}
     </div>
   );
