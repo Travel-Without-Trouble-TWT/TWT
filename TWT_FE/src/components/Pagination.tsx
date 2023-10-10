@@ -21,14 +21,14 @@ function Pagination({
   return (
     <nav
       aria-label="Page Navigation"
-      className="flex justify-center self-center mt-2 mb-2"
+      className="w-full flex justify-center self-center mt-2 mb-2"
     >
-      <ul className="inline-flex space-x-2">
+      <ul className="inline-flex space-x-1">
         <li>
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`flex items-center justify-center w-7 h-7 text-skyblue transition-colors duration-150 rounded focus:shadow-outline ${
+            className={`flex items-center justify-center w-6 h-6 text-skyblue transition-colors duration-150 rounded focus:shadow-outline ${
               currentPage === 1
                 ? 'opacity-50 cursor-not-allowed'
                 : 'hover:bg-skyblue hover:text-white'
