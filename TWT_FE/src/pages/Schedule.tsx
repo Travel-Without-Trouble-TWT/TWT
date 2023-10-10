@@ -176,8 +176,8 @@ function Schedule() {
               {/* Day별 */}
               {schedule.dayScheduleList.length > 0 &&
                 schedule.dayScheduleList.map((item, idx) => (
-                  <div className="grid grid-cols-4 gap-3 tablet:grid-cols-8 lg:grid-cols-12">
-                    <div className="flex flex-col items-center justify-center col-span-1 lg:col-span-1">
+                  <div className="grid gap-3 grid-cols-8 xl:grid-cols-12">
+                    <div className="flex flex-col items-center justify-center col-span-1">
                       <p className="text-xl font-semibold dark:text-white">
                         Day{idx + 1}
                       </p>
@@ -185,7 +185,7 @@ function Schedule() {
                         {item.day}
                       </p>
                     </div>
-                    <div className="col-span-7 lg:col-span-11 shadow-md shadow-gray rounded-md px-5 py-5 dark:bg-slate-800 dark:shadow-slate-700">
+                    <div className="col-span-7 xl:col-span-11 shadow-md shadow-gray rounded-md px-5 py-5 dark:bg-slate-800 dark:shadow-slate-700 mb-3">
                       {item.courseList && (
                         <>
                           <Feeds
