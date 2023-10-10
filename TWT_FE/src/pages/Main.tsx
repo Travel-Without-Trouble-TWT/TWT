@@ -1,7 +1,7 @@
 import Carousel from '../components/Carousel';
 import Searchbar from '../components/Searchbar';
 import ReviewCard from '../components/ReviewCard';
-import Spinner from '../components/Loader';
+import Loader from '../components/Loader';
 import ListItem from '../components/ListItem';
 import { useSchedules, useTop10 } from '../hooks/useProducts';
 import { useState } from 'react';
@@ -50,7 +50,7 @@ function Main() {
             <div className="container px-6 mx-auto xs:px-3">
               <div className="grid grid-cols-2 gap-10 md:gap-5 mt-8 sm:grid-cols-1 xs:grid-cols-1">
                 {top10Loading ? (
-                  <Spinner size={'20px'} />
+                  <Loader size={'20px'} />
                 ) : (
                   top10 && <ListItem data={top10} />
                 )}
@@ -73,7 +73,7 @@ function Main() {
           </button>
 
           {schedulesLoading ? (
-            <Spinner size={'20px'} />
+            <Loader size={'20px'} />
           ) : (
             <ReviewCard data={schedules} />
           )}
