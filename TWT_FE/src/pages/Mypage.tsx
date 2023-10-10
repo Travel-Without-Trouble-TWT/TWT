@@ -125,7 +125,7 @@ function Mypage() {
               <ReviewsAccordion data={userDatas.content} />
             )}
             {category === 'heart' && (
-              <div className="grid grid-cols-1 gap-8 mt-8 tablet:mt-16 tablet:grid-cols-2">
+              <div className="grid grid-cols-2 gap-8 mt-8 xs:grid-cols-1">
                 <ListItem data={userDatas.content} />
               </div>
             )}
