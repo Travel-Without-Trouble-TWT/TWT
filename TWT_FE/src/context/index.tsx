@@ -25,7 +25,7 @@ type UserProviderProps = {
 };
 
 export function UserProvider({ children }: UserProviderProps) {
-  const { userInfo, userInfoLoading, userInfoError } = useUserInfo();
+  const { userInfo } = useUserInfo();
   const contextValue = useMemo(() => {
     return { isLogin: !!userInfo, user: userInfo || null };
   }, [userInfo]);
