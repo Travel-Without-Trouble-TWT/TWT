@@ -5,7 +5,6 @@ import { PageProps } from '../api/type';
 import Pagination from './Pagination';
 import Loader from './Loader';
 import ScheduleModal from './ScheduleModal';
-import { useExistedSchedules } from '../hooks/useProducts';
 
 interface PlaceListsProps {
   places: PageProps;
@@ -25,21 +24,14 @@ function PlaceLists({
   currentPage,
 }: PlaceListsProps) {
   const [selectedPlace, setSelectedPlace] = useState<null | number>(null);
-  const {
-    existedSchedules,
-    existedScheduling,
-    existedScheduleError,
-    existedScheduleRefetch,
-  } = useExistedSchedules(placeLocation);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
   const handleSelectedClick = (id: number) => {
-    existedScheduleRefetch();
-    setShowModal('schedule');
     setSelectedPlace(id);
+    setShowModal('schedule');
   };
   const [showModal, setShowModal] = useState<string | ''>('');
   return (
@@ -59,16 +51,16 @@ function PlaceLists({
                     />
                     <div className="flex flex-col justify-evenly">
                       <p
-                        className="text-lg font-bold leading-5 hover:underline hover:cursor-pointer dark:text-white"
+                        className="text-lg font-bold leading-5 hover:underline hover:cursor-pointer dark:text-white md:text-sm xs:text-sm"
                         role="button"
                         onClick={() => setIsTitleOpen(place.id)}
                       >
                         {place.placeName}
                       </p>
-                      <p className="leading-5 text-sm dark:text-white">
+                      <p className="leading-5 text-sm dark:text-white md:text-xs">
                         {place.placeAddress}
                       </p>
-                      <p className="text-gray leading-5 text-sm dark:text-gray-300">
+                      <p className="text-gray leading-5 text-sm dark:text-gray-300 md:text-xs xs:text-xs">
                         {place.placeType === 'STAY'
                           ? '숙소'
                           : place.placeType === 'HOT_PLACE'
@@ -82,7 +74,7 @@ function PlaceLists({
                   </div>
                   <div className="flex self-center mr-3">
                     <button
-                      className="text-blue text-sm bg-skyblue bg-opacity-20 px-3 py-1 rounded-2xl"
+                      className="w-full text-blue text-sm bg-skyblue bg-opacity-20 px-3 py-1 rounded-2xl md:text-xs xs:text-xs"
                       onClick={() => handleSelectedClick(place.id)}
                     >
                       선택
@@ -106,8 +98,8 @@ function PlaceLists({
       {showModal === 'schedule' && (
         <ScheduleModal
           setShowModal={setShowModal}
-          data={existedSchedules}
           selectedPlace={selectedPlace}
+          placeLocation={placeLocation}
         />
       )}
     </div>
