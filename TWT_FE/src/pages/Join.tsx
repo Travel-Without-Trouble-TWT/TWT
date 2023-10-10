@@ -102,8 +102,8 @@ function Join() {
   return (
     <>
       <div className="flex items-center justify-center h-screen">
-        <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4 w-4/5 h-2/3 absolute rounded-xl bg-skyblue shadow-lg">
-          <div className="hidden tablet:flex tablet:flex-col tablet:justify-end">
+        <div className="grid grid-cols-2 xs:grid-cols-1 gap-4 w-4/5 h-2/3 absolute rounded-xl bg-skyblue shadow-lg">
+          <div className="xs:hidden flex flex-col justify-end">
             <div className="self-center mb-10">
               <p className="text-lg font-extrabold text-white">TWT</p>
               <p className="text-lg font-semibold text-white">TWT</p>
@@ -164,7 +164,7 @@ function Join() {
                     })
                   }
                 >
-                  {isCheckingNickname ? <Spinner /> : '중복확인'}
+                  {isCheckingNickname ? <Spinner size={'5'} /> : '중복확인'}
                 </button>
               </div>
               {checkingNicknameSuccess && (
@@ -218,7 +218,7 @@ function Join() {
                   className="text-sm bg-skyblue px-3 rounded-lg shadow disabled:cursor-not-allowed disabled:bg-lightgray"
                   disabled={!isEmailValid || isVerifyingEmail}
                 >
-                  {isVerifyingEmail ? <Spinner /> : '인증하기'}
+                  {isVerifyingEmail ? <Spinner size={'5'} /> : '인증하기'}
                 </button>
               </div>
               {errors.email && (
@@ -257,7 +257,7 @@ function Join() {
                         !isCodeValid
                       }
                     >
-                      {isVerifyingEmail ? <Spinner /> : '확인'}
+                      {isVerifyingEmail ? <Spinner size={'5'} /> : '확인'}
                     </button>
                   </div>
                   {errors.verificationCode && (
@@ -346,7 +346,7 @@ function Join() {
                   !Object.values(stepStates).every((state) => state)
                 }
               >
-                {joining ? <Spinner /> : '회원가입'}
+                {joining ? <Spinner size={'5'} /> : '회원가입'}
               </button>
             </form>
           </div>
