@@ -62,7 +62,7 @@ $ npm run start:dev
 <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> <img src="https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 
 ## 화면 구성 🖥️
-|메인페이지|선택 지역 페이지|
+|[메인페이지]((https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-2.-%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80))|선택 지역 페이지|
 |:---:|:---:|
 |![메인페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/886639f0-9f36-4550-98ec-89586b2c963e)|![선택 지역 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/248c7d60-8fb2-4c25-abf0-ebd43cc3359b)|
 
@@ -72,7 +72,7 @@ $ npm run start:dev
 
 
 
-|[마이페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-2.-%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80)|프로필수정 페이지|
+|마이페이지|프로필수정 페이지|
 |:---:|:---:|
 |![마이페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/2f49a129-d290-4acf-a45e-d148b765254f)|![프로필수정 페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/assets/87015084/9fb49cef-644e-4211-a802-5ec1fab64267)|
 
@@ -121,4 +121,4 @@ $ npm run start:dev
 ## 기타 
 ### 상세 기능
 - [회원가입 및 로그인](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-1.-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85-%EB%B0%8F-%EB%A1%9C%EA%B7%B8%EC%9D%B8)
-- [마이페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-2.-%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80)
+- [메인페이지](https://github.com/Travel-Without-Trouble-TWT/TWT/wiki/%EB%B0%B1%EB%A1%9C%EA%B7%B8-2.-%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80)
