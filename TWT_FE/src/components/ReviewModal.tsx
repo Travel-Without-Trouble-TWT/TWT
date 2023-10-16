@@ -75,11 +75,11 @@ function ReviewModal({
       >
         <div
           ref={wrapperRef}
-          className="flex max-h-[90vh] w-4/5 max-w-2xl flex-col gap-6 overflow-hidden rounded-xl bg-white p-6 shadow-xl"
+          className="flex max-h-[90vh] w-4/5 max-w-2xl flex-col gap-6 overflow-hidden rounded-xl bg-white p-6 shadow-xl dark:bg-slate-800"
           id="modal"
           role="document"
         >
-          <header className="flex gap-4">
+          <header className="flex gap-4 dark:text-white">
             <h3 className="flex-1 text-xl font-bold">장소명</h3>
             <button aria-label="close" onClick={() => setShowModal('')}>
               <AiOutlineClose />
@@ -97,7 +97,7 @@ function ReviewModal({
               ref={fileRef}
             />
             <div
-              className="h-24 flex justify-center items-center cursor-pointer bg-lightgray text-gray text-5xl p-10"
+              className="h-24 flex justify-center items-center cursor-pointer bg-lightgray text-gray text-5xl p-10 dark:bg-slate-700"
               onClick={() => fileRef.current?.click()}
             >
               +
@@ -126,7 +126,7 @@ function ReviewModal({
           )}
           <div className="relative">
             <textarea
-              className="peer relative w-full rounded border border-lightgray px-4 py-2 text-sm outline-none transition-all autofill:bg-white invalid:border-red/90 invalid:text-red/90 focus:outline-none invalid:focus:border-red/90"
+              className="peer relative w-full rounded border border-lightgray dark:border-slate-600 px-4 py-2 text-sm outline-none transition-all dark:bg-slate-700 dark:text-white autofill:bg-white invalid:border-red/90 invalid:text-red/90 focus:outline-none invalid:focus:border-red/90"
               rows={3}
               placeholder="리뷰를 작성해주세요."
               value={reviewText}
