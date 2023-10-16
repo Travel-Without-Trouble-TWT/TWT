@@ -1,15 +1,29 @@
+import { useState, useEffect } from 'react';
 import { PageProps } from '../api/type';
 import Pagination from './Pagination';
+import Stars from './Stars';
 
-function ReviewsAccordion({ data }: { data: PageProps }) {
+function ReviewsAccordion({
+  data,
+  currentPage,
+  setCurrentPage,
+}: {
+  data: PageProps;
+  currentPage: number;
+  setCurrentPage: (value: number) => void;
+}) {
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
-    <section className="w-full divide-y rounded divide-slate-200">
+    <section className="w-full divide-y rounded divide-slate-200 px-10 dark:divide-slate-500">
       {data &&
-        data.length > 0 &&
-        data.map((item) => (
+        data.totalPages > 0 &&
+        data.content.map((item) => (
           <>
-            <details className="p-4 group" open>
-              <summary className="relative cursor-pointer list-none pr-8 font-semibold text-slate-600 transition-colors duration-300 focus-visible:outline-none group-hover:text-slate-900  [&::-webkit-details-marker]:hidden">
+            <details className="p-4 group">
+              <summary className="relative cursor-pointer list-none pr-8 font-semibold dark:text-slate-500 text-slate-600 transition-colors duration-300 focus-visible:outline-none group-hover:text-slate-900 dark:group-hover:text-slate-300 [&::-webkit-details-marker]:hidden">
                 {item.place.placeName}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -31,20 +45,27 @@ function ReviewsAccordion({ data }: { data: PageProps }) {
                   />
                 </svg>
               </summary>
-              <div className="flex mt-4 gap-2">
-                {item.reviewImageList &&
-                  item.reviewImageList.length > 0 &&
-                  item.reviewImageList.map((img) => (
-                    <img className="w-[90px] h-[60px]" src={img} />
-                  ))}
+              <div className="flex flex-col gap-2 w-full">
+                <Stars size={'w-4 h-4'} rating={item.star} key={item.id} />
+                <div className="flex w-full gap-2 overflow-auto">
+                  {item.reviewImageList &&
+                    item.reviewImageList.length > 0 &&
+                    item.reviewImageList.map((img) => (
+                      <img className="w-[90px] h-[60px]" src={img} />
+                    ))}
+                </div>
               </div>
-              <p className="mt-2 text-slate-500 text-sm">
+              <p className="mt-2 text-slate-500 text-sm dark:text-slate-300">
                 {item.reviewComment}
               </p>
             </details>
           </>
         ))}
-      <Pagination />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={data ? data.totalPages : 0}
+        onPageChange={handlePageChange}
+      />
     </section>
   );
 }
