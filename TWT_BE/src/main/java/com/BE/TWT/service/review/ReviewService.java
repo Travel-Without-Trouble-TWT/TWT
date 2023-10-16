@@ -3,7 +3,9 @@ package com.BE.TWT.service.review;
 import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.exception.error.PlaceException;
+import com.BE.TWT.exception.error.ReviewException;
 import com.BE.TWT.exception.message.PlaceErrorMessage;
+import com.BE.TWT.exception.message.ReviewErrorMessage;
 import com.BE.TWT.model.dto.review.ReviewDto;
 import com.BE.TWT.model.entity.function.ReviewImage;
 import com.BE.TWT.model.entity.location.Place;
@@ -29,6 +31,8 @@ import java.util.List;
 import static com.BE.TWT.exception.message.MemberErrorMessage.USER_NOT_FOUND;
 import static com.BE.TWT.exception.message.PlaceErrorMessage.UNDEFINED_REVIEW;
 import static com.BE.TWT.exception.message.PlaceErrorMessage.WRONG_ADDRESS;
+import static com.BE.TWT.exception.message.ReviewErrorMessage.NOT_REGISTERED_REVIEW;
+import static com.BE.TWT.exception.message.ReviewErrorMessage.UNMATCHED_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +56,7 @@ public class ReviewService {
 
         List<ReviewImage> reviewImages = s3Service.uploadFiles(multipartFile);
         List<String> listToSave = new ArrayList<>();
+        LocalDateTime date = LocalDateTime.now();
 
         for (ReviewImage image : reviewImages) {
             listToSave.add(image.getUploadFileUrl());
@@ -59,16 +64,17 @@ public class ReviewService {
 
         Review review = Review.builder()
                 .place(place)
-                .createAt(LocalDateTime.now())
+                .createAt(date)
                 .nickName(member.getNickName())
                 .reviewImageList(listToSave)
                 .star(reviewDto.getStar())
                 .reviewComment(reviewDto.getReviewComment())
                 .memberProfileUrl(member.getProfileUrl())
+                .member(member)
                 .build();
 
         place.addReview();
-        place.updateAverageRating(place.getStar());
+        place.updateAverageRating(review.getStar());
 
         return reviewRepository.save(review);
     }
@@ -87,7 +93,7 @@ public class ReviewService {
 
         Pageable pageable = PageRequest.of(pageNum, 10);
 
-        return reviewRepository.findAllByNickName(member.getNickName(), pageable);
+        return reviewRepository.findAllByNickNameOrderByIdDesc(member.getNickName(), pageable);
     }
 
     public Page<Review> viewAllReviewByPlace(Long placeId, int pageNum) { // 특정 Place 에 대한 리뷰 전체보기
@@ -96,6 +102,31 @@ public class ReviewService {
 
         Pageable pageable = PageRequest.of(pageNum, 5);
 
-        return reviewRepository.findAllByPlace(place, pageable);
+        return reviewRepository.findAllByPlaceOrderByIdDesc(place, pageable);
+    }
+
+    public void deleteReview(HttpServletRequest request, Long reviewId) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = jwtTokenProvider.getPayloadSub(token);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewException(NOT_REGISTERED_REVIEW));
+
+        if (!review.getMember().getId().equals(member.getId())) {
+            throw new ReviewException(UNMATCHED_USER);
+        }
+
+        Place place = review.getPlace();
+
+        place.minusReview();
+        placeRepository.save(place);
+        double star = review.getStar();
+        place.updateAverageRating(-star);
+        placeRepository.save(place); // 두번 저장하는게 맞나..?
+
+        reviewRepository.deleteById(reviewId);
     }
 }
