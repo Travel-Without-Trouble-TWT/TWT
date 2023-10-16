@@ -74,10 +74,16 @@ public class DayScheduleService {
 
         Course course = daySchedule.getCourseList().get(updateCourse.getIndex());
 
-        course.setTime(updateCourse.getArriveAt());
+        String time = updateCourse.getArriveAt();
+        int hour = Integer.parseInt(time.substring(0, 2));
+        int minute = Integer.parseInt(time.substring(time.length()-2));
+        LocalTime localTime = LocalTime.of(hour, minute);
+        LocalDateTime atTime = daySchedule.getDay().atTime(localTime);
 
-        saveDaySchedule(daySchedule);
+        course.setTime(atTime);
+
         setDistance(daySchedule.getCourseList());
+        saveDaySchedule(daySchedule);
     }
 
     public void deleteCourse(DeleteCourse deleteCourse) {
