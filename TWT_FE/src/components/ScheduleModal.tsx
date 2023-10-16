@@ -90,18 +90,18 @@ function ScheduleModal({
       >
         <div
           ref={wrapperRef}
-          className="flex max-h-[90vh] w-4/5 max-w-2xl flex-col gap-6 overflow-hidden rounded-xl bg-white p-6 shadow-xl"
+          className="flex max-h-[90vh] w-4/5 max-w-2xl flex-col gap-6 overflow-hidden rounded-xl bg-white p-6 shadow-xl dark:bg-slate-800"
           id="modal"
           role="document"
         >
-          <header id="header-5a" className="flex gap-4">
+          <header id="header-5a" className="flex gap-4 dark:text-white">
             <h3 className="flex-1 text-xl font-bold">🗓️ 일정 추가</h3>
             <button aria-label="close" onClick={() => setShowModal('')}>
               <AiOutlineClose />
             </button>
           </header>
           <div className="flex flex-col gap-2 p-3" tabIndex={1}>
-            <div className="flex cursor-pointer items-center justify-between">
+            <div className="flex cursor-pointer items-center justify-between dark:text-white">
               <span className="font-semibold">새로운 일정 추가</span>
               <span
                 className="font-semibold transition-transform duration-300"
@@ -132,7 +132,7 @@ function ScheduleModal({
           </div>
 
           <div className="flex flex-col gap-2 p-3" tabIndex={1}>
-            <div className="flex cursor-pointer items-center justify-between">
+            <div className="flex cursor-pointer items-center justify-between dark:text-white">
               <span className="font-semibold">기존 일정</span>
               <span
                 className="font-semibold transition-transform duration-300"
