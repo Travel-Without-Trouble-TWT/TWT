@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
-@RequestMapping(value = "/login/oauth2")
+@RequestMapping(value = "/oauth")
 @RequiredArgsConstructor
 @Api(tags = "소셜 로그인 API")
 public class OauthController {
@@ -21,8 +22,8 @@ public class OauthController {
 
     @ApiOperation(value = "구글 소셜 로그인")
     @Operation(description = "Oauth2 Login API")
-    @GetMapping("/code/google")
-    public ResponseEntity<?> googleLogin(@RequestParam @Valid String code, HttpServletResponse response) {
-        return ResponseEntity.ok(customOauth2Service.getGoogleToken(code, response));
+    @GetMapping("/google")
+    public ResponseEntity<String> googleLogin(@RequestParam @Valid String token, HttpServletResponse response) throws IOException {
+        return ResponseEntity.ok(customOauth2Service.signInMemberUseGoogleToken(token, response));
     }
 }

@@ -3,7 +3,6 @@ package com.BE.TWT.controller.member;
 import com.BE.TWT.model.dto.member.InfoResponseDto;
 import com.BE.TWT.model.dto.member.SignInDto;
 import com.BE.TWT.model.dto.member.SignUpDto;
-import com.BE.TWT.model.dto.member.UpdateDto;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.service.function.EmailVerification;
 import com.BE.TWT.service.function.HeartService;

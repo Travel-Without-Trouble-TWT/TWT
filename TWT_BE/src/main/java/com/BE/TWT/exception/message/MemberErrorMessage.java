@@ -11,9 +11,9 @@ public enum MemberErrorMessage {
     MISMATCH_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
     UNAUTHORIZED_USER(HttpStatus.BAD_GATEWAY, "로그인이 필요합니다."),
     INVALID_TOKEN(HttpStatus.FORBIDDEN, "인가되지 않은 토큰입니다."),
-    ALREADY_REGISTERED(HttpStatus.BAD_REQUEST, "이미 존재하는 아이디입니다."),
+    ALREADY_REGISTERED(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
     DUPLICATED_NICKNAME(HttpStatus.BAD_REQUEST, "해당 닉네임은 이미 사용 중입니다."),
-
+    AUTHENTICATION_FAILURE(HttpStatus.FORBIDDEN, "권한이 없는 유저입니다.")
     ;
 
     private final HttpStatus status;

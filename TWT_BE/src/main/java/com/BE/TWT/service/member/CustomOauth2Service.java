@@ -1,33 +1,29 @@
 package com.BE.TWT.service.member;
 
+import com.BE.TWT.config.JwtTokenProvider;
+import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.model.dto.member.SignInDto;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.repository.member.MemberRepository;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonElement;
+import com.nimbusds.jose.shaded.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+
+import static com.BE.TWT.exception.message.MemberErrorMessage.*;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CustomOauth2Service {
-    private final String GOOGLE_TOKEN_URL = "http://oauth2.googleapis.com/token";
-
+    private final JwtTokenProvider jwtTokenProvider;
+    private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com";
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String CLIENT_ID;
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
@@ -39,77 +35,48 @@ public class CustomOauth2Service {
     private final PasswordEncoder passwordEncoder;
     private final String getMemberInfoUrl = "https://www.googleapis.com/userinfo/v2/me";
 
-    public String getGoogleToken(String code, HttpServletResponse response) {
+
+    public String signInMemberUseGoogleToken(String token, HttpServletResponse response) throws MemberException {
+
         RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> params = new HashMap<>();
+        String requestUrl = UriComponentsBuilder.fromHttpUrl(GOOGLE_TOKEN_URL + "/tokeninfo").queryParam("id_token", token).toUriString();
 
-        params.put("code", code);
-        params.put("client_id", CLIENT_ID);
-        params.put("client_secret", CLIENT_SECRET);
-        params.put("redirect_url", REDIRECT_URL);
-        params.put("grant_type", "authorization_code");
+        JSONObject resultJson = restTemplate.getForObject(requestUrl, JSONObject.class);
 
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(GOOGLE_TOKEN_URL, params, String.class);
+        String email = "";
+        String name = "";
+        String picture = "";
 
-        String jsonBody = responseEntity.getBody();
+        if (resultJson != null) {
 
-        JsonParser parser = new JsonParser();
-        JsonElement element = parser.parse(jsonBody);
+            email = resultJson.get("email").toString();
+            name = resultJson.get("name").toString();
+            picture = resultJson.get("picture").toString();
 
-        String accessToken = element.getAsJsonObject().get("access_token").getAsString();
-
-        return useTokenGetMember(accessToken, response);
-    }
-
-    public String useTokenGetMember(String token, HttpServletResponse response) { // 왜 토큰 비 활성화...??
-        try {
-            URL url = new URL(getMemberInfoUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String result = "";
-
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
-
-            String email = element.getAsJsonObject().get("email").getAsString();
-            String name = element.getAsJsonObject().get("name").getAsString();
-
-            if (memberRepository.findByEmail(email).isEmpty()) {
-                saveMember(email, name);
-            }
-
-            SignInDto signInDto = SignInDto.builder()
-                    .email(email)
-                    .password(name)
-                    .build();
-
-            String accessToken = memberService.signIn(signInDto, response);
-
-            br.close();
-
-            return accessToken;
-
-        }  catch (IOException e) {
-            throw new RuntimeException(e);
+        } else {
+            throw new MemberException(USER_NOT_FOUND);
         }
+
+        if (memberRepository.findByEmail(email).isEmpty()) {
+            saveMember(email, name, picture);
+        }
+
+        SignInDto signInDto = SignInDto.builder()
+                .email(email)
+                .password(name)
+                .build();
+
+        return memberService.signIn(signInDto, response);
     }
 
-    public Member saveMember(String email, String name) {
+    public Member saveMember(String email, String name, String picture) {
         Member member = Member.builder()
                 .nickName(name)
                 .email(email)
                 .password(passwordEncoder.encode(name))
+                .isGoogleLogin(1)
+                .profileUrl(picture)
                 .build();
         return memberRepository.save(member);
     }
-
 }

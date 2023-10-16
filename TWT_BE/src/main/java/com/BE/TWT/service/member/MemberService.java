@@ -6,7 +6,6 @@ import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.model.dto.member.*;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.repository.member.MemberRepository;
-import com.BE.TWT.service.function.EmailVerification;
 import com.BE.TWT.service.function.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,8 +20,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static com.BE.TWT.exception.message.MemberErrorMessage.*;
 
@@ -50,7 +47,7 @@ public class MemberService {
                 .email(signUpDto.getEmail())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .nickName(signUpDto.getNickName())
-                .isGoogleLogin(1)
+                .isGoogleLogin(0)
                 .build();
         return memberRepository.save(member);
     }
