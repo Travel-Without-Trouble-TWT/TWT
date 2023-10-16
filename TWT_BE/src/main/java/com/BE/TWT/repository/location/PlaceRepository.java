@@ -16,11 +16,11 @@ import java.util.Optional;
 public interface PlaceRepository extends JpaRepository<Place, Long> {
     Optional<Place> findByPlaceName(String placeName);
 
-    @Query("SELECT p FROM Place p WHERE p.placeType = :placeType AND p.placeLocation LIKE %:placeLocation%")
-    Page<Place> findAllByPlaceTypeAndPlaceLocationContaining(@Param("placeType") PlaceType placeType, @Param("placeLocation") String placeLocation, Pageable pageable);
+    @Query("SELECT p FROM Place p WHERE p.placeType = :placeType AND p.placeLocation LIKE %:placeLocation%" + "ORDER BY p.placeHeart DESC, p.placeName ASC")
+    Page<Place> findAllByPlaceTypeAndPlaceLocationContainingOrdered(@Param("placeType") PlaceType placeType, @Param("placeLocation") String placeLocation, Pageable pageable);
 
-    Page<Place> findByPlaceLocationContaining(String placeLocation, Pageable pageable);
-    Page<Place> findByPlaceNameContaining(String placeName, Pageable pageable);
-
+    @Query("SELECT p FROM Place p WHERE p.placeLocation LIKE %:placeLocation%" + "ORDER BY p.placeHeart DESC, p.placeName ASC")
+    Page<Place> findByPlaceLocationContainingOrdered(@Param("placeLocation") String placeLocation, Pageable pageable);
+    Page<Place> findByPlaceNameContainingOrderByIdDesc(String placeName, Pageable pageable);
     List<Place> findAllByPlaceLocation(String placeLocation);
 }

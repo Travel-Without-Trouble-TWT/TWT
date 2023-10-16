@@ -17,6 +17,7 @@ import com.BE.TWT.repository.schedule.ScheduleRepository;
 import com.BE.TWT.service.function.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,8 +53,9 @@ public class ScheduleService {
         Place place = placeRepository.findById(dto.getPlaceId())
                 .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
-        LocalDate startAt = LocalDate.parse(dto.getStartAt());
-        LocalDate endAt = LocalDate.parse(dto.getEndAt());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"); // 프론트에서 날짜 값을 해당 형식으로 받는다.
+        LocalDate startAt = LocalDate.parse(dto.getStartAt(), formatter);
+        LocalDate endAt = LocalDate.parse(dto.getEndAt(), formatter);
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
@@ -121,118 +123,13 @@ public class ScheduleService {
 
         if (schedule.getMember().equals(member)) {
             schedule.editScheduleName(dto.getScheduleName());
+            scheduleRepository.save(schedule);
         } else {
             throw new ScheduleException(UNAUTHORIZED_REQUEST);
         }
     }
 
-    public Schedule changeTravelDate(HttpServletRequest request, SetDateDto dto) {
-        String token = request.getHeader("Authorization").replace("Bearer ", "");
-        String email = jwtTokenProvider.getPayloadSub(token);
-
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
-
-        Schedule schedule = scheduleRepository.findById(dto.getScheduleId())
-                .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
-
-        String startDate = dto.getStartAt();
-        String endDate = dto.getEndAt();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"); // 프론트에서 날짜 값을 해당 형식으로 받는다.
-
-        LocalDate parseStart = LocalDate.parse(startDate, formatter);
-        LocalDate parseEnd = LocalDate.parse(endDate, formatter);
-        int days = (int) ChronoUnit.DAYS.between(parseStart, parseEnd) + 1; // 새로운 여행일 수
-
-        schedule.updateDate(parseStart, parseEnd, days); // 새로운 여행 계획 날짜 값 입력
-
-        if (schedule.getMember().equals(member)) { // 스케줄 작성한 유저만 API 호출이 가능하도록
-            List<DaySchedule> oldDayScheduleList = schedule.getDayScheduleList();
-            List<DaySchedule> newDayScheduleList = new ArrayList<>();
-
-            if (oldDayScheduleList.size() > days) { // 기간 변경 후 일 수가 더 짧을 경우
-                for (int i = 0; i < days; i++) {
-                    LocalDate newDate = parseStart.plusDays(i);
-                    if (i == days - 1) {
-                        // 변경 후 일정 마지막 날에 기존 일정들을 모두 넣는다.
-                        for (int j = days - 1; j < oldDayScheduleList.size(); j++) {
-                            DaySchedule daySchedule = oldDayScheduleList.get(j);
-                            daySchedule.changeDate(newDate);
-
-                            for (int g = 0; g < daySchedule.getCourseList().size(); g++) {
-                                Course course = daySchedule.getCourseList().get(g);
-
-                                LocalDateTime time = newDate.atTime(LocalTime.of(23, 59));
-                                course.setTime(time);
-                            }
-
-                            if (daySchedule.getCourseList().size() >= 2) {
-                                for (int k = 0; k < daySchedule.getCourseList().size() - 1; k++) {
-                                    Course course = daySchedule.getCourseList().get(k);
-                                    Course nextCourse = daySchedule.getCourseList().get(k + 1);
-
-                                    double x1 = course.getLatitude();
-                                    double x2 = nextCourse.getLongitude();
-                                    double y1 = course.getLongitude();
-                                    double y2 = nextCourse.getLongitude();
-                                    course.calculateDistance(x1, y1, x2, y2);
-
-                                    LocalDateTime time = newDate.atTime(LocalTime.of(23, 59));
-                                    course.setTime(time);
-                                }
-                                dayScheduleRepository.save(daySchedule);
-                                newDayScheduleList.add(daySchedule);
-                            }
-                        }
-                    }
-                }
-            } else if (oldDayScheduleList.size() < days) {
-                for (int j = 0; j < days; j++) {
-                    LocalDate newDate = parseStart.plusDays(j);
-                    if (j < oldDayScheduleList.size()) {
-                        DaySchedule daySchedule = oldDayScheduleList.get(j);
-                        for (int k = 0; k < daySchedule.getCourseList().size(); k++) {
-                            Course course = daySchedule.getCourseList().get(k);
-                            LocalDateTime time = newDate.atTime(LocalTime.of(23, 59));
-                            course.setTime(time);
-                        }
-
-                        daySchedule.changeDate(newDate);
-                        newDayScheduleList.add(daySchedule);
-                    } else {
-                        List<Course> courseList = new ArrayList<>();
-                        LocalDate date = parseStart.plusDays(j);
-
-                        DaySchedule daySchedule = DaySchedule.builder()
-                                    .schedule(schedule)
-                                    .courseList(courseList)
-                                    .dateNumber(j + 1)
-                                    .day(date)
-                                    .build();
-
-                        dayScheduleRepository.save(daySchedule);
-                        newDayScheduleList.add(daySchedule);
-                    }
-                }
-            } else {
-                for (int i = 0; i < days; i++) {
-                    LocalDate newDate = parseStart.plusDays(i);
-                    DaySchedule daySchedule = oldDayScheduleList.get(i);
-                    for (int j = 0; j < daySchedule.getCourseList().size(); j++) {
-                        Course course = daySchedule.getCourseList().get(j);
-                        LocalDateTime time = newDate.atTime(LocalTime.of(23, 59));
-                        course.setTime(time);
-                    }
-                    daySchedule.changeDate(newDate);
-                    newDayScheduleList.add(daySchedule);
-                }
-            }
-            schedule.changeDayScheduleList(newDayScheduleList);
-        }
-        scheduleRepository.save(schedule);
-        return schedule;
-    }
-
+    @Transactional
     public void deleteSchedule (HttpServletRequest request, Long scheduleId) {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
@@ -246,6 +143,10 @@ public class ScheduleService {
         if (!schedule.getMember().equals(member)) { // 스케줄 삭제는 생성한 유저만 가능하다
             throw new ScheduleException(UNAUTHORIZED_REQUEST);
         }
+
+        List<DaySchedule> dayScheduleList = dayScheduleRepository.findAllBySchedule(schedule);
+        dayScheduleRepository.deleteAllInBatch(dayScheduleList);
+
         scheduleRepository.delete(schedule);
     }
 
@@ -256,6 +157,7 @@ public class ScheduleService {
         String photoUrl = s3Service.uploadFile(file);
 
         schedule.uploadPhoto(photoUrl);
+        scheduleRepository.save(schedule);
 
         return schedule;
     }

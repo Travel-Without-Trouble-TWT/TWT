@@ -1,5 +1,6 @@
 package com.BE.TWT.controller.function;
 
+import com.BE.TWT.model.dto.function.PlaceDetail;
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.review.Review;
 import com.BE.TWT.model.entity.schedule.Schedule;
@@ -16,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -59,17 +59,16 @@ public class SearchController {
     @ApiOperation(value = "특정 장소 상세 보기")
     @Operation(description = "장소 상세보기")
     @GetMapping("/detail")
-    public ResponseEntity<Place> filterByPlaceTypeAndPlaceName(HttpServletRequest request,
-                                                               HttpServletResponse response,
-                                                               @RequestParam @Valid Long placeId) {
-        return ResponseEntity.ok(searchService.detailPlace(request, response, placeId));
+    public ResponseEntity<PlaceDetail> filterByPlaceTypeAndPlaceName(HttpServletRequest request,
+                                                                     @RequestParam @Valid Long placeId) {
+        return ResponseEntity.ok(searchService.detailPlace(request, placeId));
     }
 
     @ApiOperation(value = "최근 여행 계획표 리스트")
     @Operation(description = "메인페이지 내에 최근에 종료된 여행 계획표를 최신순으로 보여주는 API")
     @GetMapping("/schedule")
-    public ResponseEntity<Page<Schedule>> searchAllScheduleRecently(@RequestParam @Valid int pageNum) {
-        return ResponseEntity.ok(searchService.searchScheduleRecent(pageNum));
+    public ResponseEntity<List<Schedule>> searchAllScheduleRecently() {
+        return ResponseEntity.ok(searchService.searchScheduleRecent());
     }
 
     @ApiOperation(value = "나의 여행 계획표 리스트")

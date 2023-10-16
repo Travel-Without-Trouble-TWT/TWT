@@ -3,6 +3,7 @@ package com.BE.TWT.service.function;
 import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.exception.error.PlaceException;
+import com.BE.TWT.model.dto.function.PlaceDetail;
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.model.entity.schedule.Schedule;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -36,30 +36,30 @@ public class SearchService {
     private final HeartRepository heartRepository;
 
     public Page<Place> findAllByPlaceTypeAndPlaceLocation(String placeLocation, String placeType, int pageNum) { // 지역 내 카테고리 필터 ( 전체 기능 추가 )
-        Pageable pageable = PageRequest.of(pageNum, 10, Sort.by("placeHeart").descending());
+        Pageable pageable = PageRequest.of(pageNum, 10, Sort.by(Sort.Direction.DESC, "placeHeart"));
+
 
         if(placeType.equals(PlaceType.HOT_PLACE.getPlace())) {
-            return placeRepository.findAllByPlaceTypeAndPlaceLocationContaining(PlaceType.HOT_PLACE, placeLocation, pageable);
+            return placeRepository.findAllByPlaceTypeAndPlaceLocationContainingOrdered(PlaceType.HOT_PLACE, placeLocation, pageable);
         } else if (placeType.equals(PlaceType.RESTAURANT.getPlace())) {
-            return placeRepository.findAllByPlaceTypeAndPlaceLocationContaining(PlaceType.RESTAURANT, placeLocation, pageable);
+            return placeRepository.findAllByPlaceTypeAndPlaceLocationContainingOrdered(PlaceType.RESTAURANT, placeLocation, pageable);
         } else if (placeType.equals(PlaceType.STAY.getPlace())) {
-            return placeRepository.findAllByPlaceTypeAndPlaceLocationContaining(PlaceType.STAY, placeLocation, pageable);
+            return placeRepository.findAllByPlaceTypeAndPlaceLocationContainingOrdered(PlaceType.STAY, placeLocation, pageable);
         } else {
-            return placeRepository.findByPlaceLocationContaining(placeLocation, pageable);
+            return placeRepository.findByPlaceLocationContainingOrdered(placeLocation, pageable);
         }
     }
 
     public Page<Place> findAllByPlaceTypeAndPlaceName(String placeName, int pageNum) { // 특정 장소 필터
-        Pageable pageable = PageRequest.of(pageNum, 10, Sort.by("placeHeart").descending());
+        Pageable pageable = PageRequest.of(pageNum, 10, Sort.by(Sort.Direction.DESC, "placeHeart", "placeName"));
 
-        return placeRepository.findByPlaceNameContaining(placeName, pageable);
+        return placeRepository.findByPlaceNameContainingOrderByIdDesc(placeName, pageable);
     }
 
-    public Page<Schedule> searchScheduleRecent(int pageNum) { // 최근 종료된 일정들을 최신순으로 불러오는 API
+    public List<Schedule> searchScheduleRecent() { // 최근 종료된 일정들을 최신순으로 불러오는 API
         LocalDate now = LocalDate.now();
-        Pageable pageable = PageRequest.of(pageNum, 10);
 
-        Page<Schedule> schedules = scheduleRepository.findAllByEndAtBeforeOrderByIdDesc(now, pageable);
+        List<Schedule> schedules = scheduleRepository.findAllByEndAtBeforeOrderByIdDesc(now);
 
         return schedules;
     }
@@ -101,9 +101,10 @@ public class SearchService {
         return scheduleRepository.findAllByMemberAndTravelPlaceOrderByIdDesc(member, placeLocation, pageable);
     }
 
-    public Place detailPlace(HttpServletRequest request, HttpServletResponse response, Long placeId) { // 특정 장소 상세 보기 + 유저가 좋아요를 눌렀는지 체크
+    public PlaceDetail detailPlace(HttpServletRequest request, Long placeId) { // 특정 장소 상세 보기 + 유저가 좋아요를 눌렀는지 체크
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
+        boolean likeIt;
 
         if (request.getHeader("Authorization") != null) {
             String token = request.getHeader("Authorization").replace("Bearer ", "");
@@ -113,15 +114,31 @@ public class SearchService {
                     .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
             if(heartRepository.findByMemberAndPlaceId(member, place.getId()).isPresent()) {
-                response.addHeader("likeIt", "true");
+                likeIt = true;
             } else {
-                response.addHeader("likeIt", "false");
+                likeIt = false;
             }
         } else {
-            response.addHeader("likeIt", "false");
+            likeIt = false;
         }
 
-        return place;
+        return PlaceDetail.builder()
+                .id(placeId)
+                .placeName(place.getPlaceName())
+                .placeLocation(place.getPlaceLocation())
+                .placeAddress(place.getPlaceAddress())
+                .latitude(place.getLatitude())
+                .longitude(place.getLongitude())
+                .placeImageUrl(place.getPlaceImageUrl())
+                .placeDescription(place.getPlaceDescription())
+                .placeHeart(place.getPlaceHeart())
+                .reviewNum(place.getReviewNum())
+                .totalStar(place.getTotalStar())
+                .star(place.getStar())
+                .placeCallNumber(place.getPlaceCallNumber())
+                .placeType(place.getPlaceType())
+                .likeIt(likeIt)
+                .build();
     }
 
     public List<Schedule> findSamePlaceLocationSchedule(HttpServletRequest request, String placeLocation) {
