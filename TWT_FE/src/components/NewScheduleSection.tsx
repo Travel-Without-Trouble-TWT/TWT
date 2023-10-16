@@ -34,7 +34,7 @@ function NewScheduleSection({
 
   return (
     <>
-      <span className="text-sm text-slate-700">
+      <span className="text-sm text-slate-700 dark:text-slate-300">
         ✓ 여행 날짜를 입력해주세요.
       </span>
       <div className="flex justify-center gap-2 z-50">
@@ -49,7 +49,7 @@ function NewScheduleSection({
           placeholderText="YY.MM.dd"
           dateFormat="yy.MM.dd"
         ></DatePicker>
-        <span>~</span>
+        <span className="dark:text-slate-300">~</span>
         <DatePicker
           className="border-b border-skyblue px-2 py-1 text-sm cursor-pointer"
           onChange={(date) => setEndAt(date)}
@@ -68,7 +68,7 @@ function NewScheduleSection({
           <button
             key={`day${index}`}
             onClick={() => setSelectedDay(day + 1)}
-            className="text-md font-semibold bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 cursor-pointer focus:bg-skyblue"
+            className="text-md font-semibold bg-lightgray dark:bg-lightgray p-3 rounded-2xl duration-300 hover:bg-gray/20 hover:text-white cursor-pointer focus:bg-skyblue"
           >
             Day{day + 1}
           </button>
