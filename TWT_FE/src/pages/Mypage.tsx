@@ -10,7 +10,9 @@ import { useUserContext } from '../context';
 import ScheduleList from '../components/ScheduleList';
 import ListItem from '../components/ListItem';
 import ReviewsAccordion from '../components/ReviewsAccordion';
+import Pagination from '../components/Pagination';
 import { useEditProfileImg } from '../hooks/useAuth';
+import Spinner from '../components/Spinner';
 
 function Mypage() {
   const { isLogin, user } = useUserContext();
@@ -29,6 +31,9 @@ function Mypage() {
     }
     editProfileImg(editImg);
   };
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
   useEffect(() => {
     if (isListOpen !== null) {
       userDataRefetch();
@@ -37,11 +42,16 @@ function Mypage() {
 
   useEffect(() => {
     userDataRefetch();
-  }, [category, currentPage]);
+  }, [currentPage]);
+
+  useEffect(() => {
+    userDataRefetch();
+    setCurrentPage(1);
+  }, [category]);
   return (
     <>
-      <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen flex justify-center flex-col lg:px-48 tablet:px-10 py-6">
-        <div className="bg-white rounded-lg shadow-xl pb-8 mb-2 dark:bg-slate-900">
+      <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen flex justify-center flex-col py-6 xs:px-1">
+        <div className="container mx-auto bg-white rounded-lg shadow-xl pb-8 mb-2 dark:bg-slate-900">
           <div className="w-full h-[150px] bg-lightgray dark:bg-slate-800 rounded-lg"></div>
           <div className="flex flex-col items-center -mt-20">
             <div className="relative">
@@ -108,10 +118,10 @@ function Mypage() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-xl pb-8 dark:bg-slate-800 ">
-          <div className="flex justify-center lg:p-10 tablet:p-4">
+        <div className="container mx-auto bg-white rounded-lg shadow-xl pb-8 dark:bg-slate-800">
+          <div className="flex justify-center p-10 xs:p-4">
             {category === 'schedule' && (
-              <>
+              <div className="w-full h-full flex">
                 <SouthKoreaMap
                   isListOpen={isListOpen}
                   setIsListOpen={setIsListOpen}
@@ -119,14 +129,25 @@ function Mypage() {
                 {isListOpen && !userDataLoading && (
                   <ScheduleList userDatas={userDatas} isListOpen={isListOpen} />
                 )}
-              </>
+                {userDataLoading && <Spinner size="5" />}
+              </div>
             )}
             {category === 'review' && (
-              <ReviewsAccordion data={userDatas.content} />
+              <ReviewsAccordion
+                data={userDatas}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
             )}
             {category === 'heart' && (
               <div className="grid grid-cols-2 gap-8 mt-8 xs:grid-cols-1">
                 <ListItem data={userDatas.content} />
+
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={userDatas ? userDatas.totalPages : 0}
+                  onPageChange={handlePageChange}
+                />
               </div>
             )}
           </div>
