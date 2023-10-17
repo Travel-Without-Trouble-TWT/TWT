@@ -3,7 +3,6 @@ package com.BE.TWT.service.function;
 import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.exception.error.PlaceException;
-import com.BE.TWT.model.entity.function.Heart;
 import com.BE.TWT.model.entity.location.Place;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.model.entity.schedule.Schedule;
@@ -22,9 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.BE.TWT.exception.message.MemberErrorMessage.USER_NOT_FOUND;
 import static com.BE.TWT.exception.message.PlaceErrorMessage.*;
@@ -68,7 +65,7 @@ public class SearchService {
     }
 
     public List<Place> searchTopTenPlace() {
-        LocalDate endLocalDate = LocalDate.now();
+        LocalDate endLocalDate = LocalDate.now().plusDays(1);
         LocalDate startLocalDate = endLocalDate.minusMonths(1);
 
         Date endDate = java.sql.Date.valueOf(endLocalDate);
@@ -92,23 +89,23 @@ public class SearchService {
         return placeList;
     }
 
-    public Page<Schedule> searchScheduleByMember(HttpServletRequest request, int pageNum) {
+    public Page<Schedule> searchScheduleByMember(HttpServletRequest request, String placeLocation, int pageNum) {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = jwtTokenProvider.getPayloadSub(token);
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
-        Pageable pageable = PageRequest.of(pageNum, 10);
+        Pageable pageable = PageRequest.of(pageNum, 5);
 
-        return scheduleRepository.findAllByMemberOrderByIdDesc(member, pageable);
+        return scheduleRepository.findAllByMemberAndTravelPlaceOrderByIdDesc(member, placeLocation, pageable);
     }
 
     public Place detailPlace(HttpServletRequest request, HttpServletResponse response, Long placeId) { // 특정 장소 상세 보기 + 유저가 좋아요를 눌렀는지 체크
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
-        if (!request.getHeader("Authorization").isEmpty()) {
+        if (request.getHeader("Authorization") != null) {
             String token = request.getHeader("Authorization").replace("Bearer ", "");
             String email = jwtTokenProvider.getPayloadSub(token);
 
@@ -135,6 +132,46 @@ public class SearchService {
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
 
         return scheduleRepository.
-                findAllByMemberAndTravelPlaceAndEndAtBefore(member, placeLocation, LocalDate.now());
+                findAllByMemberAndTravelPlaceAndEndAtAfter(member, placeLocation, LocalDate.now());
+    }
+
+    public List<Place> findNearestPlace (Long placeId) {
+        Place place = placeRepository.findById(placeId).get();
+
+        List<Place> placeList = placeRepository.findAllByPlaceLocation(place.getPlaceLocation());
+
+        List<Place> newPlaceList = new ArrayList<>();
+
+        Map<Place, Double> hashMap = new HashMap<>();
+        int count = 0;
+
+        for (Place place1 : placeList) {
+            if (place1.getPlaceName().equals(place.getPlaceName())) {
+                continue;
+            }
+            double distance = calculateDistance(place, place1.getLatitude(), place1.getLongitude());
+
+            hashMap.put(place1, distance);
+            count++;
+
+            if (count == 10) {
+                break;
+            }
+        }
+        List<Map.Entry<Place, Double>> entryList = new ArrayList<>(hashMap.entrySet());
+        entryList.sort(Map.Entry.comparingByValue());
+
+        for (Map.Entry<Place, Double> entry : entryList) {
+            newPlaceList.add(entry.getKey());
+        }
+
+        return newPlaceList;
+    }
+
+    public double calculateDistance(Place place, double latitude, double longitude) {
+        // 각 좌표 간의 차의 합의 절대값 계산
+        double latDiff = Math.abs(latitude - place.getLatitude());
+        double lonDiff = Math.abs(longitude - place.getLongitude());
+        return latDiff + lonDiff;
     }
 }

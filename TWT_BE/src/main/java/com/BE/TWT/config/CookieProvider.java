@@ -10,24 +10,8 @@ public class CookieProvider {
 
     private final String refreshTokenName = "refreshToken";
     private final String accessTokenName = "accessToken";
-    private final long refreshTokenExpiration = 2 * 24 * 60 * 60 * 1000L;
-    private final long accessTokenExpiration = 1000L * 60 * 60 * 6;
+    private final long refreshTokenExpiration = 2 * 24 * 60 * 60;
 
-    public void setAccessTokenCookie(String accessToken, HttpServletResponse response) {
-        Cookie cookie = new Cookie(accessTokenName, accessToken);
-        cookie.setMaxAge((int)accessTokenExpiration);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-    }
-
-    public void deleteAccessTokenCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(accessTokenName, null);
-        cookie.setMaxAge(0); // 즉시 만료
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-    }
 
     public void setRefreshTokenCookie(String refreshToken, HttpServletResponse response) {
         Cookie cookie = new Cookie(refreshTokenName, refreshToken);

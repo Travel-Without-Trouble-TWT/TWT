@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
-                .antMatchers("/member/**", "/login/**").permitAll()
+                .antMatchers("/member/**", "/oauth/**").permitAll()
                 .antMatchers("/scrap/**", "/image/**", "/review/**", "/heart/**", "/search/**", "/daily/**", "/schedule/**", "/emitter/**", "/verify/**").permitAll() // 임시로 오픈
                 .anyRequest().authenticated()
                 .and()

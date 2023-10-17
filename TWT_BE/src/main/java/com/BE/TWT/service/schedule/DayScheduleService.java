@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
+import java.util.List;
 
 import static com.BE.TWT.exception.message.PlaceErrorMessage.WRONG_ADDRESS;
 import static com.BE.TWT.exception.message.ScheduleErrorMessage.NOT_REGISTERED_SCHEDULE;
@@ -35,7 +36,7 @@ public class DayScheduleService {
         Schedule schedule = scheduleRepository.findById(course.getScheduleId())
                 .orElseThrow(() -> new ScheduleException(NOT_REGISTERED_SCHEDULE));
 
-        DaySchedule daySchedule = schedule.getDayScheduleList().get(course.getDay());
+        DaySchedule daySchedule = schedule.getDayScheduleList().get(course.getWhen());
         LocalDateTime time = daySchedule.getDay().atTime(LocalTime.of(23, 59));
         Place place = placeRepository.findById(course.getPlaceId())
                 .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
@@ -46,10 +47,13 @@ public class DayScheduleService {
                 .latitude(place.getLatitude())
                 .longitude(place.getLongitude())
                 .arriveAt(time)
+                .placeId(place.getId())
                 .build();
+
         daySchedule.addCourse(addCourse);
+        daySchedule.calculateLatitude(addCourse.getLatitude(), addCourse.getLongitude());
         saveDaySchedule(daySchedule);
-        daySchedule.setDistance();
+        setDistance(daySchedule.getCourseList());
 
         return schedule;
     }
@@ -73,7 +77,7 @@ public class DayScheduleService {
         course.setTime(updateCourse.getArriveAt());
 
         saveDaySchedule(daySchedule);
-        daySchedule.setDistance();
+        setDistance(daySchedule.getCourseList());
     }
 
     public void deleteCourse(DeleteCourse deleteCourse) {
@@ -83,7 +87,23 @@ public class DayScheduleService {
         Course course = daySchedule.getCourseList().get(deleteCourse.getIndex());
 
         daySchedule.deleteCourse(course);
+        daySchedule.calculateLatitude(-course.getLatitude(), -course.getLongitude());
         saveDaySchedule(daySchedule);
-        daySchedule.setDistance();
+        setDistance(daySchedule.getCourseList());
+    }
+
+    public void setDistance(List<Course> courseList) {
+        if (courseList.size() > 1) {
+            for (int i = 0; i < courseList.size() - 1; i++) {
+                double x1 = courseList.get(i).getLatitude();
+                double y1 = courseList.get(i).getLongitude();
+                double x2 = courseList.get(i + 1).getLatitude();
+                double y2 = courseList.get(i + 1).getLongitude();
+
+                Course course = courseList.get(i);
+
+                course.calculateDistance(x1, y1, x2, y2);
+            }
+        }
     }
 }

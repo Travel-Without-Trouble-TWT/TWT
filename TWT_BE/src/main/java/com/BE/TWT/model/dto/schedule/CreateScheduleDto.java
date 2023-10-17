@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class CreateScheduleDto {
-    private String scheduleName;
     private String placeLocation;
     private String startAt;
     private String endAt;

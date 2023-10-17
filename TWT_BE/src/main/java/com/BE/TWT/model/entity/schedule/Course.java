@@ -21,6 +21,7 @@ public class Course {
     private double longitude;
     private double latitude;
     private double distance; // 다음 여행지까지 거리
+    private Long placeId;
 
     public void setTime(LocalDateTime time) {
         this.arriveAt = time;

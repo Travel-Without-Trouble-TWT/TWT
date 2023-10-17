@@ -1,11 +1,9 @@
 package com.BE.TWT.controller.schedule;
 
-import com.BE.TWT.model.dto.schedule.CreateScheduleDto;
-import com.BE.TWT.model.dto.schedule.EditScheduleNameDto;
-import com.BE.TWT.model.dto.schedule.ScheduleDetail;
-import com.BE.TWT.model.dto.schedule.SetDateDto;
+import com.BE.TWT.model.dto.schedule.*;
 import com.BE.TWT.model.entity.schedule.Schedule;
 import com.BE.TWT.service.function.SearchService;
+import com.BE.TWT.service.schedule.DayScheduleService;
 import com.BE.TWT.service.schedule.ScheduleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,13 +24,21 @@ import java.util.List;
 public class ScheduleController {
     private final ScheduleService scheduleService;
     private final SearchService searchService;
+    private final DayScheduleService dayScheduleService;
 
     @ApiOperation(value = "스케줄 추가")
     @Operation(description = "최초 스케줄 추가 API")
     @PostMapping("/create")
     public ResponseEntity<Schedule> createSchedule(HttpServletRequest request,
                                                    @RequestBody @Valid CreateScheduleDto dto) {
-        return ResponseEntity.ok(scheduleService.addNewSchedule(request, dto));
+        return ResponseEntity.ok(scheduleService.createSchedule(request, dto));
+    }
+
+    @ApiOperation(value = "기존 스케줄 일정 추가")
+    @Operation(description = "기존 스케줄 추가 API")
+    @PutMapping("/add")
+    public ResponseEntity<Schedule> addSchedule(@RequestBody @Valid AddNewCourse dto) {
+        return ResponseEntity.ok(dayScheduleService.addNewCourse(dto));
     }
 
     @ApiOperation(value = "스케줄 날짜 설정")
