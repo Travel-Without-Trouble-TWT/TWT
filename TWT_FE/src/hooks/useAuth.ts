@@ -11,6 +11,7 @@ import {
   joinFn,
   nicknameFn,
   verifyFn,
+  changePasswordFn,
 } from '../api/auth';
 import { getUserInfoFn } from '../api';
 import { subscribeFn } from '../api/auth';
@@ -117,6 +118,7 @@ type SetErrorFunction = <FieldName extends keyof JoinProps>(
   field: FieldName,
   error: { type: string; message: string }
 ) => void;
+
 //닉네임 중복검사 요청
 export const useCheckNickname = (
   handleStepValidation: HandleStepValidationFunction,
@@ -164,4 +166,16 @@ export const useVerifyCode = (
     },
   });
   return { verifyEmail, isVerifyingEmail, verifyingEmailSuccess, returnCode };
+};
+
+//비밀번호 변경
+export const useChangePassword = (password: string) => {
+  const {
+    mutate: changePassword,
+    isLoading: changingPassword,
+    isSuccess: changePasswordSuccess,
+  } = useMutation((password: string) => changePasswordFn(password), {
+    onSuccess: (data) => {},
+  });
+  return { changePassword, changingPassword, changePasswordSuccess };
 };
