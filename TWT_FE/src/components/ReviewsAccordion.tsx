@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { PageProps } from '../api/type';
 import Pagination from './Pagination';
 import Stars from './Stars';
