@@ -22,7 +22,6 @@ import {
 } from '../api';
 
 import { calculateCenter } from '../utils/calculate';
-import { useState } from 'react';
 
 //메인페이지 스케쥴들
 export const useSchedules = (pageParam: number) => {
