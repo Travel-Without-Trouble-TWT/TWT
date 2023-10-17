@@ -1,13 +1,22 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../context';
+import { useChangePassword } from '../hooks/useAuth';
 
 function Profile() {
   const { isLogin, user } = useUserContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [nickName, setNickName] = useState<string>(user?.nickName);
-  const [password, setPassword] = useState();
+  const [password, setPassword] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const { changePassword, changingPassword, changePasswordSuccess } =
+    useChangePassword(password);
+
+  const handleChangePassword = () => {
+    changePassword(password);
+  };
+
   return (
     <div className="flex flex-col justify-center items-center min-w-full min-h-screen">
       {isLogin ? (
@@ -79,6 +88,7 @@ function Profile() {
                         id="password"
                         type="password"
                         name="password"
+                        onChange={(e) => setPassword(e.target.value)}
                         placeholder="your password"
                         className="peer relative h-10 w-full rounded border border-slate-200 px-4 pr-12 text-sm text-slate-500 placeholder-transparent outline-none transition-all autofill:bg-white invalid:border-rose-500 focus:border-skyblue focus:outline-none invalid:focus:border-rose-500 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
                       />
@@ -138,6 +148,12 @@ function Profile() {
                   <span>Input field with trailing icon</span>
                 </small> */}
                     </div>
+                    <button
+                      onClick={handleChangePassword}
+                      className="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded bg-skyblue/80 hover:bg-skyblue px-5 text-sm font-medium tracking-wide text-white transition duration-300  focus:bg-skyblue focus-visible:outline-none disabled:cursor-not-allowed disabled:border-lightgray disabled:bg-lightgray disabled:shadow-none"
+                    >
+                      <span>변경완료</span>
+                    </button>
                   </div>
                 )}
               </div>
