@@ -25,7 +25,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
           <Route path="/search/:location" element={<Selected />} />
-          <Route path="/mypage" element={<Mypage />} />
+          <Route path="/mypage/:category/:page" element={<Mypage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/oauth/google" element={<GoogleRedirect />} />
         </Routes>
