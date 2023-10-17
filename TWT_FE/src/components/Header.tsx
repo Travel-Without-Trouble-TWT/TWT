@@ -91,7 +91,7 @@ function Header() {
                     aria-haspopup="false"
                     tabIndex={0}
                     className="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-blue focus:bg-emerald-50 focus:outline-none focus-visible:outline-none lg:px-8 xl:px-8"
-                    href="/mypage"
+                    href="/mypage/schedule/1"
                   >
                     <span>마이페이지</span>
                   </a>
