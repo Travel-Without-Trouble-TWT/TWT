@@ -29,10 +29,13 @@ function Detail() {
     <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen flex justify-center flex-col lg:px-48 xl:px-48 px-10 py-3">
       {!placeInfoLoading && placeInfos ? (
         <>
-          <img
-            className="w-full h-auto rounded-lg mb-2"
-            src={placeInfos.placeImageUrl}
-          />
+          <div className="w-full h-[1.4rem] pb-[100%] relative">
+            <img
+              className="absolute w-full h-full rounded-lg mb-2"
+              src={placeInfos.placeImageUrl}
+            />
+          </div>
+
           <div className="leading-10 bg-white rounded-lg shadow-xl p-8 mb-2 dark:bg-slate-800">
             <h2 className="text-2xl font-bold dark:text-white">
               {placeInfos.placeName}
