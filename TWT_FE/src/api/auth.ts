@@ -101,6 +101,11 @@ export const getUserFn = async () => {
   return response.data;
 };
 
+export const changePasswordFn = async (password: string) => {
+  const response = await authApi.put(`/member/password?password=${password}`);
+  return response.data;
+};
+
 //알람
 export const subscribeFn = async () => {
   const response = await authApi.get('/emitter/sub');
