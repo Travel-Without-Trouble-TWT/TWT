@@ -1,24 +1,28 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { TfiWrite } from 'react-icons/tfi';
 import { AiTwotoneCalendar } from 'react-icons/ai';
 import { BiSolidPencil } from 'react-icons/bi';
-
-import SouthKoreaMap from '../components/SouthKoreaMap';
-
+//hooks
 import { useUserDatas } from '../hooks/useProducts';
+import { useEditProfileImg } from '../hooks/useAuth';
 import { useUserContext } from '../context';
+//components
+import SouthKoreaMap from '../components/SouthKoreaMap';
 import ScheduleList from '../components/ScheduleList';
 import ListItem from '../components/ListItem';
 import ReviewsAccordion from '../components/ReviewsAccordion';
 import Pagination from '../components/Pagination';
-import { useEditProfileImg } from '../hooks/useAuth';
-import Spinner from '../components/Spinner';
+import Loader from '../components/Loader';
 
 function Mypage() {
+  const navigate = useNavigate();
   const { isLogin, user } = useUserContext();
+  const { category, page } = useParams();
   const [isListOpen, setIsListOpen] = useState<string | null>(null);
-  const [category, setCategory] = useState<string>('schedule');
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(
+    page ? parseInt(page, 10) : 1
+  );
   const [editImg, setEditImg] = useState<File | null>(null);
   const { userDatas, userDataLoading, userDataError, userDataRefetch } =
     useUserDatas(category, currentPage - 1, isListOpen);
@@ -32,6 +36,7 @@ function Mypage() {
     editProfileImg(editImg);
   };
   const handlePageChange = (pageNumber: number) => {
+    navigate(`/mypage/${category}/${pageNumber}`);
     setCurrentPage(pageNumber);
   };
   useEffect(() => {
@@ -45,8 +50,8 @@ function Mypage() {
   }, [currentPage]);
 
   useEffect(() => {
-    userDataRefetch();
     setCurrentPage(1);
+    userDataRefetch();
   }, [category]);
   return (
     <>
@@ -87,33 +92,36 @@ function Mypage() {
           <div className="flex-1 flex flex-col items-center justify-end px-8 mt-2">
             <div className="flex items-center space-x-4 mt-2">
               <button
-                onClick={() => setCategory('schedule')}
                 className={`flex items-center bg-skyblue/80 hover:bg-skyblue text-white hover:text-black px-4 py-2 rounded-xl text-sm space-x-2 transition duration-100 ${
                   category === 'schedule' && 'bg-skyblue text-black'
                 }`}
               >
-                <span className="flex items-center gap-2">
+                <Link
+                  to={`/mypage/schedule/${currentPage}`}
+                  className="flex items-center gap-2"
+                >
                   <AiTwotoneCalendar />
                   일정
-                </span>
+                </Link>
               </button>
               <button
-                onClick={() => setCategory('review')}
                 className={`flex items-center bg-skyblue/80 hover:bg-skyblue text-white hover:text-black px-4 py-2 rounded-xl text-sm space-x-2 transition duration-100 ${
                   category === 'review' && 'bg-skyblue text-black'
                 }`}
               >
-                <span className="flex items-center gap-2">
+                <Link
+                  to={`/mypage/review/${currentPage}`}
+                  className="flex items-center gap-2"
+                >
                   <TfiWrite /> 리뷰
-                </span>
+                </Link>
               </button>
               <button
-                onClick={() => setCategory('heart')}
                 className={`flex items-center bg-skyblue/80 hover:bg-skyblue text-white hover:text-black px-4 py-2 rounded-xl text-sm space-x-2 transition duration-100 ${
                   category === 'heart' && 'bg-skyblue text-black'
                 }`}
               >
-                <span>♡ 좋아요</span>
+                <Link to={`/mypage/heart/${currentPage}`}>♡ 좋아요</Link>
               </button>
             </div>
           </div>
@@ -122,14 +130,22 @@ function Mypage() {
           <div className="flex justify-center p-10 xs:p-4">
             {category === 'schedule' && (
               <div className="w-full h-full flex">
-                <SouthKoreaMap
-                  isListOpen={isListOpen}
-                  setIsListOpen={setIsListOpen}
-                />
-                {isListOpen && !userDataLoading && (
-                  <ScheduleList userDatas={userDatas} isListOpen={isListOpen} />
+                {userDataLoading ? (
+                  <Loader size={'10'} />
+                ) : (
+                  <>
+                    <SouthKoreaMap
+                      isListOpen={isListOpen}
+                      setIsListOpen={setIsListOpen}
+                    />
+                    {isListOpen && !userDataLoading && (
+                      <ScheduleList
+                        userDatas={userDatas}
+                        isListOpen={isListOpen}
+                      />
+                    )}
+                  </>
                 )}
-                {userDataLoading && <Spinner size="5" />}
               </div>
             )}
             {category === 'review' && (
@@ -140,14 +156,25 @@ function Mypage() {
               />
             )}
             {category === 'heart' && (
-              <div className="grid grid-cols-2 gap-8 mt-8 xs:grid-cols-1">
-                <ListItem data={userDatas.content} />
-
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={userDatas ? userDatas.totalPages : 0}
-                  onPageChange={handlePageChange}
-                />
+              <div className="flex flex-col">
+                {userDataLoading ? (
+                  <Loader size={'10'} />
+                ) : (
+                  <>
+                    {userDatas &&
+                      userDatas.content &&
+                      userDatas.totalPages > 0 && (
+                        <div className="grid grid-cols-2 gap-8 mt-8 xs:grid-cols-1">
+                          <ListItem data={userDatas.content} />
+                        </div>
+                      )}
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={userDatas ? userDatas.totalPages : 0}
+                      onPageChange={handlePageChange}
+                    />
+                  </>
+                )}
               </div>
             )}
           </div>
