@@ -2,9 +2,9 @@ function ListItem({ data }: { data: any }) {
   return (
     <>
       {data.map((item: any) => (
-        <div className="flex flex-col dark:bg-slate-900">
+        <div key={item.id} className="flex flex-col dark:bg-slate-900">
           <img
-            className="object-cover w-full h-56 rounded-lg"
+            className="object-cover w-[500px] h-56 rounded-lg"
             src={item.placeImageUrl}
             alt={item.placeName}
           />
