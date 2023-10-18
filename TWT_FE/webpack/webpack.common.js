@@ -59,8 +59,8 @@ module.exports = {
   devServer: {
     historyApiFallback: true, // History 라우팅 대체 사용 설정
     port: 3000,
-    hot: true,
-    open: true,
+    hot: true, // 핫 모듈 교체(HMR) 활성화 설정
+    open: true, // 개발 서버 자동 실행 설정
   },
   performance: {
     hints: false,

@@ -34,17 +34,6 @@ module.exports = smp.wrap(
               ['@babel/preset-react', { runtime: 'automatic' }],
               '@babel/preset-typescript',
             ],
-            // plugins: [
-            //   [
-            //     'babel-plugin-styled-components',
-            //     {
-            //       displayName: false,
-            //       minify: true,
-            //       transpileTemplateLiterals: true,
-            //       pure: true,
-            //     },
-            //   ],
-            // ],
           },
         },
       ],
@@ -59,6 +48,21 @@ module.exports = smp.wrap(
       new webpack.DefinePlugin({
         'process.env.BASE_URL': JSON.stringify(process.env.PROD_BASE_URL),
         'process.env.IS_LOCAL': false,
+        'process.env.NODE_ENV': JSON.stringify('production'),
+        CLIENT_ID: JSON.stringify(process.env.CLIENT_ID),
+        PUBLIC_KEY: JSON.stringify(process.env.PUBLIC_KEY),
+        REACT_APP_KAKAO_MAP_KEY: JSON.stringify(
+          process.env.REACT_APP_KAKAO_MAP_KEY
+        ),
+        REACT_APP_GOOGLE_CLIENT_ID: JSON.stringify(
+          process.env.REACT_APP_GOOGLE_CLIENT_ID
+        ),
+        REACT_APP_GOOGLE_OAUTH_CLIENT_SECRET: JSON.stringify(
+          process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_SECRET
+        ),
+        REACT_APP_GOOGLE_OAUTH_REDIRECT: JSON.stringify(
+          process.env.REACT_APP_GOOGLE_OAUTH_REDIRECT
+        ),
       }),
     ],
   })

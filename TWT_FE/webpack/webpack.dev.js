@@ -14,6 +14,7 @@ module.exports = smp.wrap(
   merge(common, {
     mode: 'development',
     devtool: 'eval-cheap-module-source-map',
+    target: 'web',
     cache: {
       type: 'filesystem',
     },
@@ -31,7 +32,6 @@ module.exports = smp.wrap(
               ['@babel/preset-react', { runtime: 'automatic' }],
               '@babel/preset-typescript',
             ],
-            //plugins: [['babel-plugin-styled-components']],
           },
         },
       ],
