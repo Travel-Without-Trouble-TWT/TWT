@@ -1,29 +1,33 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 //components
 import { PageProps } from '../api/type';
 import Pagination from './Pagination';
 import Loader from './Loader';
 import ScheduleModal from './ScheduleModal';
+import { useUserContext } from '../context';
 
 interface PlaceListsProps {
-  places: PageProps;
+  places: PageProps | undefined;
   placeLocation: string;
+  onTitleClick: (value: number) => void;
   currentPage: number;
   setCurrentPage: (currentPage: number) => void;
   placeLoading: boolean;
-  setIsTitleOpen: (isTitleOpen: number) => void;
 }
 
 function PlaceLists({
   places,
   placeLocation,
+  onTitleClick,
   placeLoading,
-  setIsTitleOpen,
   setCurrentPage,
   currentPage,
 }: PlaceListsProps) {
   const [selectedPlace, setSelectedPlace] = useState<null | number>(null);
+  const { isLogin } = useUserContext();
+  const navigate = useNavigate();
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -32,6 +36,9 @@ function PlaceLists({
   const handleSelectedClick = (id: number) => {
     setSelectedPlace(id);
     setShowModal('schedule');
+    if (!isLogin) {
+      navigate('/login');
+    }
   };
   const [showModal, setShowModal] = useState<string | ''>('');
   return (
@@ -40,20 +47,21 @@ function PlaceLists({
         <Loader size={'30px'} />
       ) : (
         <>
-          {places ? (
-            places.content.map((place) => (
+          {places && places.totalPages > 0 ? (
+            places.content.map((place: any) => (
               <div key={place.id}>
                 <div className="h-32 flex justify-between border-b-2 border-lightgray p-2 dark:border-slate-500">
                   <div className="flex p-3 ">
                     <img
-                      className="w-[130px] h-full mr-4"
+                      className="w-[130px] h-full mr-4 object-cover"
                       src={place.placeImageUrl}
+                      alt={place.placeName}
                     />
                     <div className="flex flex-col justify-evenly">
                       <p
                         className="text-lg font-bold leading-5 hover:underline hover:cursor-pointer dark:text-white md:text-sm xs:text-sm"
                         role="button"
-                        onClick={() => setIsTitleOpen(place.id)}
+                        onClick={() => onTitleClick(place.id)}
                       >
                         {place.placeName}
                       </p>
