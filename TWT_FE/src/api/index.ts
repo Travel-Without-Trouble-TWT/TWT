@@ -27,7 +27,7 @@ export const getPlaceFn = async (
 
 //마이페이지
 export const getUserDataFn = async (
-  category: string,
+  category: string | undefined,
   page: number,
   placeLocation?: string
 ) => {
