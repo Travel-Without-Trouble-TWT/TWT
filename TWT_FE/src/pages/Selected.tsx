@@ -8,6 +8,7 @@ import PlaceLists from '../components/PlaceLists';
 //icons
 import { MdOutlineFoodBank, MdOutlineAttractions } from 'react-icons/md';
 import { AiOutlineHome } from 'react-icons/ai';
+//hooks
 import { usePlaces } from '../hooks/useProducts';
 import { DataProps } from '../api/type';
 
@@ -22,12 +23,12 @@ function Selected() {
   const [placeType, setPlaceType] = useState<string>('ALL'); //"ALL", "STAY", "RESTAURANT", "HOT_PLACE"
   const [isTitleOpen, setIsTitleOpen] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [selectedPlace, setSelectedPlace] = useState({ lat: null, lng: null });
+  const [newCenter, setNewCenter] = useState({ lat: 0, lng: 0 });
 
   const { location } = useParams();
   const placeLocation = decodeURIComponent(String(location));
 
-  const { places, placeLoading, placeError, center, placeRefetch } = usePlaces(
+  const { places, placeLoading, center, placeRefetch } = usePlaces(
     placeType,
     placeLocation,
     currentPage - 1
@@ -38,9 +39,22 @@ function Selected() {
     setCurrentPage(1);
   };
 
+  const handleTitleClick = (contentId: number) => {
+    setIsTitleOpen(contentId);
+    const selectedPlace = places?.content.find(
+      (content: any) => content.id === contentId
+    );
+    if (selectedPlace) {
+      setNewCenter({
+        lat: selectedPlace.latitude,
+        lng: selectedPlace.longitude,
+      });
+    }
+  };
   useEffect(() => {
     placeRefetch();
-  }, [placeType, currentPage]);
+    setIsTitleOpen(null);
+  }, [placeType, currentPage, placeRefetch]);
 
   return (
     <>
@@ -73,7 +87,7 @@ function Selected() {
               places={places}
               placeLocation={placeLocation}
               placeLoading={placeLoading}
-              setIsTitleOpen={setIsTitleOpen}
+              onTitleClick={handleTitleClick}
               setCurrentPage={setCurrentPage}
               currentPage={currentPage}
             />
@@ -83,9 +97,9 @@ function Selected() {
               ) : (
                 <>
                   <Map
-                    center={center}
+                    center={isTitleOpen !== null ? newCenter : center}
                     style={{ width: 'full', height: 'full' }}
-                    level={10}
+                    level={isTitleOpen !== null ? 3 : 10}
                   >
                     {places ? (
                       places.content.map((content: DataProps) => (
