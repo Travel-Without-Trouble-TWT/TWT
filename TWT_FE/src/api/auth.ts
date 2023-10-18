@@ -42,7 +42,7 @@ authApi.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+//추후 로컬스토리지에 저장하기
 export const joinFn = async (user: JoinProps) => {
   const response = await authApi.post<BasicResponse>('/member/join', user);
   return response.data;
@@ -63,9 +63,11 @@ export const editNickNameFn = async (nickname: string) => {
   return response.data;
 };
 
-export const editProfileImgFn = async (file: File) => {
+export const editProfileImgFn = async (file: File | null) => {
   const formData = new FormData();
-  formData.append('file', file);
+  if (file !== null) {
+    formData.append('file', file);
+  }
   const response = await authApi.put('/member/profile', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
