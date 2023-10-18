@@ -78,7 +78,7 @@ export const useTop10 = () => {
 
 //마이페이지
 export const useUserDatas = (
-  category: string,
+  category: string | undefined,
   pageParam: number,
   placeLocation?: string
 ) => {
