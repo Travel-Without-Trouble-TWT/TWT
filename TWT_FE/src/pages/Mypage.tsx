@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { TfiWrite } from 'react-icons/tfi';
 import { AiTwotoneCalendar } from 'react-icons/ai';
 import { BiSolidPencil } from 'react-icons/bi';
@@ -14,45 +14,49 @@ import ListItem from '../components/ListItem';
 import ReviewsAccordion from '../components/ReviewsAccordion';
 import Pagination from '../components/Pagination';
 import Loader from '../components/Loader';
+import Spinner from '../components/Spinner';
 
 function Mypage() {
   const navigate = useNavigate();
-  const { isLogin, user } = useUserContext();
+  const { user } = useUserContext();
   const { category, page } = useParams();
-  const [isListOpen, setIsListOpen] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState<number>(
-    page ? parseInt(page, 10) : 1
-  );
+  const [isListOpen, setIsListOpen] = useState<string | undefined>(undefined);
+  const currentPage = page ? parseInt(page, 10) : 1;
   const [editImg, setEditImg] = useState<File | null>(null);
-  const { userDatas, userDataLoading, userDataError, userDataRefetch } =
-    useUserDatas(category, currentPage - 1, isListOpen);
+  const { userDatas, userDataLoading, userDataRefetch } = useUserDatas(
+    category,
+    currentPage - 1,
+    isListOpen
+  );
   const fileRef = useRef<HTMLInputElement>(null);
-  const { editProfileImg } = useEditProfileImg(editImg);
+  const { editProfileImg, editingProfileImg } = useEditProfileImg(editImg);
 
   const handleUploadProfileImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setEditImg(e.target.files[0]);
+      editProfileImg(e.target.files[0]);
     }
-    editProfileImg(editImg);
   };
+  const handleCategoryChange = (newCategory: string) => {
+    if (newCategory !== category) {
+      navigate(`/mypage/${newCategory}/1`);
+    } else {
+      navigate(`/mypage/${newCategory}/${currentPage}`);
+    }
+  };
+
   const handlePageChange = (pageNumber: number) => {
     navigate(`/mypage/${category}/${pageNumber}`);
-    setCurrentPage(pageNumber);
+    userDataRefetch();
   };
+
   useEffect(() => {
     if (isListOpen !== null) {
       userDataRefetch();
     }
-  }, [isListOpen]);
-
-  useEffect(() => {
     userDataRefetch();
-  }, [currentPage]);
+  }, [isListOpen, page, category, currentPage, userDataRefetch]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-    userDataRefetch();
-  }, [category]);
   return (
     <>
       <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen flex justify-center flex-col py-6 xs:px-1">
@@ -60,15 +64,19 @@ function Mypage() {
           <div className="w-full h-[150px] bg-lightgray dark:bg-slate-800 rounded-lg"></div>
           <div className="flex flex-col items-center -mt-20">
             <div className="relative">
-              <img
-                alt="profile image"
-                src={
-                  user?.profileUrl
-                    ? user?.profileUrl
-                    : 'https://mblogthumb-phinf.pstatic.net/20150427_73/ninevincent_1430122793329pvryW_JPEG/kakao_7.jpg?type=w420'
-                }
-                className="w-[120px] h-[120px] border-4 border-white rounded-full dark:border-slate-900"
-              />
+              {editingProfileImg ? (
+                <Spinner size={'10'} />
+              ) : (
+                <img
+                  alt="profileImage"
+                  src={
+                    user && user.profileUrl !== null
+                      ? user.profileUrl
+                      : 'https://mblogthumb-phinf.pstatic.net/20150427_73/ninevincent_1430122793329pvryW_JPEG/kakao_7.jpg?type=w420'
+                  }
+                  className="w-[120px] h-[120px] border-4 border-white rounded-full dark:border-slate-900"
+                />
+              )}
               <input
                 ref={fileRef}
                 className="hidden"
@@ -95,33 +103,30 @@ function Mypage() {
                 className={`flex items-center bg-skyblue/80 hover:bg-skyblue text-white hover:text-black px-4 py-2 rounded-xl text-sm space-x-2 transition duration-100 ${
                   category === 'schedule' && 'bg-skyblue text-black'
                 }`}
+                onClick={() => handleCategoryChange('schedule')}
               >
-                <Link
-                  to={`/mypage/schedule/${currentPage}`}
-                  className="flex items-center gap-2"
-                >
+                <span className="flex items-center gap-2">
                   <AiTwotoneCalendar />
                   일정
-                </Link>
+                </span>
               </button>
               <button
                 className={`flex items-center bg-skyblue/80 hover:bg-skyblue text-white hover:text-black px-4 py-2 rounded-xl text-sm space-x-2 transition duration-100 ${
                   category === 'review' && 'bg-skyblue text-black'
                 }`}
+                onClick={() => handleCategoryChange('review')}
               >
-                <Link
-                  to={`/mypage/review/${currentPage}`}
-                  className="flex items-center gap-2"
-                >
+                <span className="flex items-center gap-2">
                   <TfiWrite /> 리뷰
-                </Link>
+                </span>
               </button>
               <button
                 className={`flex items-center bg-skyblue/80 hover:bg-skyblue text-white hover:text-black px-4 py-2 rounded-xl text-sm space-x-2 transition duration-100 ${
                   category === 'heart' && 'bg-skyblue text-black'
                 }`}
+                onClick={() => handleCategoryChange('heart')}
               >
-                <Link to={`/mypage/heart/${currentPage}`}>♡ 좋아요</Link>
+                <span>♡ 좋아요</span>
               </button>
             </div>
           </div>
@@ -142,6 +147,8 @@ function Mypage() {
                       <ScheduleList
                         userDatas={userDatas}
                         isListOpen={isListOpen}
+                        currentPage={currentPage}
+                        handlePageChange={handlePageChange}
                       />
                     )}
                   </>
@@ -149,11 +156,14 @@ function Mypage() {
               </div>
             )}
             {category === 'review' && (
-              <ReviewsAccordion
-                data={userDatas}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-              />
+              <div className="flex flex-col w-full">
+                <ReviewsAccordion data={userDatas} />
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={userDatas ? userDatas.totalPages : 0}
+                  onPageChange={handlePageChange}
+                />
+              </div>
             )}
             {category === 'heart' && (
               <div className="flex flex-col">
