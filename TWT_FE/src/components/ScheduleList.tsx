@@ -1,9 +1,15 @@
+import Pagination from './Pagination';
+
 function ScheduleList({
   userDatas,
   isListOpen,
+  currentPage,
+  handlePageChange,
 }: {
   userDatas: any;
   isListOpen: string | null;
+  currentPage: number;
+  handlePageChange: (value: number) => void;
 }) {
   return (
     <>
@@ -35,6 +41,11 @@ function ScheduleList({
             </span>
           </li>
         )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={userDatas ? userDatas.totalPages : 0}
+          onPageChange={handlePageChange}
+        />
       </ul>
     </>
   );
