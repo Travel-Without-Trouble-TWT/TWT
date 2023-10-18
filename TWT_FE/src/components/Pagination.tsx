@@ -28,7 +28,7 @@ function Pagination({
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`flex items-center justify-center w-6 h-6 text-skyblue transition-colors duration-150 rounded focus:shadow-outline ${
+            className={`flex items-center justify-center w-6 h-6 text-skyblue xs:w-4 xs:h-4 xs:text-sm transition-colors duration-150 rounded focus:shadow-outline ${
               currentPage === 1
                 ? 'opacity-50 cursor-not-allowed'
                 : 'hover:bg-skyblue hover:text-white'
@@ -43,23 +43,24 @@ function Pagination({
             </svg>
           </button>
         </li>
-        {pageNumbers.map((pageNumber) => (
-          <li key={pageNumber}>
-            <button
-              onClick={() => onPageChange(pageNumber)}
-              className={`w-7 h-7 transition-colors text-gray duration-150 rounded focus:shadow-outline ${
-                currentPage === pageNumber
-                  ? 'bg-skyblue text-white'
-                  : 'hover:bg-skyblue/70 hover:text-white focus:bg-skyblue focus:text-white'
-              }`}
-            >
-              {pageNumber}
-            </button>
-          </li>
-        ))}
+        {pageNumbers.length > 0 &&
+          pageNumbers.map((pageNumber) => (
+            <li key={pageNumber}>
+              <button
+                onClick={() => onPageChange(pageNumber)}
+                className={`w-6 h-6 transition-colors text-gray duration-150 rounded focus:shadow-outline xs:w-4 xs:h-4 xs:text-sm ${
+                  currentPage === pageNumber
+                    ? 'bg-skyblue text-white'
+                    : 'hover:bg-skyblue/70 hover:text-white focus:bg-skyblue focus:text-white'
+                }`}
+              >
+                {pageNumber}
+              </button>
+            </li>
+          ))}
         <li>
           <button
-            className={`flex items-center justify-center w-7 h-7 text-skyblue transition-colors ${
+            className={`flex items-center rounded justify-center w-6 h-6 xs:w-4 xs:h-4 xs:text-sm text-skyblue transition-colors ${
               currentPage === totalPages
                 ? 'opacity-50 cursor-not-allowed'
                 : 'hover:bg-skyblue hover:text-white'
