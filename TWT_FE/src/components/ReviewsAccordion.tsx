@@ -1,28 +1,15 @@
 import { PageProps } from '../api/type';
-import Pagination from './Pagination';
 import Stars from './Stars';
 
-function ReviewsAccordion({
-  data,
-  currentPage,
-  setCurrentPage,
-}: {
-  data: PageProps;
-  currentPage: number;
-  setCurrentPage: (value: number) => void;
-}) {
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
+function ReviewsAccordion({ data }: { data: PageProps }) {
   return (
     <section className="w-full divide-y rounded divide-slate-200 px-10 dark:divide-slate-500">
       {data &&
         data.totalPages > 0 &&
-        data.content.map((item) => (
+        data.content.map((item: any) => (
           <>
             <details className="p-4 group">
-              <summary className="relative cursor-pointer list-none pr-8 font-semibold dark:text-slate-500 text-slate-600 transition-colors duration-300 focus-visible:outline-none group-hover:text-slate-900 dark:group-hover:text-slate-300 [&::-webkit-details-marker]:hidden">
+              <summary className="relative cursor-pointer list-none pr-8 font-semibold xs:text-sm dark:text-slate-500 text-slate-600 transition-colors duration-300 focus-visible:outline-none group-hover:text-slate-900 dark:group-hover:text-slate-300 [&::-webkit-details-marker]:hidden">
                 {item.place.placeName}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -49,8 +36,12 @@ function ReviewsAccordion({
                 <div className="flex w-full gap-2 overflow-auto">
                   {item.reviewImageList &&
                     item.reviewImageList.length > 0 &&
-                    item.reviewImageList.map((img) => (
-                      <img className="w-[90px] h-[60px]" src={img} />
+                    item.reviewImageList.map((img: string, idx: number) => (
+                      <img
+                        className="w-[90px] h-[60px]"
+                        src={img}
+                        alt={`img-${idx}`}
+                      />
                     ))}
                 </div>
               </div>
@@ -60,11 +51,6 @@ function ReviewsAccordion({
             </details>
           </>
         ))}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={data ? data.totalPages : 0}
-        onPageChange={handlePageChange}
-      />
     </section>
   );
 }
