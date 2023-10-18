@@ -4,8 +4,8 @@ function SouthKoreaMap({
   setIsListOpen,
   isListOpen,
 }: {
-  setIsListOpen: (region: string | null) => void;
-  isListOpen: string | null;
+  setIsListOpen: (region: string | undefined) => void;
+  isListOpen: string | undefined;
 }) {
   const [hoverRegion, setHoverRegion] = useState<string | null>(null);
   const regions = [
@@ -157,7 +157,7 @@ function SouthKoreaMap({
         <g key={region.name}>
           <path
             onClick={() => setIsListOpen(region.name)}
-            onBlur={() => setIsListOpen(null)}
+            onBlur={() => setIsListOpen(undefined)}
             onMouseEnter={() => setHoverRegion(region.name)}
             onMouseLeave={() => setHoverRegion(null)}
             fill={region.fill}
