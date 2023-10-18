@@ -58,7 +58,7 @@ export const useEditNickName = (nickname: string) => {
 };
 
 //프로필 변경
-export const useEditProfileImg = (file: File) => {
+export const useEditProfileImg = (file: File | null) => {
   const queryClient = useQueryClient();
   const {
     mutate: editProfileImg,
