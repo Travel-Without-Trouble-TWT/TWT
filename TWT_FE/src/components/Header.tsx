@@ -16,7 +16,7 @@ function Header() {
   const { emitters, emittersGetting, emittersError } = useGetEmitters();
 
   return (
-    <header className="border-b-1 relative sticky z-50 w-full border-b border-slate-200 shadow-lg shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full  xl:border-slate-200 xl:backdrop-blur-sm xl:after:hidden to-sky-50 bg-gradient-to-b from-[#A5E0F8]">
+    <header className="border-b-1 fixed z-50 w-full border-b border-slate-200 shadow-lg shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full  xl:border-slate-200 xl:backdrop-blur-sm xl:after:hidden to-sky-50 bg-gradient-to-b from-[#A5E0F8]">
       <div className="relative mx-auto max-w-full px-6 md:max-w-5xl lg:max-w-7xl xl:max-w-[96rem]">
         <nav
           aria-label="main navigation"
