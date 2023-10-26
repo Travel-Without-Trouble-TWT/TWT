@@ -83,3 +83,8 @@ export interface JoinProps {
   password: string;
   confirmPw?: string;
 }
+
+export interface EmittersProps {
+  id: number;
+  message: string;
+}
