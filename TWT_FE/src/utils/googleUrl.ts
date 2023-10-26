@@ -1,4 +1,4 @@
-function googleUrl(from: string) {
+const googleUrl = (from: string) => {
   const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
 
   const options = {
@@ -16,6 +16,6 @@ function googleUrl(from: string) {
 
   const qs = new URLSearchParams(options);
   return `${rootUrl}?${qs.toString()}`;
-}
+};
 
 export default googleUrl;
