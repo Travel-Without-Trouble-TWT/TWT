@@ -1,4 +1,4 @@
-function dateFormat(date: Date) {
+const dateFormat = (date: Date) => {
   if (date) {
     let month = date.getMonth() + 1;
     let day = date.getDate();
@@ -6,5 +6,5 @@ function dateFormat(date: Date) {
     day = day >= 10 ? day : '0' + day;
     return date.getFullYear() + '.' + month + '.' + day;
   }
-}
+};
 export default dateFormat;
