@@ -27,6 +27,7 @@ function Schedule() {
   const [isShowTimeModal, setIsShowTimeModal] = useState<boolean>(false);
   const [isShowAlert, setIsShowAlert] = useState<string | number>('');
   const [isShowDateModal, setIsShowDateModal] = useState<string | null>(null);
+
   const { id } = useParams();
   const scheduleId = Number(id);
   const { isLogin, user } = useUserContext();
@@ -98,7 +99,7 @@ function Schedule() {
 
   return (
     <>
-      <section className="min-w-full min-h-screen bg-lightgray dark:bg-slate-950 flex justify-center items-center flex-col py-3">
+      <section className="min-w-full min-h-screen bg-lightgray dark:bg-slate-950 flex justify-center items-center flex-col py-10">
         {!schedule || scheduleLoading ? (
           <Loader size={'30px'} />
         ) : (
