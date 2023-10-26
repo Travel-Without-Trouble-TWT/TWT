@@ -7,6 +7,8 @@ import Pagination from './Pagination';
 import Loader from './Loader';
 import ScheduleModal from './ScheduleModal';
 import { useUserContext } from '../context';
+import { useAlert } from '../hooks/useAlert';
+import Alerts from './Alerts';
 
 interface PlaceListsProps {
   places: PageProps | undefined;
@@ -28,16 +30,23 @@ function PlaceLists({
   const [selectedPlace, setSelectedPlace] = useState<null | number>(null);
   const { isLogin } = useUserContext();
   const navigate = useNavigate();
+  const { alert, showAlert } = useAlert();
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
   const handleSelectedClick = (id: number) => {
-    setSelectedPlace(id);
-    setShowModal('schedule');
     if (!isLogin) {
-      navigate('/login');
+      showAlert({
+        type: 'success',
+        title: '로그인을 먼저 진행해주세요.',
+        message: '해당 페이지로 이동하시겠습니까?',
+        onConfirm: () => navigate('/login'),
+      });
+    } else {
+      setSelectedPlace(id);
+      setShowModal('schedule');
     }
   };
   const [showModal, setShowModal] = useState<string | ''>('');
@@ -110,6 +119,7 @@ function PlaceLists({
           placeLocation={placeLocation}
         />
       )}
+      {alert && <Alerts {...alert} />}
     </div>
   );
 }
