@@ -40,7 +40,7 @@ function Login() {
   return (
     <>
       <div className="flex items-center justify-center min-h-screen">
-        <div className="grid xs:grid-cols-1 sm:grid-cols-1 grid-cols-2 gap-4 w-2/3 h-[550px] absolute rounded-xl bg-skyblue shadow-lg">
+        <div className="grid xs:grid-cols-1 sm:grid-cols-1 grid-cols-2 gap-4 w-2/3 absolute rounded-xl bg-skyblue shadow-lg">
           <div className="xs:hidden sm:hidden flex flex-col justify-end">
             <div className="self-center mb-10">
               <p className="text-lg font-extrabold text-white">TWT</p>
