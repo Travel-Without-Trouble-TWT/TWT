@@ -10,6 +10,7 @@ import Alerts from '../components/Alerts';
 import DateModal from '../components/DateModal';
 import Loader from '../components/Loader';
 import CustomMap from '../components/CustomMap';
+import Error from '../components/Error';
 //hooks
 import {
   useDeletePlace,
@@ -18,14 +19,17 @@ import {
   useShareSchedule,
 } from '../hooks/useProducts';
 import { useUserContext } from '../context';
+import calculateDday from '../utils/calculateDday';
 //icons
 import { FaShareSquare } from 'react-icons/fa';
 import { FiDownload } from 'react-icons/fi';
+import { useAlert } from '../hooks/useAlert';
 
 function Schedule() {
+  const { alert, showAlert } = useAlert();
   const [isMoreOpen, setIsMoreOpen] = useState<string | null>(null);
+  const [isClose, setIsClose] = useState<boolean>(false);
   const [isShowTimeModal, setIsShowTimeModal] = useState<boolean>(false);
-  const [isShowAlert, setIsShowAlert] = useState<string | number>('');
   const [isShowDateModal, setIsShowDateModal] = useState<string | null>(null);
 
   const { id } = useParams();
@@ -52,54 +56,102 @@ function Schedule() {
   const { deletePlace, placeDeleting, placeDeleteSuccess, placeDeleteError } =
     useDeletePlace(deleteData);
 
-  if (scheduleDeletingSuccess)
-    return (
-      <Alerts
-        type="success"
-        title="삭제 성공"
-        message="일정이 삭제되었습니다."
-        onConfirm={() => navigate('/mypage')}
-      />
-    );
-  if (placeDeleteSuccess) {
-    return (
-      <Alerts
-        type="success"
-        title="삭제 성공"
-        message="해당 장소가 삭제되었습니다."
-      />
-    );
+  // alert창
+  if (scheduleDeletingSuccess) {
+    showAlert({
+      type: 'success',
+      title: '삭제 성공',
+      message: '해당 일정이 삭제되었습니다.',
+      onConfirm: () => navigate('/mypage'),
+    });
+  } else if (placeDeleteSuccess) {
+    showAlert({
+      type: 'success',
+      title: '삭제 성공',
+      message: '해당 장소가 삭제되었습니다.',
+    });
   } else if (placeDeleteError) {
-    return (
-      <Alerts
-        type="error"
-        title="삭제 실패"
-        message="해당 장소 삭제에 실패하였습니다. 다시 시도해주세요."
-      />
-    );
+    showAlert({
+      type: 'error',
+      title: '삭제 실패',
+      message: '해당 장소 삭제에 실패하였습니다. 다시 시도해주세요.',
+    });
+  } else if (scheduleDeletingError) {
+    showAlert({
+      type: 'error',
+      title: '삭제 실패',
+      message: '해당 일정 삭제에 실패하였습니다. 다시 시도해주세요.',
+    });
   }
 
-  const divRef = useRef<HTMLDivElement>(null);
-  const handleDownload = async () => {
-    if (!divRef.current) return;
-    try {
-      const canvas = await html2canvas(divRef.current, { scale: 2 });
-      canvas.toBlob((blob) => {
-        if (blob !== null) {
-          saveAs(blob, 'travelschedule.png');
-        }
+  const handleDeleteSchedule = () => {
+    showAlert({
+      type: 'error',
+      title: '일정 삭제',
+      message: '정말로 일정을 삭제하시겠습니까?',
+      onConfirm: () => deleteSchedule(scheduleId),
+    });
+  };
+
+  const handleDeletePlace = () => {
+    showAlert({
+      title: '장소 삭제',
+      message: '정말로 해당 장소를 삭제하시겠습니까?',
+      type: 'error',
+      onConfirm: () => {
+        deletePlace(deleteData);
+      },
+    });
+  };
+
+  const handleShareSchedule = () => {
+    if (isLogin) {
+      setIsShowDateModal('일정공유');
+    } else {
+      showAlert({
+        type: 'success',
+        title: '로그인을 먼저 진행해주세요.',
+        message: '해당 페이지로 이동하시겠습니까?',
+        onConfirm: () => navigate('/login'),
       });
-    } catch (error) {
-      <Alerts
-        title="다운로드 오류"
-        message="이미지 다운로드 중 오류가 발생하였습니다. 다시 시도해주세요."
-      />;
     }
   };
 
+  const divRef = useRef<HTMLDivElement>(null);
+  const handleDownload = async () => {
+    if (isLogin) {
+      if (!divRef.current) return;
+      try {
+        const canvas = await html2canvas(divRef.current, { scale: 2 });
+        canvas.toBlob((blob) => {
+          if (blob !== null) {
+            saveAs(blob, 'travelschedule.png');
+          }
+        });
+      } catch (error) {
+        return showAlert({
+          type: 'error',
+          title: '다운로드 오류',
+          message:
+            '이미지 다운로드 중 오류가 발생하였습니다. 다시 시도해주세요.',
+        });
+      }
+    } else {
+      showAlert({
+        type: 'success',
+        title: '로그인을 먼저 진행해주세요.',
+        message: '해당 페이지로 이동하시겠습니까?',
+        onConfirm: () => navigate('/login'),
+      });
+    }
+  };
+  if (scheduleError) {
+    return <Error />;
+  }
+
   return (
     <>
-      <section className="min-w-full min-h-screen bg-lightgray dark:bg-slate-950 flex justify-center items-center flex-col py-10">
+      <section className="min-w-full min-h-screen bg-lightgray dark:bg-slate-950 flex justify-center items-center flex-col py-20">
         {!schedule || scheduleLoading ? (
           <Loader size={'30px'} />
         ) : (
@@ -131,21 +183,15 @@ function Schedule() {
                   </button>
                 )}
               </div>
-              <span className="font-bold text-2xl text-white">
-                D
-                {Math.ceil(
-                  (new Date(schedule.startAt) - new Date()) / (1000 * 3000 * 24)
-                ) > 0
-                  ? Math.ceil(
-                      (new Date() - new Date(schedule.startAt)) /
-                        (1000 * 3000 * 24)
-                    )
-                  : '-day'}
-              </span>
+              {isLogin && schedule.memberId === user?.memberId && (
+                <span className="font-bold text-2xl text-white">
+                  {calculateDday(schedule.startAt)}
+                </span>
+              )}
             </div>
             <div className="absoulte flex flex-col items-center">
               <button
-                onClick={() => setIsShowDateModal('일정공유')}
+                onClick={handleShareSchedule}
                 aria-label="share"
                 className="flex self-end mr-3 text-white -mt-6 z-20 text-xl"
               >
@@ -160,7 +206,7 @@ function Schedule() {
               </button>
               {isLogin && schedule.memberId === user?.memberId && (
                 <button
-                  onClick={() => setIsShowAlert('일정삭제')}
+                  onClick={handleDeleteSchedule}
                   className="flex self-end mr-4 mt-2 text-gray text-sm z-20 dark:text-white"
                 >
                   일정 삭제
@@ -176,7 +222,7 @@ function Schedule() {
             <div className="px-6 m-auto mt-10">
               {/* Day별 */}
               {schedule.dayScheduleList.length > 0 &&
-                schedule.dayScheduleList.map((item, idx) => (
+                schedule.dayScheduleList.map((item, idx: number) => (
                   <div className="grid gap-3 grid-cols-8 xl:grid-cols-12">
                     <div className="flex flex-col items-center justify-center col-span-1">
                       <p className="text-xl font-semibold dark:text-white">
@@ -191,7 +237,6 @@ function Schedule() {
                         <>
                           <Feeds
                             setIsShowTimeModal={setIsShowTimeModal}
-                            setIsShowAlert={setIsShowAlert}
                             dayScheduleId={schedule.dayScheduleList.id}
                             setDeleteData={setDeleteData}
                             setTimeData={setTimeData}
@@ -204,6 +249,7 @@ function Schedule() {
                             placeLocation={schedule.travelPlace}
                           />
                           {isMoreOpen === item.id &&
+                            isClose &&
                             item.courseList.length > 0 && (
                               <CustomMap data={item} />
                             )}
@@ -211,9 +257,14 @@ function Schedule() {
                             <div className="flex justify-center mb-1 mt-2">
                               <button
                                 className="text-sm dark:text-white"
-                                onClick={() => setIsMoreOpen(item.id)}
+                                onClick={() => {
+                                  setIsMoreOpen(item.id);
+                                  setIsClose(!isClose);
+                                }}
                               >
-                                {isMoreOpen === item.id ? '닫기' : '더보기'}
+                                {isMoreOpen === item.id && isClose
+                                  ? '닫기'
+                                  : '더보기'}
                               </button>
                             </div>
                           )}
@@ -226,29 +277,8 @@ function Schedule() {
           </div>
         )}
       </section>
+      {alert && <Alerts {...alert} />}
 
-      {isShowAlert === '일정삭제' && (
-        <Alerts
-          title="일정 삭제"
-          message="정말로 일정을 삭제하시겠습니까?"
-          type="error"
-          onConfirm={() => {
-            deleteSchedule(scheduleId);
-            setIsShowAlert('');
-          }}
-        />
-      )}
-      {isShowAlert === '장소삭제' && (
-        <Alerts
-          title="장소 삭제"
-          message="정말로 장소를 삭제하시겠습니까?"
-          type="error"
-          onConfirm={() => {
-            setIsShowAlert('');
-            deletePlace(deleteData);
-          }}
-        />
-      )}
       {isShowTimeModal && (
         <TimeModal setIsShowModal={setIsShowTimeModal} timeData={timeData} />
       )}
