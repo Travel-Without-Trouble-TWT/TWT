@@ -21,7 +21,7 @@ import {
   postShareFn,
 } from '../api';
 
-import { calculateCenter } from '../utils/calculate';
+import { calculateCenter } from '../utils/calculateCenter';
 
 //메인페이지 스케쥴들
 export const useSchedules = (pageParam: number) => {
