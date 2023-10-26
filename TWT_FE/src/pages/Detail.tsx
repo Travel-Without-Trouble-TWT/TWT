@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 //컴포넌트
 import Loader from '../components/Loader';
@@ -8,22 +8,49 @@ import Stars from '../components/Stars';
 import ScheduleModal from '../components/ScheduleModal';
 import ReviewModal from '../components/ReviewModal';
 import NearPlaces from '../components/NearPlaces';
+import Alerts from '../components/Alerts';
 
 import { useAddLike, usePlaceInfo } from '../hooks/useProducts';
+import { useUserContext } from '../context';
+import { useAlert } from '../hooks/useAlert';
 
 function Detail() {
+  const { isLogin } = useUserContext();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState<string | ''>('');
   const { id } = useParams();
   const placeId = Number(id);
 
-  const { placeInfos, placeInfoLoading, placeInfoError } =
-    usePlaceInfo(placeId);
+  const { placeInfos, placeInfoLoading } = usePlaceInfo(placeId);
 
   const { addLike } = useAddLike(placeId);
+  const { showAlert, alert } = useAlert();
 
-  const handleLike = async () => {
-    addLike();
+  const openAlert = (modal: string) => {
+    if (isLogin) {
+      setShowModal(modal);
+    } else {
+      showAlert({
+        type: 'success',
+        title: '로그인을 먼저 진행해주세요.',
+        message: '해당 페이지로 이동하시겠습니까?',
+        onConfirm: () => navigate('/login'),
+      });
+    }
   };
+  const handleLike = async () => {
+    if (isLogin) {
+      addLike();
+    } else {
+      showAlert({
+        type: 'success',
+        title: '로그인을 먼저 진행해주세요.',
+        message: '해당 페이지로 이동하시겠습니까?',
+        onConfirm: () => navigate('/login'),
+      });
+    }
+  };
+
   return (
     <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen lg:px-48 xl:px-48 px-10 py-3">
       {!placeInfoLoading && placeInfos ? (
@@ -45,9 +72,7 @@ function Detail() {
                 <span className="text-gray">{placeInfos.star} / 5</span>
               </div>
               <div className="flex gap-5 text-slate-700 font-semibold dark:text-slate-400">
-                <button onClick={() => setShowModal('schedule')}>
-                  일정 추가
-                </button>
+                <button onClick={() => openAlert('schedule')}>일정 추가</button>
                 <button
                   className="flex items-center transition duration-300"
                   onClick={handleLike}
@@ -59,9 +84,7 @@ function Detail() {
                     <AiOutlineHeart className="text-red ml-1" />
                   )}
                 </button>
-                <button onClick={() => setShowModal('review')}>
-                  리뷰 작성
-                </button>
+                <button onClick={() => openAlert('review')}>리뷰 작성</button>
               </div>
               <div className="flex flex-col gap-2 mt-2">
                 <div className="flex flex-col text-slate-700">
@@ -130,6 +153,7 @@ function Detail() {
       {showModal === 'review' && (
         <ReviewModal setShowModal={setShowModal} placeId={placeId} />
       )}
+      {alert && <Alerts {...alert} />}
     </section>
   );
 }
