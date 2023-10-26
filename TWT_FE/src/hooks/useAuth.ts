@@ -12,6 +12,7 @@ import {
   nicknameFn,
   verifyFn,
   changePasswordFn,
+  deleteEmitterFn,
 } from '../api/auth';
 import { getUserInfoFn } from '../api';
 import { subscribeFn } from '../api/auth';
@@ -22,12 +23,11 @@ export const useLogin = () => {
   const { mutate: loginUser, isLoading: logining } = useMutation(
     (userData: LoginProps) => loginFn(userData),
     {
-      onSuccess: (data) => {
+      onSuccess: (data: any) => {
         localStorage.setItem('accessToken', data);
         queryClient.invalidateQueries(['userInfo']);
         subscribeFn();
       },
-      onError: (error: any) => {},
     }
   );
   return { loginUser, logining };
@@ -97,6 +97,22 @@ export const useGetEmitters = () => {
   return { emitters, emittersGetting, emittersError };
 };
 
+//알람 삭제
+export const useDeleteEmitter = () => {
+  const {
+    mutate: deleteEmitter,
+    isLoading: deletingEmitter,
+    isSuccess: deletingEmitterSuccess,
+    isError: deletingEmitterError,
+  } = useMutation((id: number) => deleteEmitterFn(id));
+  return {
+    deleteEmitter,
+    deletingEmitter,
+    deletingEmitterSuccess,
+    deletingEmitterError,
+  };
+};
+
 //회원가입
 export const useJoin = () => {
   const {
@@ -154,7 +170,7 @@ export const useVerifyCode = (
     isLoading: isVerifyingEmail,
     isSuccess: verifyingEmailSuccess,
   } = useMutation((email: string) => verifyFn(email), {
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       handleStepValidation('email', true);
       setReturnCode(data);
     },
