@@ -102,8 +102,8 @@ function Join() {
   return (
     <>
       <div className="flex items-center justify-center h-screen">
-        <div className="grid grid-cols-2 xs:grid-cols-1 gap-4 w-4/5 h-2/3 absolute rounded-xl bg-skyblue shadow-lg">
-          <div className="xs:hidden flex flex-col justify-end">
+        <div className="grid grid-cols-2 xs:grid-cols-1 sm:grid-cols-1 gap-4 w-4/5 h-2/3 absolute rounded-xl bg-skyblue shadow-lg">
+          <div className="xs:hidden sm:hidden flex flex-col justify-end">
             <div className="self-center mb-10">
               <p className="text-lg font-extrabold text-white">TWT</p>
               <p className="text-lg font-semibold text-white">TWT</p>
@@ -116,7 +116,7 @@ function Join() {
             />
           </div>
 
-          <div className="tablet:flex justify-center align-middle p-12 bg-white tablet:rounded-r-xl">
+          <div className="flex justify-center align-middle p-12 bg-white rounded-r-xl sm:rounded-xl xs:rounded-xl">
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="w-full flex justify-center align-middle flex-col space-y-2"
