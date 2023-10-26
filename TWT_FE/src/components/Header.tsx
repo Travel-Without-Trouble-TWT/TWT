@@ -3,26 +3,44 @@ import { useUserContext } from '../context';
 
 import logo from '../assets/logo.png';
 import { useGetEmitters, useLogout } from '../hooks/useAuth';
+
+import { useAlert } from '../hooks/useAlert';
+import { useNavigate } from 'react-router-dom';
+//components
+import DropDown from './dropDown';
 import Alerts from './Alerts';
 
 function Header() {
   const { isLogin, user } = useUserContext();
+  const { alert, showAlert } = useAlert();
   const [isToggleOpen, setIsToggleOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentItem, setCurrentItem] = useState(null);
-  const [isShowAlert, setIsShowAlert] = useState<string>('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-  const { logout, logouting, logoutError } = useLogout();
-  const { emitters, emittersGetting, emittersError } = useGetEmitters();
+  const { logout } = useLogout();
+  const { emitters } = useGetEmitters();
+
+  const handleClickLogout = () => {
+    showAlert({
+      type: 'success',
+      title: '로그아웃',
+      message: '정말로 로그아웃하시겠습니까?',
+      onConfirm: () => {
+        logout();
+        navigate('/login');
+      },
+    });
+  };
 
   return (
     <header className="border-b-1 fixed z-50 w-full border-b border-slate-200 shadow-lg shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full  xl:border-slate-200 xl:backdrop-blur-sm xl:after:hidden to-sky-50 bg-gradient-to-b from-[#A5E0F8]">
       <div className="relative mx-auto max-w-full px-6 md:max-w-5xl lg:max-w-7xl xl:max-w-[96rem]">
         <nav
           aria-label="main navigation"
-          className="flex h-[5.5rem] items-stretch justify-between font-medium text-slate-700"
+          className="flex h-[5rem] items-stretch justify-between font-medium text-slate-700"
           role="navigation"
         >
+          {/* 로고 */}
           <a
             id="TWT"
             aria-label="TWT logo"
@@ -33,9 +51,9 @@ function Header() {
             <img
               className="h-[90px] w-[90px] self-center py-3 xs:h-[80px] xs:w-[80px]"
               src={logo}
-              alt="로고 이미지"
+              alt="logo"
             />
-            <span className="flex flex-col text-xs ml-[-19px] mb-3 xs:text-[0.2rem]">
+            <span className="flex flex-col text-xs ml-[-19px] mb-3 xs:text-[0.5rem] space-y-0">
               <span className="text-slate-500">
                 <strong className="text-black">T</strong>ravel
               </span>
@@ -47,8 +65,11 @@ function Header() {
               </span>
             </span>
           </a>
+          {/* 메뉴 버튼 */}
           <button
-            className={`relative order-10 block h-10 w-10 self-center xl:hidden lg:hidden
+            className={`${
+              !isLogin && 'hidden'
+            } relative order-10 block h-10 w-10 self-center xl:hidden lg:hidden
           ${
             isToggleOpen
               ? 'visible opacity-100 [&_span:nth-child(1)]:w-6 [&_span:nth-child(1)]:translate-y-0 [&_span:nth-child(1)]:rotate-45 [&_span:nth-child(3)]:w-0 [&_span:nth-child(2)]:-rotate-45 '
@@ -74,10 +95,11 @@ function Header() {
               ></span>
             </div>
           </button>
+          {/* 메뉴들 */}
           <ul
             role="menubar"
             aria-label="Select page"
-            className={`absolute top-0 left-0 z-[-1] h-[28.5rem] w-full justify-center overflow-hidden  overflow-y-auto overscroll-contain bg-white/90 px-8 pb-12 pt-24 font-medium transition-[opacity,visibility] duration-300 xl:visible xl:relative xl:top-0 xl:z-0 xl:flex xl:h-full xl:w-auto xl:items-stretch xl:overflow-visible xl:bg-white/0 xl:px-0 xl:py-0 xl:pt-0 xl:opacity-100 lg:visible lg:relative lg:top-0  lg:z-0 lg:flex lg:h-full lg:w-auto lg:items-stretch lg:overflow-visible lg:bg-white/0 lg:px-0 lg:py-0  lg:pt-0 lg:opacity-100 ${
+            className={`absolute top-0 left-0 z-[-1] h-[28.5rem] w-full justify-center overflow-hidden overflow-y-auto overscroll-contain bg-white/90 px-8 pb-12 pt-24 font-medium transition-[opacity,visibility] duration-300 xl:visible xl:relative xl:top-0 xl:z-0 xl:flex xl:h-full xl:w-auto xl:items-stretch xl:overflow-visible xl:bg-white/0 xl:px-0 xl:py-0 xl:pt-0 xl:opacity-100 lg:visible lg:relative lg:top-0  lg:z-0 lg:flex lg:h-full lg:w-auto lg:items-stretch lg:overflow-visible lg:bg-white/0 lg:px-0 lg:py-0  lg:pt-0 lg:opacity-100 ${
               isToggleOpen
                 ? 'visible opacity-100 backdrop-blur-sm'
                 : 'invisible opacity-0'
@@ -90,7 +112,7 @@ function Header() {
                     role="menuitem"
                     aria-haspopup="false"
                     tabIndex={0}
-                    className="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-blue focus:bg-emerald-50 focus:outline-none focus-visible:outline-none lg:px-8 xl:px-8"
+                    className="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-blue hover:font-semibold focus:bg-emerald-50 focus:outline-none focus-visible:outline-none lg:px-8 xl:px-8"
                     href="/mypage/schedule/1"
                   >
                     <span>마이페이지</span>
@@ -102,7 +124,7 @@ function Header() {
                     aria-current="page"
                     aria-haspopup="false"
                     tabIndex={0}
-                    className="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-blue lg:px-8 xl:px-8"
+                    className="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-blue hover:font-semibold lg:px-8 xl:px-8"
                     href="/profile"
                   >
                     <span>프로필 수정</span>
@@ -110,11 +132,11 @@ function Header() {
                 </li>
                 <li role="none" className="flex items-stretch">
                   <span
-                    onClick={() => setIsShowAlert('로그아웃')}
+                    onClick={handleClickLogout}
                     role="menuitem"
                     aria-haspopup="false"
                     tabIndex={0}
-                    className="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-blue lg:px-8 xl:px-8"
+                    className="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-blue hover:font-semibold cursor-pointer lg:px-8 xl:px-8"
                   >
                     <span>로그아웃</span>
                   </span>
@@ -132,7 +154,7 @@ function Header() {
                         ? user?.profileUrl
                         : 'https://mblogthumb-phinf.pstatic.net/20150427_73/ninevincent_1430122793329pvryW_JPEG/kakao_7.jpg?type=w420'
                     }
-                    alt="user profile"
+                    alt="profileImg"
                     title="user profile"
                     width="40"
                     height="40"
@@ -145,50 +167,21 @@ function Header() {
                     <span className="absolute bottom-0 right-0 inline-flex items-center justify-center gap-1 rounded-full border-2 border-white bg-pink-500 p-1 text-sm text-white"></span>
                   )}
                 </div>
-                <ul
-                  className={`${
-                    isDropdownOpen ? 'flex' : 'hidden'
-                  } absolute right-0 top-full z-50 mt-1 flex flex-col w-72 list-none rounded bg-white py-2 shadow-md`}
-                >
-                  {emitters && emitters.length > 0 ? (
-                    emitters.map((item, index) => {
-                      return (
-                        <li
-                          key={index}
-                          className={`${
-                            index === currentItem
-                              ? 'bg-lightgray/30 text-white'
-                              : 'bg-none'
-                          } flex items-start justify-start gap-2 p-2 px-5 transition-colors duration-300 hover:bg-lightgray/80`}
-                        >
-                          <span className="flex flex-col gap-1 overflow-hidden  whitespace-wrap">
-                            <span className="leading-5 text-sm">
-                              {item.message}
-                            </span>
-                          </span>
-                        </li>
-                      );
-                    })
-                  ) : (
-                    <li className="text-gray flex items-start justify-start gap-2 p-2 px-5">
-                      <span className="flex flex-col gap-1 overflow-hidden  whitespace-wrap">
-                        <span className="leading-5 text-sm">
-                          알림을 모두 확인하였습니다.
-                        </span>
-                      </span>
-                    </li>
-                  )}
-                </ul>
+                {/* 드롭다운 */}
+                {isDropdownOpen && <DropDown data={emitters} />}
               </>
             ) : (
               <div className="flex">
                 <a
                   href="/login"
-                  className="text-slate-700 hover:text-blue mr-2"
+                  className="text-slate-700 hover:text-blue hover:font-semibold mr-2"
                 >
                   로그인
                 </a>
-                <a href="/join" className="text-slate-700 hover:text-blue">
+                <a
+                  href="/join"
+                  className="text-slate-700 hover:text-blue hover:font-semibold"
+                >
                   회원가입
                 </a>
               </div>
@@ -196,17 +189,7 @@ function Header() {
           </div>
         </nav>
       </div>
-      {isShowAlert === '로그아웃' && (
-        <Alerts
-          type="success"
-          title="로그아웃"
-          message="정말 로그아웃하시겠습니까?"
-          onConfirm={() => {
-            setIsShowAlert('');
-            logout();
-          }}
-        />
-      )}
+      {alert && <Alerts {...alert} />}
     </header>
   );
 }
