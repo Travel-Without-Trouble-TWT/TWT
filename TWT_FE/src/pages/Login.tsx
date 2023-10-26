@@ -40,8 +40,8 @@ function Login() {
   return (
     <>
       <div className="flex items-center justify-center min-h-screen">
-        <div className="grid xs:grid-cols-1 grid-cols-2 gap-4 w-2/3 h-2/3 absolute rounded-xl bg-skyblue shadow-lg">
-          <div className="xs:hidden flex flex-col justify-end">
+        <div className="grid xs:grid-cols-1 sm:grid-cols-1 grid-cols-2 gap-4 w-2/3 h-[550px] absolute rounded-xl bg-skyblue shadow-lg">
+          <div className="xs:hidden sm:hidden flex flex-col justify-end">
             <div className="self-center mb-10">
               <p className="text-lg font-extrabold text-white">TWT</p>
               <p className="text-lg font-semibold text-white">TWT</p>
@@ -53,7 +53,7 @@ function Login() {
               alt="로고 이미지"
             />
           </div>
-          <div className="tablet:flex justify-center align-middle p-12 bg-white tablet:rounded-r-xl">
+          <div className="flex justify-center align-middle p-12 bg-white rounded-r-xl sm:rounded-xl xs:rounded-xl">
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="w-full flex justify-center align-middle py-10 flex-col space-y-2"
@@ -128,7 +128,7 @@ function Login() {
                 </small>
               )}
               <button
-                className={`w-full h-[60px] font-bold rounded-lg ${
+                className={`w-full h-[60px] mt-4 font-bold rounded-lg ${
                   isValid ? 'bg-skyblue' : ' bg-lightgray'
                 }`}
                 type="submit"
@@ -153,7 +153,9 @@ function Login() {
                 <span className="">Sign in with Google</span>
               </a>
               <a className="flex self-center" href="/join">
-                <p className="text-xs text-gray">회원가입 하러가기</p>
+                <p className="text-sm text-gray hover:font-semibold">
+                  회원가입 하러가기
+                </p>
               </a>
             </form>
           </div>
