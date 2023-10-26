@@ -118,3 +118,8 @@ export const getEmitterFn = async () => {
   const response = await authApi.get('/emitter/all');
   return response.data;
 };
+//알람삭제
+export const deleteEmitterFn = async (id: number) => {
+  const response = await authApi.delete(`/emitter/delete?emitterId=${id}`);
+  return response.data;
+};
