@@ -26,7 +26,7 @@ function Main() {
   }
 
   return (
-    <div className="min-w-full min-h-screen flex justify-center items-center py-3 dark:bg-slate-950">
+    <div className="min-w-full min-h-screen flex justify-center items-center py-20 dark:bg-slate-950">
       <div className="w-2/3 flex flex-col space-y-20 py-1 bg-lightgray dark:bg-slate-800 sm:w-full xs:w-full">
         <div>
           <div className="relative">
