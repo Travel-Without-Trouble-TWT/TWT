@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { UserProvider } from './context';
 import './index.css';
 import App from './App';
+import { RecoilRoot } from 'recoil';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -16,7 +17,9 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <UserProvider>
-        <App />
+        <RecoilRoot>
+          <App />
+        </RecoilRoot>
       </UserProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
