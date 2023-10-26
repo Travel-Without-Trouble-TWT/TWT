@@ -58,7 +58,7 @@ function Selected() {
 
   return (
     <>
-      <section className="bg-white dark:bg-slate-950 min-h-screen">
+      <section className="bg-white dark:bg-slate-950 min-h-screen py-20">
         <div className="container px-6 py-10 mx-auto xs:px-1">
           <h1 className="text-3xl font-bold lg:text-4xl dark:text-white">
             {placeLocation} 여행
