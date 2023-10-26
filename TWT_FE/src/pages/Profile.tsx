@@ -5,7 +5,7 @@ import { useChangePassword } from '../hooks/useAuth';
 
 function Profile() {
   const { isLogin, user } = useUserContext();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isPasswordOpen, setIsPasswordOpen] = useState<boolean>(false);
   const [nickName, setNickName] = useState<string>(user?.nickName);
   const [password, setPassword] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ function Profile() {
                   </label>
                   <button
                     type="button"
-                    className="absolute bg-skyblue p-2 text-sm text-white hover:text-black rounded right-0"
+                    className="absolute bg-skyblue/70 transition-colors duration-300 p-2 text-sm text-white hover:bg-skyblue rounded right-0"
                   >
                     닉네임 변경
                   </button>
@@ -75,13 +75,13 @@ function Profile() {
                   </label>
                   <button
                     type="button"
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="absolute bg-skyblue p-2 text-sm text-white hover:text-black rounded right-0"
+                    onClick={() => setIsPasswordOpen(!isOpen)}
+                    className="absolute bg-skyblue/70 p-2 text-sm transition-colors duration-300 text-white hover:bg-skyblue rounded right-0"
                   >
-                    {isOpen ? '변경 취소' : '비밀번호 변경'}
+                    {isPasswordOpen ? '변경 취소' : '비밀번호 변경'}
                   </button>
                 </div>
-                {isOpen && (
+                {isPasswordOpen && (
                   <div className="mt-10">
                     <div className="relative my-6">
                       <input
@@ -161,7 +161,7 @@ function Profile() {
             <div className="justify-center p-6">
               <button
                 onClick={() => navigate('/mypage')}
-                className="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded bg-skyblue/80 hover:bg-skyblue px-5 text-sm font-medium tracking-wide text-white transition duration-300  focus:bg-skyblue focus-visible:outline-none disabled:cursor-not-allowed disabled:border-lightgray disabled:bg-lightgray disabled:shadow-none"
+                className="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded bg-skyblue/70 hover:bg-skyblue px-5 text-sm font-medium tracking-wide text-white transition-colors duration-300  focus:bg-skyblue focus-visible:outline-none disabled:cursor-not-allowed disabled:border-lightgray disabled:bg-lightgray disabled:shadow-none"
               >
                 <span>수정완료</span>
               </button>
