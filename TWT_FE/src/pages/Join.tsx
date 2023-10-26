@@ -7,6 +7,7 @@ import logo from '../assets/logo.png';
 import Spinner from '../components/Spinner';
 import Alerts from '../components/Alerts';
 import { useCheckNickname, useJoin, useVerifyCode } from '../hooks/useAuth';
+import { useAlert } from '../hooks/useAlert';
 
 function Join() {
   const {
@@ -18,6 +19,7 @@ function Join() {
     reset,
   } = useForm<JoinProps>({ mode: 'onBlur' });
   const navigate = useNavigate();
+  const { alert, showAlert } = useAlert();
   const [verifyCodeMessage, setVerifyCodeMessage] = useState<string | null>(
     null
   );
@@ -55,7 +57,7 @@ function Join() {
   const isCodeValid = watch('verificationCode')?.length === 6;
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
+    if (!isSubmitSuccessful) {
       reset();
     }
   }, [isSubmitSuccessful]);
@@ -80,23 +82,26 @@ function Join() {
   };
 
   if (joinSuccess) {
-    return (
-      <Alerts
-        type="success"
-        title="🎉 회원가입 완료"
-        message="회원가입이 완료되었습니다. 로그인 페이지로 이동하시겠습니까?"
-        onConfirm={() => navigate('/login')}
-      />
-    );
+    showAlert({
+      type: 'success',
+      title: '🎉 회원가입 완료',
+      message: '회원가입이 완료되었습니다. 로그인 페이지로 이동하시겠습니까?',
+      onConfirm: () => navigate('/login'),
+    });
   } else if (joinError) {
-    return (
-      <Alerts
-        type="error"
-        title="회원가입 실패"
-        message="이미 존재하는 계정이 존재합니다. 로그인 페이지로 이동하시겠습니까?"
-        onConfirm={() => navigate('/login')}
-      />
-    );
+    showAlert({
+      type: 'error',
+      title: '회원가입 실패',
+      message: '이미 계정이 존재합니다. 로그인 페이지로 이동하시겠습니까?',
+      onConfirm: () => navigate('/login'),
+    });
+  } else if (verifyingEmailSuccess) {
+    showAlert({
+      type: 'success',
+      title: '인증코드 전송 완료',
+      message:
+        '해당 이메일로 인증코드가 발송되었습니다. 확인 후, 인증해주세요.',
+    });
   }
 
   return (
@@ -352,6 +357,7 @@ function Join() {
           </div>
         </div>
       </div>
+      {alert && <Alerts {...alert} />}
     </>
   );
 }
