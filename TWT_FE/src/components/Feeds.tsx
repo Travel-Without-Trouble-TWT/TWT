@@ -5,7 +5,6 @@ import { AiOutlineHome } from 'react-icons/ai';
 
 function Feeds({
   setIsShowTimeModal,
-  setIsShowAlert,
   dayScheduleId,
   setDeleteData,
   setTimeData,
@@ -14,7 +13,6 @@ function Feeds({
   placeLocation,
 }: {
   setIsShowTimeModal: (isShowTimeModal: boolean) => void;
-  setIsShowAlert: (isShowAlert: string) => void;
   dayScheduleId: number;
   setDeleteData: any;
   setTimeData: any;
@@ -25,7 +23,6 @@ function Feeds({
   const { isLogin, user } = useUserContext();
 
   const handleClickDeleteButton = (idx: number) => {
-    setIsShowAlert('장소삭제');
     setDeleteData({
       dayScheduleId: dayScheduleId,
       index: idx,
@@ -48,7 +45,7 @@ function Feeds({
         className="relative flex flex-col gap-4 py-12 pl-8 before:absolute before:top-0 before:left-8 before:h-full before:-translate-x-1/2 before:border before:border-dashed before:border-lightgray after:absolute after:top-6 after:left-8 after:bottom-6 after:-translate-x-1/2 after:border after:border-lightgray"
       >
         {data.length > 0 ? (
-          data.map((item, idx) => (
+          data.map((item, idx: number) => (
             <>
               <li key={idx} className="relative pl-8" role="feed">
                 <div
@@ -109,12 +106,20 @@ function Feeds({
             </>
           ))
         ) : (
-          <a
-            href={`/search/${placeLocation}`}
-            className="flex justify-center mr-10 text-gray text-sm dark:text-lightgray"
-          >
-            장소를 추가해주세요.
-          </a>
+          <>
+            {isLogin && user && user.memberId === memberId ? (
+              <a
+                href={`/search/${placeLocation}`}
+                className="flex justify-center mr-10 text-gray text-sm dark:text-lightgray"
+              >
+                장소를 추가해주세요.
+              </a>
+            ) : (
+              <span className="flex justify-center mr-10 text-gray text-sm dark:text-lightgray">
+                일정이 없습니다.
+              </span>
+            )}
+          </>
         )}
       </ul>
     </>
