@@ -9,6 +9,7 @@ import ScheduleModal from '../components/ScheduleModal';
 import ReviewModal from '../components/ReviewModal';
 import NearPlaces from '../components/NearPlaces';
 import Alerts from '../components/Alerts';
+import Error from '../components/Error';
 
 import { useAddLike, usePlaceInfo } from '../hooks/useProducts';
 import { useUserContext } from '../context';
@@ -21,7 +22,8 @@ function Detail() {
   const { id } = useParams();
   const placeId = Number(id);
 
-  const { placeInfos, placeInfoLoading } = usePlaceInfo(placeId);
+  const { placeInfos, placeInfoLoading, placeInfoError } =
+    usePlaceInfo(placeId);
 
   const { addLike } = useAddLike(placeId);
   const { showAlert, alert } = useAlert();
@@ -50,6 +52,10 @@ function Detail() {
       });
     }
   };
+
+  if (placeInfoError) {
+    return <Error />;
+  }
 
   return (
     <section className="bg-lightgray dark:bg-slate-950 min-w-full min-h-screen lg:px-48 xl:px-48 px-10 py-3">
@@ -140,7 +146,7 @@ function Detail() {
         </>
       ) : (
         <div className="min-h-full flex justify-center items-center">
-          <Loader size={'40'} />
+          <Loader size={'30px'} />
         </div>
       )}
       {showModal === 'schedule' && (
