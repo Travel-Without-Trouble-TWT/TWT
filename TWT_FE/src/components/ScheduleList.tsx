@@ -20,7 +20,7 @@ function ScheduleList({
               <div className="flex items-center self-center">
                 <img
                   src={userData.scheduleImageUrl}
-                  alt="schedule image"
+                  alt=""
                   className="w-10 h-10 rounded"
                 />
               </div>
