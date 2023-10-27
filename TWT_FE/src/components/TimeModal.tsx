@@ -11,9 +11,10 @@ function TimeModal({
 }) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [arriveAt, setArriveAt] = useState<string | null>(null);
-  const { editTime, timeEditing, timeEditSuccess, timeEditError } = useEditTime(
-    { ...timeData, arriveAt: arriveAt }
-  );
+  const { editTime, timeEditing, timeEditSuccess } = useEditTime({
+    ...timeData,
+    arriveAt: arriveAt,
+  });
 
   const handleAddTime = () => {
     editTime({ ...timeData, arriveAt: arriveAt });
