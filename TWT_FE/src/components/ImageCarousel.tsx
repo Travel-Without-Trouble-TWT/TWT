@@ -40,7 +40,7 @@ function ImageCarousel({ images, selectedIndex }: ImageCarouselProps) {
       </button>
       <img
         src={images[currentIndex]}
-        alt={`Image ${currentIndex}`}
+        alt=""
         className="w-full h-full object-contain"
       />
     </div>
