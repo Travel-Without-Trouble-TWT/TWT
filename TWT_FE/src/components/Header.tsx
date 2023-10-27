@@ -7,7 +7,7 @@ import { useGetEmitters, useLogout } from '../hooks/useAuth';
 import { useAlert } from '../hooks/useAlert';
 import { useNavigate } from 'react-router-dom';
 //components
-import DropDown from './dropDown';
+import DropDown from './DropDown';
 import Alerts from './Alerts';
 
 function Header() {
