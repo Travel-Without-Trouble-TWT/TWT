@@ -99,7 +99,11 @@ function Searchbar() {
             >
               <div className="mr-4">
                 <div className="h-10 w-10 flex items-center justify-center text-3xl">
-                  <img className="h-10 w-10 rounded-full" src={item.imgSrc} />
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={item.imgSrc}
+                    alt=""
+                  />
                 </div>
               </div>
               <div>
