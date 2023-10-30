@@ -46,6 +46,13 @@ public class ScheduleController {
         return ResponseEntity.ok(dayScheduleService.addNewCourse(dto));
     }
 
+    @ApiOperation(value = "스케줄 날짜 설정")
+    @Operation(description = "스케줄 날짜 최초 설정 API, 최초엔 추가한 날 당일로 지정된 상태")
+    @PutMapping("/date")
+    public ResponseEntity<Schedule> setScheduleDate(HttpServletRequest request, @RequestBody @Valid SetDateDto setDateDto) {
+        return ResponseEntity.ok(scheduleService.setDate(request, setDateDto));
+    }
+
     @ApiOperation(value = "스케줄 날짜 변경")
     @Operation(description = "스케줄 날짜 변경 API, 최초 설정과는 다른 로직")
     @PutMapping("/change")
@@ -75,7 +82,6 @@ public class ScheduleController {
     public void editScheduleName(HttpServletRequest request, @RequestBody @Valid EditScheduleNameDto dto) {
         scheduleService.editScheduleName(request, dto);
     }
-
     @ApiOperation(value = "같은 여행지 스케줄 조회")
     @Operation(description = "선택 여행지에서 일정 추가할 때 기존 일정 1, 2, 3, ... 리스트")
     @GetMapping("/choose")
