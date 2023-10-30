@@ -1,8 +1,11 @@
 package com.BE.TWT.controller.schedule;
 
+import com.BE.TWT.model.dto.function.SaveSharedScheduleDto;
 import com.BE.TWT.model.dto.schedule.*;
 import com.BE.TWT.model.entity.schedule.Schedule;
 import com.BE.TWT.service.function.SearchService;
+import com.BE.TWT.service.schedule.ShareSchedule;
+import com.BE.TWT.service.schedule.ChangeScheduleDate;
 import com.BE.TWT.service.schedule.DayScheduleService;
 import com.BE.TWT.service.schedule.ScheduleService;
 import io.swagger.annotations.Api;
@@ -25,6 +28,8 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
     private final SearchService searchService;
     private final DayScheduleService dayScheduleService;
+    private final ChangeScheduleDate changeScheduleDate;
+    private final ShareSchedule shareScheduleService;
 
     @ApiOperation(value = "스케줄 추가")
     @Operation(description = "최초 스케줄 추가 API")
@@ -52,7 +57,7 @@ public class ScheduleController {
     @Operation(description = "스케줄 날짜 변경 API, 최초 설정과는 다른 로직")
     @PutMapping("/change")
     public ResponseEntity<Schedule> changeScheduleDate(HttpServletRequest request, @RequestBody @Valid SetDateDto setDateDto) {
-        return ResponseEntity.ok(scheduleService.changeTravelDate(request, setDateDto));
+        return ResponseEntity.ok(changeScheduleDate.changeTravelDate(request, setDateDto));
     }
 
     @ApiOperation(value = "스케줄 삭제")
@@ -91,5 +96,13 @@ public class ScheduleController {
     @GetMapping("/info")
     public ResponseEntity<ScheduleDetail> readScheduleInfo(@RequestParam @Valid Long scheduleId) {
         return ResponseEntity.ok(scheduleService.readScheduleDetail(scheduleId));
+    }
+
+    @ApiOperation(value = "스케줄 흡수하기")
+    @Operation(description = "다른 유저의 스케줄을 내 스케줄로 가져오는 기능")
+    @PostMapping("/share")
+    public ResponseEntity<Schedule> saveSharedSchedule (HttpServletRequest request,
+                                                        @RequestBody @Valid SaveSharedScheduleDto dto) {
+        return ResponseEntity.ok(shareScheduleService.saveShareSchedule(request, dto));
     }
 }

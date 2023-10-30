@@ -47,4 +47,11 @@ public class ReviewController {
                                                              @RequestParam @Valid int pageNum) {
         return ResponseEntity.ok(reviewService.viewAllReviewByPlace(placeId, pageNum));
     }
+
+    @ApiOperation(value = "리뷰 삭제하기")
+    @Operation(description = "유저 정보 일치 여부 확인 후 삭제")
+    @DeleteMapping("/del")
+    public void deleteReview(HttpServletRequest request, @RequestParam @Valid Long reviewId) {
+        reviewService.deleteReview(request, reviewId);
+    }
 }

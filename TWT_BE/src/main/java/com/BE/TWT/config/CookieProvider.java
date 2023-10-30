@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 public class CookieProvider {
 
     private final String refreshTokenName = "refreshToken";
-    private final String accessTokenName = "accessToken";
     private final long refreshTokenExpiration = 2 * 24 * 60 * 60;
 
 

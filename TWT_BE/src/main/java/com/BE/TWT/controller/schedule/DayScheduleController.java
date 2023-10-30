@@ -1,6 +1,5 @@
 package com.BE.TWT.controller.schedule;
 
-import com.BE.TWT.model.dto.schedule.AddCourse;
 import com.BE.TWT.model.dto.schedule.DeleteCourse;
 import com.BE.TWT.model.dto.schedule.UpdateCourse;
 import com.BE.TWT.model.entity.schedule.DaySchedule;

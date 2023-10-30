@@ -4,7 +4,6 @@ import com.BE.TWT.config.JwtTokenProvider;
 import com.BE.TWT.exception.error.MemberException;
 import com.BE.TWT.exception.error.ScheduleException;
 import com.BE.TWT.exception.message.MemberErrorMessage;
-import com.BE.TWT.exception.message.ScheduleErrorMessage;
 import com.BE.TWT.model.entity.function.Notification;
 import com.BE.TWT.model.entity.member.Member;
 import com.BE.TWT.model.entity.schedule.Schedule;

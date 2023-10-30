@@ -17,6 +17,7 @@ import com.BE.TWT.repository.schedule.ScheduleRepository;
 import com.BE.TWT.service.function.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,8 +54,9 @@ public class ScheduleService {
         Place place = placeRepository.findById(dto.getPlaceId())
                 .orElseThrow(() -> new PlaceException(WRONG_ADDRESS));
 
-        LocalDate startAt = LocalDate.parse(dto.getStartAt());
-        LocalDate endAt = LocalDate.parse(dto.getEndAt());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"); // 프론트에서 날짜 값을 해당 형식으로 받는다.
+        LocalDate startAt = LocalDate.parse(dto.getStartAt(), formatter);
+        LocalDate endAt = LocalDate.parse(dto.getEndAt(), formatter);
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(USER_NOT_FOUND));
@@ -122,6 +124,7 @@ public class ScheduleService {
 
         if (schedule.getMember().equals(member)) {
             schedule.editScheduleName(dto.getScheduleName());
+            scheduleRepository.save(schedule);
         } else {
             throw new ScheduleException(UNAUTHORIZED_REQUEST);
         }
@@ -286,6 +289,10 @@ public class ScheduleService {
         if (!schedule.getMember().equals(member)) { // 스케줄 삭제는 생성한 유저만 가능하다
             throw new ScheduleException(UNAUTHORIZED_REQUEST);
         }
+
+        List<DaySchedule> dayScheduleList = dayScheduleRepository.findAllBySchedule(schedule);
+        dayScheduleRepository.deleteAllInBatch(dayScheduleList);
+
         scheduleRepository.delete(schedule);
     }
 
@@ -296,6 +303,7 @@ public class ScheduleService {
         String photoUrl = s3Service.uploadFile(file);
 
         schedule.uploadPhoto(photoUrl);
+        scheduleRepository.save(schedule);
 
         return schedule;
     }

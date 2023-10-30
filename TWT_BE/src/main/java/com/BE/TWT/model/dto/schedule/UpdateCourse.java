@@ -14,5 +14,5 @@ import java.time.LocalDateTime;
 public class UpdateCourse {
     private Long dayScheduleId;
     private int index;
-    private LocalDateTime arriveAt;
+    private String arriveAt;
 }

@@ -62,4 +62,6 @@ public class Place {
     public void addReview() {
         this.reviewNum++;
     }
+
+    public void minusReview() { this.reviewNum--;}
 }

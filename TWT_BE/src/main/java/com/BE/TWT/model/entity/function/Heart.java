@@ -1,15 +1,14 @@
 package com.BE.TWT.model.entity.function;
 
 import com.BE.TWT.model.entity.member.Member;
-import com.BE.TWT.model.type.PlaceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -17,6 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Heart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
