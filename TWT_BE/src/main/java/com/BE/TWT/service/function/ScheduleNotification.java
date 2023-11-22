@@ -58,7 +58,7 @@ public class ScheduleNotification {
                     notificationRepository.save(notification);
                 } catch (IOException e) {
                     sseEmitters.remove(memberId);
-                    notificationRepository.delete(notification);
+                    notificationRepository.save(notification);
                 }
             }
         }
@@ -86,7 +86,7 @@ public class ScheduleNotification {
                     notificationRepository.save(notification);
                 } catch (IOException e) {
                     sseEmitters.remove(memberId);
-                    notificationRepository.delete(notification);
+                    notificationRepository.save(notification);
                 }
             }
         }
@@ -138,7 +138,7 @@ public class ScheduleNotification {
                 .orElseThrow(() -> new ScheduleException(ALREADY_DELETED_ALARM));
     }
 
-    public void deleteNotification(Long notificationId) { // 알림 삭제
-        notificationRepository.deleteById(notificationId);
+    public void deleteNotification(Long emitterId) { // 알림 삭제
+        notificationRepository.deleteById(emitterId);
     }
 }
