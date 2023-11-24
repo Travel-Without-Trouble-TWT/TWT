@@ -41,14 +41,14 @@ public class NotificationController {
     @ApiOperation(value = "알림 상세보기")
     @Operation(description = "알림 하나의 메시지를 읽을 때")
     @GetMapping(value = "/read")
-    public ResponseEntity<Notification> readNotification(@RequestParam @Valid Long notificationId) {
-        return ResponseEntity.ok(scheduleNotification.readNotification(notificationId));
+    public ResponseEntity<Notification> readNotification(@RequestParam @Valid Long emitterId) {
+        return ResponseEntity.ok(scheduleNotification.readNotification(emitterId));
     }
 
     @ApiOperation(value = "알림 상세보기")
     @Operation(description = "알림 하나의 메시지를 읽을 때")
-    @DeleteMapping(value = "/checked")
-    public void deleteNotification(@RequestParam @Valid Long notificationId) {
-       scheduleNotification.deleteNotification(notificationId);
+    @DeleteMapping(value = "/delete")
+    public void deleteNotification(@RequestParam @Valid Long emitterId) {
+       scheduleNotification.deleteNotification(emitterId);
     }
 }
